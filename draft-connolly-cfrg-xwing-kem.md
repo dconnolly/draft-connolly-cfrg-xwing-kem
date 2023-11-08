@@ -23,10 +23,10 @@ title: "TODO - Your title"
 abbrev: "TODO - Abbreviation"
 category: info
 
-docname: draft-todo-yourname-protocol-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
+docname: draft-connolly-cfrg-xwing-kem-latest
+submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date:
+date: 2023-11-08
 consensus: true
 v: 3
 area: AREA
@@ -45,9 +45,13 @@ venue:
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+    fullname: Deirdre Connolly
+    organization: SandboxAQ
+    email: durumcrustulum@gmail.com
+
+    fullname: Deirdre Connolly
+    organization: SandboxAQ
+    email: durumcrustulum@gmail.com
 
 normative:
 
