@@ -1,5 +1,5 @@
 ---
-title: X-Wing: A general-purpose KEM
+title: "X-Wing: A general-purpose KEM"
 abbrev: xwing
 category: info
 
