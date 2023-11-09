@@ -139,6 +139,12 @@ when, and only when, they appear in all capitals, as shown here.
 This document is consistent with all terminology defined in
 {{I-D.driscoll-pqt-hybrid-terminology}}.
 
+# X-KEM
+
+```
+SS_X-KEM = SHA3-256("X-WING-ASCII-ART" || SS_X25519 || SS_ML-KEM-768 || CT_X25519 || CT_ML-KEM-768 || PK_X25519)
+```
+
 
 # Security Considerations
 
