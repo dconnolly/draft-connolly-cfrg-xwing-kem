@@ -46,6 +46,22 @@ normative:
 informative:
   I-D.driscoll-pqt-hybrid-terminology:
   I-D.ietf-tls-hybrid-design:
+  HASHEDDH:
+    target: https://eprint.iacr.org/2022/1230.pdf
+    title: Group Action Key Encapsulation and Non-Interactive Key Exchange in the QROM
+    author:
+      - 
+        ins: Julien Duman
+      - 
+        ins: Dominik Hartmann
+      -
+        ins: Eike Kiltz
+      - 
+        ins: Sabrina Kunzweiler
+      - 
+        ins: Jonas Lehmann
+      - 
+        ins: Doreen Riepel
   KYBERV302:
     target: https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf
     title: CRYSTALS-Kyber, Algorithm Specification And Supporting Documentation (version 3.02)
