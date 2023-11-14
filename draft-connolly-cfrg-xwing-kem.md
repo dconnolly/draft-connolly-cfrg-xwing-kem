@@ -1,5 +1,5 @@
 ---
-title: "X-Wing: A general-purpose KEM"
+title: "X-Wing: general-purpose hybrid post-quantum KEM"
 abbrev: xwing
 category: info
 
@@ -45,6 +45,7 @@ normative:
 
 informative:
   I-D.driscoll-pqt-hybrid-terminology:
+  I-D.ounsworth-cfrg-kem-combiners:
   I-D.ietf-tls-hybrid-design:
   HASHEDDH:
     target: https://eprint.iacr.org/2022/1230.pdf
@@ -104,6 +105,7 @@ informative:
       -
         ins: J. Schanck
   RFC9180:
+  RFC7748:
   NISTR3:
     target: https://csrc.nist.gov/News/2022/pqc-candidates-to-be-standardized-and-round-4
     title: 'PQC Standardization Process: Announcing Four Candidates to be Standardized, Plus Fourth Round Candidates'
@@ -117,50 +119,191 @@ informative:
 
 --- abstract
 
-This document specifies a general-purpose key encapsulation mechanism (KEM) that
-commits to public key material and ciphertext material as part of computing the
-shared secret. KEMs with these properties are attractive for protocols that are
-looking to replace pure Diffie-Hellman key agreement.
-
+This memo defines X-Wing, a general-purpose post-quantum/traditional
+    hybrid key encapsulation mechanism (PQ/T KEM)
+    built on X25519 and ML-KEM-768.
 
 --- middle
 
 # Introduction
 
-A KEM is a three-tuple of algorithms (*KeyGen*, *Encapsulate*, *Decapsulate*):
+## Warning: ML-KEM-768 has not been standardised
 
- - *KeyGen* takes no inputs and generates a private key and a public key;
- - *Encapsulate* takes as input a public key and produces as output
-   a ciphertext and a shared secret;
- - *Decapsulate* takes as input a ciphertext and a private key and
-   produces a shared secret.
+X-Wing uses ML-KEM-768, which has not been standardised yet.
+Thus X-Wing is not finished, yet, and should not be used, yet.
 
-Like DH, a KEM can be used as an unauthenticated key-agreement
-protocol, for example in TLS {{HYBRID}} {{XYBERTLS}}.
-However, unlike DH, a KEM-based key agreement is *interactive*,
-because the party executing Encapsulate can compute its protocol
-message (the ciphertext) only after having received the input
-(public key) from the party running *KeyGen* and *Decapsulate*.
+## Motivation
 
+There are many choices that can be made when
+    specifying a hybrid KEM:
+    the constituent KEMs;
+    their security levels;
+    the combinber;
+    and the hash within, to name but a few.
+Having too many similar options are a burden to the ecosystem.
+The aim of X-Wing is to provide a concrete, simple choice
+    for post-quantum hybrid KEM,
+    that should be suitable for the vast majority of use cases.
+
+## Design goals
+
+1. By making concrete choices, we can simplify and improve  many
+   aspects of X-Wing as compared to a more generic combiner.
+
+    - Simplicity of definition. For one, because all shared secrets
+       and cipher texts are fixed length, we do not need to encode the length.
+
+    - Its security analysis. Because ML-KEM-768 already assumes QROM, we
+       do not need to complicate the analysis of X-Wing by considering
+       weaker models.
+
+    - Its performance. By using SHA3-256 in the combiner, which matches
+       the hashing in ML-KEM, this hash can be computed in one go on platforms
+       where two-way Keccak is available.
+
+2. We aim for "128 bits" security (NIST PQC level 1).
+   Although at the moment there is no
+	peer-reviewed evidence that ML-KEM-512 does not reach this
+	level, we would like to hedge against future cryptanalytic
+	improvements, and feel ML-KEM-768 provides a comfortable
+	margin.
+
+3. We aim for X-Wing to be usable for most applications,
+    including specifically HPKE {{RFC9180}}.
+
+## Not an interactive key-agreement
+
+Traditionally most protocols use a Diffie-Hellman (DH) style
+    non-interactive key-agreement.
+In many cases, a DH key agreement can be replaced by
+    the interactive key-agreement afforded by a KEM
+    without change in the protocol flow.
+One notable example is TLS {{HYBRID}} {{XYBERTLS}}.
+However, not all uses of DH can be replaced  in a straight-forward
+    manner by a plain KEM.
+
+## Not an authenticated KEM
+
+In particular, X-Wing is not, borrowing the language
+    of {{RFC9180}}, an *authenticated* KEM.
+
+## Comparisons
+
+X-Wing is most similar to HPKE's X25519Kyber768Draft00 {{XYBERHPKE}}.
+The differences are:
+
+1. X-Wing uses the final version of ML-KEM-768.
+
+2. X-Wing hashes the shared secrets, to be usable outside of HPKE.
+
+3. X-Wing has a simpler combiner by flattening DHKEM(X25519)
+   into the final hash.
+
+There is also a different KEM called X25519Kyber768Draft00 {{XYBERTLS}}
+which is used in TLS. This one should not be used outside of TLS,
+as it assumes the presence of the TLS transcript to ensure non malleability.
+
+TODO comparison with {{I-D.ounsworth-cfrg-kem-combiners}}
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}}
-when, and only when, they appear in all capitals, as shown here.
-
 This document is consistent with all terminology defined in
 {{I-D.driscoll-pqt-hybrid-terminology}}.
 
-# X-KEM
+`concat(a, b)` returns the concatenation of byte strings.
 
-```
-SS_X-KEM = SHA3-256("X-WING-ASCII-ART" || SS_X25519 || SS_ML-KEM-768 || CT_X25519 || CT_ML-KEM-768 || PK_X25519)
-```
+`random(n)` returns `n` bytes from a cryptographically secure
+    random number generator.
 
+# Construction
+
+## Key derivation
+
+An X-Wing keypair (private key, public key) is derived from entropy
+as follows.
+
+~~~
+def DeriveKeyPair(ikm):
+  seed = SHAKE128(ikm, 96)
+  seed1 = seed[0:32]
+  seed2 = seed[32:96]
+  pk1 = X25519(seed1, 9)
+  (sk2, pk2) = ML-KEM-768.DeriveKeyPair(seed2)
+  return concat(seed1, sk2), concat(pk1, pk2)
+
+def GenerateKeyPair():
+  return DeriveKeyPair(random(32))
+~~~
+
+Here X25519() is the function defined in {{Section 5 of RFC7748}}. Note
+that 9 corresponds to the standard base point.
+
+ML-KEM-768.DeriveKeyPair() is the function defined in TODO.
+
+ikm SHOULD be at least 32 bytes in length.
+
+## Encapsulation
+
+Given an X-Wing public key `pk`, encapsulation proceeds as follows.
+
+~~~~
+def Combiner(ss1, ss2, ct1, ct2, pk1):
+  return SHA3-256(concat(
+    XWingDS,
+    ss1,
+    ss2,
+    ct1,
+    ct2,
+    pk1
+  ))
+
+def Encapsulate(pk):
+  pk1 = pk[0:32]
+  pk2 = pk[32:TODO]
+  esk1 = random(32)
+  ct1 = X25519(esk1, 9)
+  ss1 = X25519(esk1, pk1)
+  (ss2, ct2) = ML-KEM-768.Encapsulate(pk2)
+  return (Combiner(ss1, ss2, ct1, ct2, pk1), concat(ct1, ct2))
+~~~~
+
+Here ML-KEM-768.Encapsulate() is the function defined in TODO.
+
+XWingDS is the following 48 byte ASCII string
+
+~~~
+XWingDS = concat(
+    "======>     ",
+    " \ \        ",
+    " / ||||||||)",
+    "======>     "
+)
+~~~
+
+[ TODO prettier ASCII art ]
+
+
+## Decapsulation
+
+~~~
+def Decapsulate(ct, sk, pk):
+  ct1 = ct[0:32]
+  ct2 = ct[32:TODO]
+  sk1 = sk[0:32]
+  sk2 = sk[32:TODO]
+  pk1 = pk[0:32]
+  ss1 = X25519(ct1, sk1)
+  ss2 = ML-KEM-768.Decapsulate(ct2, sk2)
+  return Combiner(ss1, ss2, ct1, ct2, pk1)
+~~~
+
+###
+
+## Use in HPKE
+
+TODO.
 
 # Security Considerations
 
@@ -169,7 +312,7 @@ TODO Security
 
 # IANA Considerations
 
-This document has no IANA actions.
+TODO
 
 
 --- back
