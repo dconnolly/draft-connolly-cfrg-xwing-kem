@@ -323,7 +323,7 @@ XWingDS = concat(
 )
 ~~~
 
-[ TODO prettier ASCII art ]
+TODO: prettier ASCII art
 
 ~~~~
 def Combiner(ss1, ss2, ct1, ct2, pk1):
