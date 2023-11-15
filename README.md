@@ -1,6 +1,6 @@
-# X-Wing: a general-purpose key encapsulation mechanism (KEM)
+# X-Wing: general-purpose hybrid post-quantum KEM
 
-This is the working area for the individual Internet-Draft, "X-Wing: a general-purpose key encapsulation mechanism (KEM)".
+This is the working area for the individual Internet-Draft, "X-Wing: general-purpose hybrid post-quantum KEM".
 
 * [Editor's Copy](https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/#go.draft-connolly-cfrg-xwing-kem.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-connolly-cfrg-xwing-kem)
@@ -27,3 +27,4 @@ $ make
 
 Command line usage requires that you have the necessary software installed.  See
 [the instructions](https://github.com/martinthomson/i-d-template/blob/main/doc/SETUP.md).
+
