@@ -262,7 +262,7 @@ TODO: update the below to be ML-KEM 768 specific
   - `X25519.DH(skX, pkY)`: Perform a non-interactive Diffie-Hellman exchange over
     the Montgomery form of the elliptic curve curve25519 using the private key
     `skX` and public key `pkY` to produce a Diffie-Hellman shared secret of
-    length `Ndh` as defined in {{section 5 of RFC4478}}. This function can raise
+    length `Ndh` as defined in {{Section 5 of RFC7748}}. This function can raise
     a `ValidationError` as described in {{validation}}.
   - `X25519.Ndh`: The length in bytes of a Diffie-Hellman shared secret produced by
     `X25519()`, which is 32.
@@ -276,7 +276,7 @@ TODO: update the below to be ML-KEM 768 specific
 
 # X-Wing Construction
 
-## Key derivation
+## Key derivation {#derive-key-pair}
 
 An X-Wing keypair (private key, public key) is derived from entropy as follows.
 
