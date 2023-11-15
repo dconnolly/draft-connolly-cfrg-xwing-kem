@@ -145,8 +145,9 @@ hybrid KEM, that should be suitable for the vast majority of use cases.
 By making concrete choices, we can simplify and improve many aspects of X-Wing
 as compared to a more generic combiner.
 
-* Simplicity of definition: because all shared secrets and cipher texts are
-  fixed length, we do not need to encode the length.
+* Simplicity of definition. Because all shared secrets and cipher texts are
+  fixed length, we do not need to encode the length. Using SHA3-256,
+  we do not need HMAC-based construction.
 
 * Security analysis: because ML-KEM-768 already assumes QROM, we do not need to
   complicate the analysis of X-Wing by considering weaker models.
