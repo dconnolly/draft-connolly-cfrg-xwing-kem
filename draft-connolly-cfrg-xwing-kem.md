@@ -1,6 +1,3 @@
-
-
-
 ---
 title: "X-Wing: general-purpose hybrid post-quantum KEM"
 abbrev: xwing
@@ -151,11 +148,14 @@ as compared to a more generic combiner.
 * Simplicity of definition. Because all shared secrets and cipher texts are
   fixed length, we do not need to encode the length. Using SHA3-256,
   we do not need HMAC-based construction.
+  For the concrete choice of ML-KEM, we do not need to mix in its ciphertext,
+  see {{secc}}.
 
-* Security analysis: because ML-KEM-768 already assumes QROM, we do not need to
+* Security analysis. Because ML-KEM-768 already assumes QROM, we do not need to
   complicate the analysis of X-Wing by considering weaker models.
 
-* Performance: by using SHA3-256 in the combiner, which matches the hashing in
+* Performance. Not having to mix in the ML-KEM ciphertext is a nice performance
+  benefit. Furthermore, by using SHA3-256 in the combiner, which matches the hashing in
   ML-KEM, this hash can be computed in one go on platforms where two-way Keccak
   is available.
 
@@ -190,6 +190,8 @@ differences are:
 * X-Wing hashes the shared secrets, to be usable outside of HPKE.
 
 * X-Wing has a simpler combiner by flattening DHKEM(X25519) into the final hash.
+
+* X-Wing does not hash in the ML-KEM-768 ciphertext.
 
 There is also a different KEM called X25519Kyber768Draft00 {{XYBERTLS}} which is
 used in TLS. This one should not be used outside of TLS, as it assumes the
@@ -329,13 +331,12 @@ XWingDS = concat(
 TODO: prettier ASCII art
 
 ~~~~
-def Combiner(ss1, ss2, ct1, ct2, pk1):
+def Combiner(ss1, ss2, ct1, pk1):
   return SHA3-256(concat(
     XWingDS,
     ss1,
     ss2,
     ct1,
-    ct2,
     pk1
   ))
 
@@ -345,7 +346,7 @@ def Encapsulate(pk):
   (esk1, ct1) = X25519.GenerateKeyPair()
   ss1 = X25519.DH(esk1, pk1)
   (ss2, ct2) = ML-KEM-768.Encapsulate(pk2)
-  ss = Combiner(ss1, ss2, ct1, ct2, pk1)
+  ss = Combiner(ss1, ss2, ct1, pk1)
   ct = concat(ct1, ct2)
   return (ss, ct)
 
@@ -369,7 +370,7 @@ def Decapsulate(ct, sk, pk):
   pk1 = pk[0:32]
   ss1 = X25519.DH(sk1, ct1)
   ss2 = ML-KEM-768.Decapsulate(ct2, sk2)
-  return Combiner(ss1, ss2, ct1, ct2, pk1)
+  return Combiner(ss1, ss2, ct1, pk1)
 ~~~
 
 ### Validation of Inputs and Outputs {#validation}
@@ -396,14 +397,23 @@ TODO.
 
 TODO.
 
-# Security Considerations
+# Security Considerations {#secc}
 
-TODO Security
+Informally, X-Wing is secure if SHA3 is secure, and either
+    X25519 is secure, or ML-KEM-768 is secure.
 
+More precisely, if SHA3-256 and SHAKE256 may be modelled as a random oracle,
+    then the IND-CCA2 security of X-Wing
+    is bounded by the IND-CCA2 security of ML-KEM-768,
+    and the gap-CDH security of Curve25519, see TODO.
+
+TODO expand
 
 # IANA Considerations
 
-TODO
+TODO TLS identifier
+
+TODO HPKE identifier
 
 
 --- back
