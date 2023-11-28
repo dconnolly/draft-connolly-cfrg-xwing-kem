@@ -289,7 +289,7 @@ def DeriveKeyPair(ikm):
   seed2 = seed[32:96]
   (sk1, pk1) = X25519.DeriveKeyPair(seed1)
   (sk2, pk2) = ML-KEM-768.DeriveKeyPair(seed2)
-  return concat(seed1, sk2), concat(pk1, pk2)
+  return concat(sk1, sk2), concat(pk1, pk2)
 
 def GenerateKeyPair():
   return DeriveKeyPair(random(32))
