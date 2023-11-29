@@ -398,8 +398,18 @@ TODO.
 
 # Security Considerations
 
-TODO Security
+X-Wing relies on the internal contruction of its cryptographic components, and assumes:
 
+- ML-KEM commits to the public key when computing the shared secret.
+
+- ML-KEM is IND-CCA2 secure
+
+- MK-KEM is collision-resistant
+
+- SHAKE/SHA3 is used as the combiner which allows us to not need an HMAC construction.
+
+
+Because of these properties, unlike a generic hybrid KEM combiner of IND-CCA KEM components, X-Wing does not need to to commit to the ML-KEM ciphertext to achieve IND-CCA security.
 
 # IANA Considerations
 
