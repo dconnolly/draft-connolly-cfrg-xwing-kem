@@ -400,7 +400,7 @@ TODO.
 
 X-Wing relies on the internal contruction of its cryptographic components, and assumes:
 
-- ML-KEM commits to the public key when computing the shared secret.
+- ML-KEM commits to the public key when computing the shared secret
 
 - ML-KEM is IND-CCA2 secure
 
