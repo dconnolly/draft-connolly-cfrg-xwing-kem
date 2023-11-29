@@ -404,7 +404,7 @@ X-Wing relies on the internal contruction of its cryptographic components, and a
 
 - ML-KEM is IND-CCA2 secure
 
-- MK-KEM is collision-resistant
+- MK-KEM is collision-resistant (link to proof sketch later)
 
 - SHAKE/SHA3 is used as the combiner which allows us to not need an HMAC construction.
 
