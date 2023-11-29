@@ -147,16 +147,15 @@ as compared to a more generic combiner.
 
 * Simplicity of definition. Because all shared secrets and cipher texts are
   fixed length, we do not need to encode the length. Using SHA3-256,
-  we do not need HMAC-based construction.
-  For the concrete choice of ML-KEM, we do not need to mix in its ciphertext,
-  see {{secc}}.
+  we do not need HMAC-based construction. For the concrete choice of ML-KEM-768,
+  we do not need to mix in its ciphertext, see {{secc}}.
 
 * Security analysis. Because ML-KEM-768 already assumes QROM, we do not need to
   complicate the analysis of X-Wing by considering weaker models.
 
-* Performance. Not having to mix in the ML-KEM ciphertext is a nice performance
+* Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice performance
   benefit. Furthermore, by using SHA3-256 in the combiner, which matches the hashing in
-  ML-KEM, this hash can be computed in one go on platforms where two-way Keccak
+  ML-KEM-768, this hash can be computed in one go on platforms where two-way Keccak
   is available.
 
 We aim for "128 bits" security (NIST PQC level 1). Although at the moment there
@@ -399,25 +398,35 @@ TODO.
 
 # Security Considerations {#secc}
 
-Informally, X-Wing is secure if SHA3 is secure, and either X25519 is secure, or ML-KEM-768 is secure.
+Informally, X-Wing is secure if SHA3 is secure, and either X25519 is secure, or
+ML-KEM-768 is secure.
 
-More precisely, if SHA3-256 and SHAKE256 may be modelled as a random oracle, then the IND-CCA2 security of X-Wing is bounded by the IND-CCA2 security of ML-KEM-768, and the gap-CDH security of Curve25519, see TODO.
+More precisely, if SHA3-256 and SHAKE256 may be modelled as a random oracle, then
+the IND-CCA2 security of X-Wing is bounded by the IND-CCA2 security of
+ML-KEM-768, and the gap-CDH security of Curve25519, see TODO.
 
+X-Wing relies on the internal contruction of its cryptographic components and
+general security properties of those components, and assumes:
 
-X-Wing relies on the internal contruction of its cryptographic components, and assumes:
+* ML-KEM-768 commits to the public key when computing the shared secret
 
-- ML-KEM commits to the public key when computing the shared secret
+* ML-KEM-768 is IND-CCA2 secure
 
-- ML-KEM is IND-CCA2 secure 
+* SHA3-256 functions as a KDF  
 
-- X25519 is gap-CDH secure
+* X25519 is gap-CDH secure
+  
+* The flattened instantiation of DHKEM(X25519, SHA3-256) 
 
-- MK-KEM is collision-resistant (link to proof sketch later)
+* ML-KEM-768 is collision-resistant (link to proof sketch later)
 
-- SHAKE/SHA3 is used as the combiner which allows us to not need an HMAC construction
+* SHAKE/SHA3 is used as the combiner which allows us to not need an HMAC
+  construction
 
-Because of these properties, unlike a generic hybrid KEM combiner of IND-CCA KEM components, X-Wing does not need to to commit to the ML-KEM ciphertext to achieve IND-CCA security, and as long as X25519 OR ML-KEM768 remains secure, X-Wing remains IND-CCA2 secure.
-
+Because of these properties, unlike a generic hybrid KEM combiner of IND-CCA
+KEM components, X-Wing does not need to to commit to the ML-KEM ciphertext
+to achieve IND-CCA security, and as long as X25519 OR ML-KEM768 remains
+secure, X-Wing remains IND-CCA2 secure.
 
 # IANA Considerations
 
