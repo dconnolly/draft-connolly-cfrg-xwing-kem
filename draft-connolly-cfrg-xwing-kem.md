@@ -412,7 +412,7 @@ general security properties of those components, and assumes:
 
 * ML-KEM-768 is IND-CCA2 secure
 
-* SHA3-256 functions as a KDF  
+* SHA3-256 functions as a PRF  
 
 * X25519 is gap-CDH secure
   
