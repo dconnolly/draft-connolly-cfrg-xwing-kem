@@ -256,6 +256,11 @@ X-Wing relies on the following primitives:
   - `X25519(k,u)`: takes 32 byte strings k and u representing a
     Curve25519 scalar and curvepoint respectively, and returns
     the 32 byte string representing their scalar multiplication.
+  - `X25519_BASE`: the 32 byte string representing the standard base point
+    of Curve25519. In hex
+    it is given by `09000000000000000000000000000000000000000000`.
+
+Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
 
 * Symmetric cryptography.
@@ -294,15 +299,13 @@ def DeriveKeyPair(ikm):
   seed = SHAKE128(ikm, 96)
   seed1 = seed[0:32]
   seed2 = seed[32:96]
-  (sk1, pk1) = X25519(seed1, 9)
+  (sk1, pk1) = X25519(seed1, X25519_BASE)
   (sk2, pk2) = ML-KEM-768.DeriveKeyPair(seed2)
   return concat(sk1, sk2), concat(pk1, pk2)
 
 def GenerateKeyPair():
   return DeriveKeyPair(random(32))
 ~~~
-
-Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
 ikm SHOULD be at least 32 bytes in length.
 
@@ -341,7 +344,7 @@ def Encapsulate(pk):
   pk_M = pk[0:1184]
   pk_X = pk[1184:1216]
   ek_X = random(32)
-  ct_X = X25519(ek_X, 9)
+  ct_X = X25519(ek_X, X25519_BASE)
   ss_X = X25519(ek_X, pk_X)
   (ss_M, ct_M) = ML-KEM-768.Encapsulate(pk_M)
   ss = Combiner(ss_M, ss_X, ct_X, pk_X)
