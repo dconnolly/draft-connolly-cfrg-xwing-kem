@@ -90,6 +90,13 @@ informative:
     date: 2021
     format:
       PDF: https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf
+  FIPS202:
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
+    title: 'FIPS 202: SHA-3 Standard: Permutation-Based Hash and
+Extendable-Output Functions'
+    author:
+      -
+        ins: National Institute of Standards and Technology
   MLKEM:
     target: https://csrc.nist.gov/pubs/fips/203/ipd
     title: 'FIPS 203 (Initial Draft): Module-Lattice-Based Key-Encapsulation Mechanism Standard'
@@ -116,6 +123,7 @@ informative:
   H2CURVE: I-D.irtf-cfrg-hash-to-curve
   XYBERHPKE: I-D.westerbaan-cfrg-hpke-xyber768d00
   XYBERTLS: I-D.tls-westerbaan-xyber768d00
+  TLSIANA: I-D.ietf-tls-rfc8447bis
 
 --- abstract
 
@@ -134,7 +142,7 @@ finished, yet, and should not be used, yet.
 ## Motivation {#motivation}
 
 There are many choices that can be made when specifying a hybrid KEM: the
-constituent KEMs; their security levels; the combinber; and the hash within, to
+constituent KEMs; their security levels; the combiner; and the hash within, to
 name but a few. Having too many similar options are a burden to the ecosystem.
 
 The aim of X-Wing is to provide a concrete, simple choice for post-quantum
@@ -142,8 +150,7 @@ hybrid KEM, that should be suitable for the vast majority of use cases.
 
 ## Design goals {#goals}
 
-By making concrete choices, we can simplify and improve many aspects of X-Wing
-as compared to a more generic combiner.
+By making concrete choices, we can simplify and improve many aspects of X-Wing.
 
 * Simplicity of definition. Because all shared secrets and cipher texts are
   fixed length, we do not need to encode the length. Using SHA3-256,
@@ -151,7 +158,7 @@ as compared to a more generic combiner.
   we do not need to mix in its ciphertext, see {{secc}}.
 
 * Security analysis. Because ML-KEM-768 already assumes QROM, we do not need to
-  complicate the analysis of X-Wing by considering weaker models.
+  complicate the analysis of X-Wing by considering stronger models.
 
 * Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice performance
   benefit. Furthermore, by using SHA3-256 in the combiner, which matches the hashing in
@@ -174,12 +181,14 @@ interactive key-agreement afforded by a KEM without change in the protocol flow.
 One notable example is TLS {{HYBRID}} {{XYBERTLS}}.  However, not all uses of DH
 can be replaced in a straight-forward manner by a plain KEM.
 
-## Not an authenticated KEM
+## Not an authenticated KEM {#auth}
 
 In particular, X-Wing is not, borrowing the language of {{RFC9180}}, an
 *authenticated* KEM.
 
 ## Comparisons
+
+### With HPKE X25519Kyber768Draft00
 
 X-Wing is most similar to HPKE's X25519Kyber768Draft00 {{XYBERHPKE}}. The key
 differences are:
@@ -196,7 +205,18 @@ There is also a different KEM called X25519Kyber768Draft00 {{XYBERTLS}} which is
 used in TLS. This one should not be used outside of TLS, as it assumes the
 presence of the TLS transcript to ensure non malleability.
 
-TODO comparison with {{I-D.ounsworth-cfrg-kem-combiners}}
+### With generic combiner
+
+The generic combiner of {{I-D.ounsworth-cfrg-kem-combiners}} can be
+instantiated with ML-KEM-768 and DHKEM(X25519). That achieves similar
+security, but:
+
+* X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,
+  and flattening the DHKEM construction.
+
+* X-Wing has a fixed 32 byte shared secret, instead of a variable shared secret.
+
+* X-Wing does not accept the optional counter and fixedInfo arguments.
 
 # Requirements Notation
 
@@ -219,220 +239,233 @@ operations, roles, and behaviors of HPKE:
 
 X-Wing relies on the following primitives:
 
-TODO: update the below to be ML-KEM 768 specific
 
-* ML-KEM 768 post-quantum key-encapsulation mechanism (KEM):
+* ML-KEM-768 post-quantum key-encapsulation mechanism (KEM), TODO ref:
 
-  - `ML-KEM-768.GenerateKeyPair()`: Randomized algorithm to generate a key pair `(skX, pkX)`.
-  - `ML-KEM-768.DeriveKeyPair(ikm)`: Deterministic algorithm to derive a key pair
-    `(skX, pkX)` from the byte string `ikm`, where `ikm` SHOULD have at
-    least `Nsk` bytes of entropy (see {{derive-key-pair}} for discussion).
-  - `ML-KEM-768.SerializePublicKey(pkX)`: Produce a byte string of length `Npk` encoding the
-    public key `pkX`.
-  - `ML-KEM-768.DeserializePublicKey(pkXm)`: Parse a byte string of length `Npk` to recover a
-    public key. This function can raise a `DeserializeError` error upon `pkXm`
-    deserialization failure.
-  - `ML-KEM-768.Encap(pkR)`: Randomized algorithm to generate an ephemeral,
-    fixed-length symmetric key (the KEM shared secret) and
-    a fixed-length encapsulation of that key that can be decapsulated
-    by the holder of the private key corresponding to `pkR`. This function
-    can raise an `EncapError` on encapsulation failure.
-  - `ML-KEM-768.Decap(enc, skR)`: Deterministic algorithm using the private key `skR`
-    to recover the ephemeral symmetric key (the KEM shared secret) from
-    its encapsulated representation `enc`. This function can raise a
-    `DecapError` on decapsulation failure.
-  - `ML-KEM-768.AuthEncap(pkR, skS)` (optional): Same as `Encap()`, and the outputs
-    encode an assurance that the KEM shared secret was generated by the
-    holder of the private key `skS`.
-  - `ML-KEM-768.AuthDecap(enc, skR, pkS)` (optional): Same as `Decap()`, and the recipient
-    is assured that the KEM shared secret was generated by the holder of
-    the private key `skS`.
-  - `ML-KEM-768.Nsecret`: The length in bytes of a KEM shared secret produced by this KEM.
-  - `ML-KEM-768.Nenc`: The length in bytes of an encapsulated key produced by this KEM.
-  - `ML-KEM-768.Npk`: The length in bytes of an encoded public key for this KEM.
-  - `ML-KEM-768.Nsk`: The length in bytes of an encoded private key for this KEM.
+  - `ML-KEM-768.DeriveKeyPair(ikm)`: Deterministic algorithm to
+    derive an ML-KEM-768 key pair `(sk_M, pk_M)` from entropy ikm.
+  - `ML-KEM-768.Encapsulate(pk_M)`: Randomized algorithm to generate (ss_M, ct_M),
+    an ephemeral 32 byte shared key ss_M,
+    and a fixed-length encapsulation (cipher text) of that key ct_M for pk_M.
+  - `ML-KEM-768.Decap(ct_M, sk_M)`: Deterministic algorithm using the
+    private key `sk_M` to recover the shared key
+    from ct_M.
 
 * X25519 elliptic curve Diffie-Hellman key-exchange defined in {{Section 5 of RFC7748}}:
 
-  - `X25519.GenerateKeyPair()`: Randomized algorithm to generate an X25519 key pair `(skX, pkX)`
-  - `X25519.DeriveKeyPair(ikm)`: Deterministic algorithm to derive a key pair `(skX,
-    pkX)` from the byte string `ikm`, where `ikm` SHOULD have at least `Nsk`
-    bytes of entropy (see {{derive-key-pair}} for discussion).
-  - `X25519.SerializePublicKey(pkX)`: Produce a byte string of length `Npk` encoding
-    the public key `pkX`.
-  - `X25519.DeserializePublicKey(pkXm)`: Parse a byte string of length `Npk` to recover a
-    public key. This function can raise a `DeserializeError` error upon `pkXm`
-    deserialization failure.
-    TODO: lock this down to be DH based on the base point, not just generic X25519 function
-  - `X25519.DH(skX, pkY)`: Perform a non-interactive Diffie-Hellman exchange over
-    the Montgomery form of the elliptic curve curve25519 using the private key
-    `skX` and public key `pkY` to produce a Diffie-Hellman shared secret of
-    length `Ndh` as defined in {{Section 5 of RFC7748}}. This function can raise
-    a `ValidationError` as described in {{validation}}.
-  - `X25519.Ndh`: The length in bytes of a Diffie-Hellman shared secret produced by
-    `X25519()`, which is 32.
-  - `X25519.Nsk`: The length in bytes of a Diffie-Hellman private key, which is 32.
+  - `X25519(k,u)`: takes 32 byte strings k and u representing a
+    Curve25519 scalar and curvepoint respectively, and returns
+    the 32 byte string representing their scalar multiplication.
 
-* Hash functions:
 
-  - `SHAKE128(bytes)`:
-  - `SHA3-256(bytes)`:
+* Symmetric cryptography.
+
+  - `SHAKE128(message, outlen)`: The extendable-output function (XOF)
+    defined in Section 6.2 of {{FIPS202}}.
+  - `SHA3-256(message)`: The hash defined in
+    defined in Section 6.1 of {{FIPS202}}.
 
 
 # X-Wing Construction
+
+## Encoding and sizes {#encoding}
+
+X-Wing public key, private key, ciphertexts and shared secrets are all
+fixed length byte strings.
+
+ Private key:
+ : 2432 bytes
+
+ Public key:
+ : 1216 bytes
+
+ Cipher text:
+ : 1120 bytes
+
+ Shared secret:
+ : 32 bytes
+
+ Auth:
+ : no
+
+ Reference:
+ : This document
 
 ## Key derivation {#derive-key-pair}
 
 An X-Wing keypair (private key, public key) is derived from entropy as follows.
 
 ~~~
-
 def DeriveKeyPair(ikm):
   seed = SHAKE128(ikm, 96)
   seed1 = seed[0:32]
   seed2 = seed[32:96]
-  (sk1, pk1) = X25519.DeriveKeyPair(seed1)
+  (sk1, pk1) = X25519(seed1, 9)
   (sk2, pk2) = ML-KEM-768.DeriveKeyPair(seed2)
   return concat(sk1, sk2), concat(pk1, pk2)
 
 def GenerateKeyPair():
   return DeriveKeyPair(random(32))
-
-
-TODO: Define SERIALIZE_PUBLIC_KEY
-
-TODO: Define DESERIALIZE_PUBLIC_KEY
-
-TODO: discuss serializing/deserializing private keys
 ~~~
 
-Here X25519() is the function defined in {{Section 6.1 of RFC7748}}.
-
-ML-KEM-768.DeriveKeyPair() is the function defined in TODO.
+Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
 ikm SHOULD be at least 32 bytes in length.
 
-## Encapsulation
+## Combiner {#combiner}
 
-Given an X-Wing public key `pk`, encapsulation proceeds as follows.
+Given 32 byte strings ss_M, ss_X, ct_X, pk_X,
+    representing the ML-KEM-768 shared secret,
+    X25519 shared secret,
+    X25519 cipher text (ephemeral public key)
+    and X25519 public key respectively,
+the combined shared secret is given by
 
-XWingDS is the following 48 byte ASCII string
+~~~
+def Combiner(ss_M, ss_X, ct_X, pk_X):
+  return SHA3-256(concat(
+    XWingDS,
+    ss_M,
+    ss_X,
+    ct_X,
+    pk_X
+  ))
+~~~
+
+where XWingDS is the following 8 byte ASCII string
 
 ~~~
 XWingDS = concat(
-    "======>     ",
-    " \ \        ",
-    " / ||||||||)",
-    "======>     "
+    "\\oo/",
+    "/oo\\",
 )
 ~~~
 
-TODO: prettier ASCII art
+## Encapsulation {#encaps}
+
+Given an X-Wing public key `pk`, encapsulation proceeds as follows.
 
 ~~~~
-def Combiner(ss1, ss2, ct1, pk1):
-  return SHA3-256(concat(
-    XWingDS,
-    ss1,
-    ss2,
-    ct1,
-    pk1
-  ))
-
 def Encapsulate(pk):
-  pk1 = pk[0:32]
-  pk2 = pk[32:TODO]
-  (esk1, ct1) = X25519.GenerateKeyPair()
-  ss1 = X25519.DH(esk1, pk1)
-  (ss2, ct2) = ML-KEM-768.Encapsulate(pk2)
-  ss = Combiner(ss1, ss2, ct1, pk1)
-  ct = concat(ct1, ct2)
+  pk_M = pk[0:1184]
+  pk_X = pk[1184:1216]
+  ek_X = random(32)
+  ct_X = X25519(ek_X, 9)
+  ss_X = X25519(ek_X, pk_X)
+  (ss_M, ct_M) = ML-KEM-768.Encapsulate(pk_M)
+  ss = Combiner(ss_M, ss_X, ct_X, pk_X)
+  ct = concat(ct_M, ct_X)
   return (ss, ct)
-
-TODO: Define SERIALIZE
 ~~~~
 
-Here ML-KEM-768.Encapsulate() is the function defined in TODO.
-
-
-## Decapsulation
+## Decapsulation {#decaps}
 
 ~~~
-
-TODO: define DESERIALIZE()
-
 def Decapsulate(ct, sk, pk):
-  ct1 = ct[0:32]
-  ct2 = ct[32:TODO]
-  sk1 = sk[0:32]
-  sk2 = sk[32:TODO]
-  pk1 = pk[0:32]
-  ss1 = X25519.DH(sk1, ct1)
-  ss2 = ML-KEM-768.Decapsulate(ct2, sk2)
-  return Combiner(ss1, ss2, ct1, pk1)
+  ct_M = ct[0:1088]
+  ct_X = ct[1088:1120]
+  sk_M = sk[0:2400]
+  sk_X = sk[2400:2432]
+  pk_M = pk[0:1184]
+  pk_X = pk[1184:1216]
+  ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
+  ss_X = X25519(sk_X, ct_X)
+  return Combiner(ss_M, ss_X, ct_X, pk_X)
 ~~~
-
-### Validation of Inputs and Outputs {#validation}
-
-The following public keys are subject to validation if the group requires public
-key validation: the sender MUST validate the recipient's public key `pkR`; the
-recipient MUST validate the ephemeral public key `pkE`; in authenticated modes,
-the recipient MUST validate the sender's static public key `pkS`. Validation
-failure yields a `ValidationError`.
-
-For X25519, public keys and Diffie-Hellman outputs MUST be validated as
-described in {{?RFC7748}}. In particular, recipients MUST check whether the
-Diffie-Hellman shared secret is the all-zero value and abort if so.
-
-TODO: fill out ML-KEM-768 public key validation
-
-###
 
 ## Use in HPKE
 
-TODO.
+X-Wing satisfies the HPKE KEM interface as follows.
+
+The SerializePublicKey, DeserializePublicKey,
+SerializePrivateKey and DeserializePrivateKey are the identity functions,
+as X-Wing keys are fixed-length byte strings, see {{encoding}}.
+
+DeriveKeyPair is DeriveKeyPair from {{derive-key-pair}}.
+The argument ikm to DeriveKeyPair SHOULD be at least 32 octets in length.
+(This is contrary to {{RFC9180}} which stipulates it should
+be at least Nsk=2432 octets in length.)
+
+Encap is Encapsulate from {{encaps}}.
+
+Decap is Decapsulate from {{decaps}}.
+
+X-Wing is not an authenticated KEM: it does not support AuthEncap()
+and AuthDecap(), see {{auth}}.
+
+Nsecret, Nenc, Npk, and Nsk are defined in {{iana}}.
 
 ## Use in TLS 1.3
 
-TODO.
+For the client's share, the key_exchange value contains
+the X-Wing public key.
+
+For the server's share, the key_exchange value contains
+the X-Wing cipher text.
 
 # Security Considerations {#secc}
 
 Informally, X-Wing is secure if SHA3 is secure, and either X25519 is secure, or
 ML-KEM-768 is secure.
 
-More precisely, if SHA3-256 and SHAKE256 may be modelled as a random oracle, then
-the IND-CCA2 security of X-Wing is bounded by the IND-CCA2 security of
+More precisely, if SHA3-256, SHA3-512, SHAKE-128, and SHAKE-256
+may be modelled as a random oracle, then
+the IND-CCA security of X-Wing is bounded by the IND-CCA security of
 ML-KEM-768, and the gap-CDH security of Curve25519, see TODO.
 
-X-Wing relies on the internal contruction of its cryptographic components and
-general security properties of those components, and assumes:
+The security of X-Wing relies crucially on the specifics of the
+Fujisaki-Okamoto transformation used in ML-KEM-768.
+In particular, the X-Wing combiner cannot be assumed to be secure,
+    when used with different KEMs.
 
-* ML-KEM-768 commits to the public key when computing the shared secret
+# IANA Considerations {#iana}
 
-* ML-KEM-768 is IND-CCA2 secure
+This document requests/registers a new entry to the "HPKE KEM Identifiers"
+registry.
 
-* SHA3-256 functions as a PRF  
+ Value:
+ : TBD (please)
 
-* X25519 is gap-CDH secure
-  
-* The flattened instantiation of DHKEM(X25519, SHA3-256) 
+ KEM:
+ : X-Wing
 
-* ML-KEM-768 is collision-resistant (link to proof sketch later)
+ Nsecret:
+ : 32
 
-* SHAKE/SHA3 is used as the combiner which allows us to not need an HMAC
-  construction
+ Nenc:
+ : 1120
 
-Because of these properties, unlike a generic hybrid KEM combiner of IND-CCA
-KEM components, X-Wing does not need to to commit to the ML-KEM ciphertext
-to achieve IND-CCA security, and as long as X25519 OR ML-KEM768 remains
-secure, X-Wing remains IND-CCA2 secure.
+ Npk:
+ : 1216
 
-# IANA Considerations
+ Nsk:
+ : 2432
 
-TODO TLS identifier
+Furthermore, this document requests/registers a new entry to the TLS Named Group
+(or Supported Group) registry, according to the procedures in {{Section 6 of TLSIANA}}.
 
-TODO HPKE identifier
+ Value:
+ : TBD (please)
+
+ Description:
+ : X-Wing
+
+ DTLS-OK:
+ : Y
+
+ Recommended:
+ : Y
+
+ Reference:
+ : This document
+
+ Comment:
+ : PQ/T hybrid of X25519 and ML-KEM-768
+
+
+# TODO
+
+- Which validation do we want to require?
 
 
 --- back
