@@ -336,8 +336,8 @@ where XWingDS is the following 8 byte ASCII string
 
 ~~~
 XWingDS = concat(
-    "\\oo/",
-    "/oo\\",
+    "\oo/",
+    "/oo\",
 )
 ~~~
 
