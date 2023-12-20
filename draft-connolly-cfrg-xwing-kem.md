@@ -212,7 +212,7 @@ instantiated with ML-KEM-768 and DHKEM(X25519). That achieves similar
 security, but:
 
 * X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,
-  and flattening the DHKEM construction.
+  and flattening the DHKEM construction, with the same level of security.
 
 * X-Wing has a fixed 32 byte shared secret, instead of a variable shared secret.
 
