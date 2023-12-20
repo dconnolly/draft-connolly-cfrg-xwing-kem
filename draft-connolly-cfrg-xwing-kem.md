@@ -285,12 +285,6 @@ fixed length byte strings.
  Shared secret:
  : 32 bytes
 
- Auth:
- : no
-
- Reference:
- : This document
-
 ## Key derivation {#derive-key-pair}
 
 An X-Wing keypair (private key, public key) is derived from entropy as follows.
@@ -440,6 +434,12 @@ registry.
 
  Nsk:
  : 2432
+
+ Auth:
+ : no
+
+ Reference:
+ : This document
 
 Furthermore, this document requests/registers a new entry to the TLS Named Group
 (or Supported Group) registry, according to the procedures in {{Section 6 of TLSIANA}}.
