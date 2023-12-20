@@ -308,12 +308,9 @@ ikm SHOULD be at least 32 bytes in length.
 
 ## Combiner {#combiner}
 
-Given 32 byte strings ss_M, ss_X, ct_X, pk_X,
-    representing the ML-KEM-768 shared secret,
-    X25519 shared secret,
-    X25519 cipher text (ephemeral public key)
-    and X25519 public key respectively,
-the combined shared secret is given by
+Given 32 byte strings ss_M, ss_X, ct_X, pk_X, representing the ML-KEM-768
+shared secret, X25519 shared secret, X25519 cipher text (ephemeral public key)
+and X25519 public key respectively, the combined shared secret is given by:
 
 ~~~
 def Combiner(ss_M, ss_X, ct_X, pk_X):
