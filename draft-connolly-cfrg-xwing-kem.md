@@ -326,12 +326,12 @@ def Combiner(ss_M, ss_X, ct_X, pk_X):
   ))
 ~~~
 
-where XWingDS is the following 8 byte ASCII string
+where XWingDS is the following 6 byte ASCII string
 
 ~~~
 XWingDS = concat(
-    "\oo/",
-    "/oo\",
+    "\./",
+    "/^\",
 )
 ~~~
 
