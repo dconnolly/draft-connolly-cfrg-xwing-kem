@@ -297,11 +297,11 @@ An X-Wing keypair (private key, public key) is derived from entropy as follows.
 ~~~
 def DeriveKeyPair(ikm):
   seed = SHAKE128(ikm, 96)
-  seed1 = seed[0:32]
-  seed2 = seed[32:96]
-  (sk1, pk1) = X25519(seed1, X25519_BASE)
-  (sk2, pk2) = ML-KEM-768.DeriveKeyPair(seed2)
-  return concat(sk1, sk2), concat(pk1, pk2)
+  seed_M = seed[0:64]
+  seed_X = seed[64:96]
+  (sk_M, pk_M) = ML-KEM-768.DeriveKeyPair(seed_M)
+  (sk_X, pk_X) = X25519(seed_X, X25519_BASE)
+  return concat(sk_M, sk_X), concat(pk_M, pk_X)
 
 def GenerateKeyPair():
   return DeriveKeyPair(random(32))
