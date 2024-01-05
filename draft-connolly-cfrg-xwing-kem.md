@@ -470,7 +470,8 @@ Furthermore, this document requests/registers a new entry to the TLS Named Group
 
 --- back
 
-# Test vectors
+# Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values
+
 
 ~~~
 seed   7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26
