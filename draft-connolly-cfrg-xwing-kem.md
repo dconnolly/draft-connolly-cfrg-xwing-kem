@@ -308,7 +308,7 @@ An X-Wing keypair (private key, public key) is generated as follows.
 def GenerateKeyPair():
   (sk_M, pk_M) = ML-KEM-768.KeyGen()
   sk_X = random(32)
-  pk_X = X25519(seed_X, X25519_BASE)
+  pk_X = X25519(sk_X, X25519_BASE)
   return concat(sk_M, sk_X), concat(pk_M, pk_X)
 ~~~
 
@@ -322,7 +322,7 @@ derandomized variant of key generation.
 def GenerateKeyPairDerand(seed):
   (sk_M, pk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
   sk_X = seed[64:96]
-  pk_X = X25519(seed_X, X25519_BASE)
+  pk_X = X25519(sk_X, X25519_BASE)
   return concat(sk_M, sk_X), concat(pk_M, pk_X)
 ~~~
 
