@@ -6,15 +6,15 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2023-11-08
+date: 2024-01-10
 consensus: true
 v: 3
 area: "IRTF"
 workgroup: "Crypto Forum"
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - post quantum
+ - kem
+ - PQ/T hybrid
 venue:
   group: "Crypto Forum"
   type: "Research Group"
@@ -46,50 +46,6 @@ normative:
 informative:
   I-D.driscoll-pqt-hybrid-terminology:
   I-D.ounsworth-cfrg-kem-combiners:
-  I-D.ietf-tls-hybrid-design:
-  HASHEDDH:
-    target: https://eprint.iacr.org/2022/1230.pdf
-    title: Group Action Key Encapsulation and Non-Interactive Key Exchange in the QROM
-    author:
-      -
-        ins: Julien Duman
-      -
-        ins: Dominik Hartmann
-      -
-        ins: Eike Kiltz
-      -
-        ins: Sabrina Kunzweiler
-      -
-        ins: Jonas Lehmann
-      -
-        ins: Doreen Riepel
-  KYBERV302:
-    target: https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf
-    title: CRYSTALS-Kyber, Algorithm Specification And Supporting Documentation (version 3.02)
-    author:
-      -
-        ins: R. Avanzi
-      -
-        ins: J. Bos
-      -
-        ins: L. Ducas
-      -
-        ins: E. Kiltz
-      -
-        ins: T. Lepoint
-      -
-        ins: V. Lyubashevsky
-      -
-        ins: J. Schanck
-      -
-        ins: P. Schwabe
-      -
-        ins: G. Seiler
-      -
-        ins: D. Stehle # TODO unicode in references
-    date: 2021
-    format:
-      PDF: https://pq-crystals.org/kyber/data/kyber-specification-round3-20210804.pdf
   FIPS202:
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
     title: 'FIPS 202: SHA-3 Standard: Permutation-Based Hash and
@@ -103,27 +59,30 @@ Extendable-Output Functions'
     author:
       -
         ins: National Institute of Standards and Technology
-  SECEST:
-    target: https://github.com/pq-crystals/security-estimates
-    title: CRYSTALS security estimate scripts
-    author:
-      -
-        ins: L. Ducas
-      -
-        ins: J. Schanck
   RFC9180:
   RFC7748:
-  NISTR3:
-    target: https://csrc.nist.gov/News/2022/pqc-candidates-to-be-standardized-and-round-4
-    title: 'PQC Standardization Process: Announcing Four Candidates to be Standardized, Plus Fourth Round Candidates'
-    author:
-      -
-        ins: The NIST PQC Team
   HYBRID: I-D.stebila-tls-hybrid-design
-  H2CURVE: I-D.irtf-cfrg-hash-to-curve
   XYBERHPKE: I-D.westerbaan-cfrg-hpke-xyber768d00
   XYBERTLS: I-D.tls-westerbaan-xyber768d00
   TLSIANA: I-D.ietf-tls-rfc8447bis
+  PROOF:
+    target: https://eprint.iacr.org/2024/039
+    title: "X-Wing: The Hybrid KEM You’ve Been Looking For"
+    author:
+      -
+        ins: M. Barbosa
+      -
+        ins: D. Connolly
+      -
+        ins: J. Duarte
+      -
+        ins: A. Kaiser
+      -
+        ins: P. Schwabe
+      -
+        ins: K. Varner
+      -
+        ins: B.E. Westerbraan
 
 --- abstract
 
@@ -240,7 +199,7 @@ operations, roles, and behaviors of HPKE:
 X-Wing relies on the following primitives:
 
 
-* ML-KEM-768 post-quantum key-encapsulation mechanism (KEM), TODO ref:
+* ML-KEM-768 post-quantum key-encapsulation mechanism (KEM) {{MLKEM}}:
 
   - `ML-KEM-768.KeyGen()`: Randomized algorithm to
     generate an ML-KEM-768 key pair `(sk_M, pk_M)`.
@@ -452,7 +411,7 @@ ML-KEM-768 is secure.
 More precisely, if SHA3-256, SHA3-512, SHAKE-128, and SHAKE-256
 may be modelled as a random oracle, then
 the IND-CCA security of X-Wing is bounded by the IND-CCA security of
-ML-KEM-768, and the gap-CDH security of Curve25519, see TODO.
+ML-KEM-768, and the gap-CDH security of Curve25519, see {{PROOF}}.
 
 The security of X-Wing relies crucially on the specifics of the
 Fujisaki-Okamoto transformation used in ML-KEM-768.
