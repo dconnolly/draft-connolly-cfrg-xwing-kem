@@ -259,10 +259,10 @@ Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 X-Wing encapsulation key, decapsulation key, ciphertexts and shared secrets are all
 fixed length byte strings.
 
- Decapsulation key:
+ Decapsulation key (private):
  : 2432 bytes
 
- Encapsulation key:
+ Encapsulation key (public):
  : 1216 bytes
 
  Ciphertext:
