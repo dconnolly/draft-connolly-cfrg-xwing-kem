@@ -211,7 +211,10 @@ X-Wing relies on the following primitives:
 * ML-KEM-768 post-quantum key-encapsulation mechanism (KEM) {{MLKEM}}:
 
   - `ML-KEM-768.KeyGen()`: Randomized algorithm to generate an
-    ML-KEM-768 key pair `(sk_M, pk_M)`.
+    ML-KEM-768 key pair `(pk_M, sk_M)` of an encapsulation key `pk_M`
+    and decapsulation key `sk_M`.
+    Note that `ML-KEM-768.KeyGen()` returns the keys in reverse
+    order of `GenerateKeyPair()` defined below.
   - `ML-KEM-768.Encaps(pk_M)`: Randomized algorithm to generate `(ss_M,
     ct_M)`, an ephemeral 32 byte shared key `ss_M`, and a fixed-length
     encapsulation (ciphertext) of that key `ct_M` for encapsulation key
@@ -275,7 +278,7 @@ follows.
 
 ~~~
 def GenerateKeyPair():
-  (sk_M, pk_M) = ML-KEM-768.KeyGen()
+  (pk_M, sk_M) = ML-KEM-768.KeyGen()
   sk_X = random(32)
   pk_X = X25519(sk_X, X25519_BASE)
   return concat(sk_M, sk_X), concat(pk_M, pk_X)
@@ -292,7 +295,7 @@ derandomized variant of key generation.
 
 ~~~
 def GenerateKeyPairDerand(seed):
-  (sk_M, pk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
+  (pk_M, sk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
   sk_X = seed[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
   return concat(sk_M, sk_X), concat(pk_M, pk_X)
