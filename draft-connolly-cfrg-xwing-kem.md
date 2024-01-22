@@ -6,7 +6,7 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2024-01-10
+date: 2024-01-22
 consensus: true
 v: 3
 area: "IRTF"
@@ -260,7 +260,7 @@ X-Wing encapsulation key, decapsulation key, ciphertexts and shared secrets are 
 fixed length byte strings.
 
  Decapsulation key (private):
- : 2432 bytes
+ : 2464 bytes
 
  Encapsulation key (public):
  : 1216 bytes
@@ -281,10 +281,10 @@ def GenerateKeyPair():
   (pk_M, sk_M) = ML-KEM-768.KeyGen()
   sk_X = random(32)
   pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X), concat(pk_M, pk_X)
+  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
 ~~~
 
-`GenerateKeyPair()` returns the 2432 byte secret encapsulation key `sk`
+`GenerateKeyPair()` returns the 2464 byte secret encapsulation key `sk`
 and the 1216 byte decapsulation key `pk`.
 
 ### Key derivation {#derive-key-pair}
@@ -298,12 +298,12 @@ def GenerateKeyPairDerand(seed):
   (pk_M, sk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
   sk_X = seed[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X), concat(pk_M, pk_X)
+  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
 ~~~
 
 `seed` must be 96 bytes.
 
-`GenerateKeyPairDerand()` returns the 2432 byte secret encapsulation key
+`GenerateKeyPairDerand()` returns the 2464 byte secret encapsulation key
 `sk` and the 1216 byte decapsulation key `pk`.
 
 ## Combiner {#combiner}
@@ -384,21 +384,19 @@ ciphertext `ct`.
 ## Decapsulation {#decaps}
 
 ~~~
-def Decapsulate(ct, sk, pk):
+def Decapsulate(ct, sk):
   ct_M = ct[0:1088]
   ct_X = ct[1088:1120]
   sk_M = sk[0:2400]
   sk_X = sk[2400:2432]
-  pk_M = pk[0:1184]
-  pk_X = pk[1184:1216]
+  pk_X = sk[2432:2464]
   ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
   ss_X = X25519(sk_X, ct_X)
   return Combiner(ss_M, ss_X, ct_X, pk_X)
 ~~~
 
 `ct` is the 1120 byte ciphertext resulting from `Encapsulate()`
-`sk` is a 2432 byte X-Wing decapsulation key resulting from `GenerateKeyPair()`
-`pk` is a 1216 byte X-Wing encapsulation key resulting from `GenerateKeyPair()`
+`sk` is a 2464 byte X-Wing decapsulation key resulting from `GenerateKeyPair()`
 
 `Decapsulate()` returns the 32 byte shared secret.
 
@@ -477,7 +475,7 @@ registry.
  : 1216
 
  Nsk:
- : 2432
+ : 2464
 
  Auth:
  : no
@@ -590,7 +588,8 @@ sk
   4cfa93f56ee922c7d660937b5937c3074d62968f006d1211c60296685953e5def3804c2d
   ad5c36180137c1df12f31385b670fde5cfe76447f6c4b5b50083553c3cb1eea988004b93
   103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc873c23dc62b8d26016
-  9afa2f75ab916a58d974918835d25e6a435085b2
+  9afa2f75ab916a58d974918835d25e6a435085b2e56f17576740ce2a32fc5145030145cf
+  b97e63e0e41d354274a079d3e6fb2e15
 pk
   1bc331b659a61a04883d0c5ebbc0772754a4c33b6a90e52e0678ce06a0453ba8a188b15a
   496bae6a24177b636d12fbb088f2cd9504ac200231473031a31a5c62e46288fb3edb858b
@@ -736,7 +735,8 @@ sk
   5f53c0b22bfa065690a16184db4f9731cea1a08f5876ec187e7b1ae79c593415d068838e
   5ce0bf2c28b1e389ae4a768f871b2761a29178a51845eb0b939f0ee9ef58538b8d23f877
   32ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c922a96188d032675c8ac85093
-  3c7aff1533b94c834adbb69c6115bad4692d8619
+  3c7aff1533b94c834adbb69c6115bad4692d8619c7dd2bf4e3b5b93f77f4576d55d30073
+  9e75e14084b0bc85620499bf468ae161
 pk
   3d135aa589198cb02113cc17e13a0f15fc1d3d734966c3751a74ac27c781323043e36389
   dca9a2af6508bdba0260662691426d1d8899cd77736c21b17eb3a31fc118154264e2b10e
@@ -882,7 +882,8 @@ sk
   576a0511b9768798c79590d8d37f58628ef69837335bfa984cde027d87d45cf83e597b70
   5d3130d6210e9d974bab5643cdf4d1cc7c8282ffe68f827e0cac9926bfe72b3124721d4a
   26c04e53a75e30e73a7a9c4a95d91c55d495e9f51dd0b5e9d83c6d5e8ce803aa62b8d654
-  db53d09b8dcff273cdfeb573fad8bcd45578bec2
+  db53d09b8dcff273cdfeb573fad8bcd45578bec241c2f9459a0447d7f7ae5f1e8dc1cf4e
+  76cdd9add2eba7768b4ac7abb269b07e
 pk
   8c8b6a200a0ef6b66eec364c0015ceb802081800ab5bd1150ba20e5d2c6012d70fe700a5
   6c101752242397627c89156f667a28ffc32c56d20abe3834d2a05a0390c7f2a893d64127
@@ -958,6 +959,16 @@ ss     1e037823ddbf1875756d86a3374b2d2347d5b7f3c84d229ecc5960523cdaa8b4
 ~~~
 
 # Acknowledgments
-{:numbered="false"}
 
 TODO acknowledge.
+
+# Change log
+
+> **RFC Editor's Note:** Please remove this section prior to publication of a
+> final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-00
+
+- A copy of the X25519 public key is now included in the X-Wing
+  decapsulation (private) key, so that decapsulation does not
+  require access to the X-Wing public key. See #2.
