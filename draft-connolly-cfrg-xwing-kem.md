@@ -971,4 +971,4 @@ TODO acknowledge.
 
 - A copy of the X25519 public key is now included in the X-Wing
   decapsulation (private) key, so that decapsulation does not
-  require access to the X-Wing public key. See #2.
+  require separate access to the X-Wing public key. See #2.
