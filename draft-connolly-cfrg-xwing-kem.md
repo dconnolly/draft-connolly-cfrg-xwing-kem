@@ -120,9 +120,9 @@ X-Wing.
   we do not need HMAC-based construction. For the concrete choice of
   ML-KEM-768, we do not need to mix in its ciphertext, see {{secc}}.
 
-* Security analysis. Because ML-KEM-768 already assumes QROM, we do not
-  need to complicate the analysis of X-Wing by considering stronger
-  models.
+* Security analysis. Because ML-KEM-768 already assumes the Quantum Random
+  Oracle Model (QROM), we do not need to complicate the analysis
+  of X-Wing by considering stronger models.
 
 * Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice
   performance benefit. Furthermore, by using SHA3-256 in the combiner,
@@ -226,11 +226,12 @@ X-Wing relies on the following primitives:
 
   - `ML-KEM-768.KeyGenDerand(seed)`: Same as `ML-KEM-768.KeyGen()`,
     but derandomized as follows.
-    `seed` is 64 bytes. `seed[0:32]` is used for `z` (line 1 algorithm 15),
-    and `seed[32:64]` is used for `d` (line 1 algorithm 12).
+    `seed` is 64 bytes. `seed[0:32]` is used for `z` in line 1 of algorithm 15
+        from {{MLKEM}}
+    and `seed[32:64]` is used for `d` in line 1 of algorithm 12.
   - `ML-KEM-768.EncapsDerand(pk_M, seed)`: Same as `ML-KEM-768.Encaps()`
     but derandomized as follows.
-    `seed` is 32 bytes and used for `m` (line 1 algorithm 16).
+    `seed` is 32 bytes and used for `m` in line of 1 algorithm 16.
 
 * X25519 elliptic curve Diffie-Hellman key-exchange defined in {{Section 5 of RFC7748}}:
 
@@ -239,7 +240,7 @@ X-Wing relies on the following primitives:
     the 32 byte string representing their scalar multiplication.
   - `X25519_BASE`: the 32 byte string representing the standard base point
     of Curve25519. In hex
-    it is given by `09000000000000000000000000000000000000000000`.
+    it is given by `0900000000000000000000000000000000000000000000000000000000000000`.
 
 Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
@@ -248,8 +249,7 @@ Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
   - `SHAKE128(message, outlen)`: The extendable-output function (XOF)
     defined in Section 6.2 of {{FIPS202}}.
-  - `SHA3-256(message)`: The hash defined in
-    defined in Section 6.1 of {{FIPS202}}.
+  - `SHA3-256(message)`: The hash defined in Section 6.1 of {{FIPS202}}.
 
 
 # X-Wing Construction
@@ -284,8 +284,11 @@ def GenerateKeyPair():
   return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
 ~~~
 
-`GenerateKeyPair()` returns the 2464 byte secret encapsulation key `sk`
-and the 1216 byte decapsulation key `pk`.
+`GenerateKeyPair()` returns the 2464 byte secret decapsulation key `sk`
+and the 1216 byte encapsulation key `pk`.
+
+Here and in the balance of the document for clarity we use
+the `M` and `X`subscripts for ML-KEM-768 and X25519 components respectively.
 
 ### Key derivation {#derive-key-pair}
 
@@ -333,6 +336,8 @@ XWingLabel = concat(
 )
 ~~~
 
+In hex XWingLabel is given by `5c2e2f2f5e5c`.
+
 ## Encapsulation {#encaps}
 
 Given an X-Wing encapsulation key `pk`, encapsulation proceeds as follows.
@@ -362,20 +367,20 @@ of encapsulation. An X-Wing implementation MAY provide
 the following derandomized function.
 
 ~~~
-def EncapsulateDerand(pk, seed):
+def EncapsulateDerand(pk, eseed):
   pk_M = pk[0:1184]
   pk_X = pk[1184:1216]
-  ek_X = seed[32:64]
+  ek_X = eseed[32:64]
   ct_X = X25519(ek_X, X25519_BASE)
   ss_X = X25519(ek_X, pk_X)
-  (ss_M, ct_M) = ML-KEM-768.EncapsDerand(pk_M, seed[0:32])
+  (ss_M, ct_M) = ML-KEM-768.EncapsDerand(pk_M, eseed[0:32])
   ss = Combiner(ss_M, ss_X, ct_X, pk_X)
   ct = concat(ct_M, ct_X)
   return (ss, ct)
 ~~~
 
 `pk` is a 1216 byte X-Wing encapsulation key resulting from `GeneratePublicKey()`
-`seed` MUST be 64 bytes.
+`eseed` MUST be 64 bytes.
 
 `EncapsulateDerand()` returns the 32 byte shared secret `ss` and the 1120 byte
 ciphertext `ct`.
@@ -450,9 +455,10 @@ bounded by the IND-CCA security of ML-KEM-768, and the gap-CDH security
 of Curve25519, see {{PROOF}}.
 
 The security of X-Wing relies crucially on the specifics of the
-Fujisaki-Okamoto transformation used in ML-KEM-768.  In particular, the
-X-Wing combiner cannot be assumed to be secure, when used with different
-KEMs.
+Fujisaki-Okamoto transformation used in ML-KEM-768: the X-Wing
+combiner cannot be assumed to be secure, when used with different
+KEMs. In particular it is not known to be safe to leave
+out the post-quantum ciphertext from the combiner in the general case.
 
 # IANA Considerations {#iana}
 
