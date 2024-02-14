@@ -519,6 +519,17 @@ in {{Section 6 of TLSIANA}}.
 
 --- back
 
+# Implementations
+
+- Go
+
+  - [CIRCL](https://github.com/cloudflare/circl/pull/471)
+
+  - [Filippo](https://github.com/FiloSottile/mlkem768)
+
+    Note: implements the older `-00` version of this memo at the time of
+    writing.
+
 # Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values
 
 ~~~
@@ -972,6 +983,12 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-01
+
+- Add list of implementations.
+
+- Miscellaneous editorial improvements.
 
 ## Since draft-connolly-cfrg-xwing-kem-00
 
