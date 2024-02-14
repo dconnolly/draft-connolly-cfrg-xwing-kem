@@ -538,27 +538,27 @@ it should not be deployed as-is, as it leaks the private key by its runtime.
 
 ## xwing.py
 
-~~~~~~~~
+~~~~
 {::include ./spec/xwing.py}
-~~~~~~~~
+~~~~
 
 ## x25519.py
 
-~~~~~~~~
+~~~~
 {::include ./spec/x25519.py}
-~~~~~~~~
+~~~~
 
 ## mlkem.py
 
-~~~~~~~~
+~~~~
 {::include ./spec/mlkem.py}
-~~~~~~~~
+~~~~
 
 # Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values
 
-~~~~~~~~
+~~~~
 {::include ./spec/test-vectors.txt}
-~~~~~~~~
+~~~~
 
 # Acknowledgments
 
