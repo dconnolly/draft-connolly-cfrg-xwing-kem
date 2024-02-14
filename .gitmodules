@@ -1,0 +1,3 @@
+[submodule "spec/draft-schwabe-cfrg-kyber"]
+	path = spec/draft-schwabe-cfrg-kyber
+	url = https://github.com/bwesterb/draft-schwabe-cfrg-kyber
