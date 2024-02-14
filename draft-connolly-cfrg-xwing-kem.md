@@ -530,6 +530,14 @@ in {{Section 6 of TLSIANA}}.
     Note: implements the older `-00` version of this memo at the time of
     writing.
 
+- Rust
+
+  - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs])
+
+    Note: implements the older `-00` version of this memo at the time of
+    writing.
+
+
 # Machine-readable specification {#S-spec}
 
 For the convenience of implementors, we provide a reference specification
