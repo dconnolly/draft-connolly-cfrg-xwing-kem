@@ -226,9 +226,9 @@ X-Wing relies on the following primitives:
 
   - `ML-KEM-768.KeyGenDerand(seed)`: Same as `ML-KEM-768.KeyGen()`,
     but derandomized as follows.
-    `seed` is 64 bytes. `seed[0:32]` is used for `z` in line 1 of algorithm 15
-        from {{MLKEM}}
-    and `seed[32:64]` is used for `d` in line 1 of algorithm 12.
+    `seed[0:32]` is used for `d` in line 1 of algorithm 12 from {{MLKEM}}
+    and `seed` is 64 bytes. `seed[32:64]` is used for `z` in line 1 of
+    algorithm 15.
   - `ML-KEM-768.EncapsDerand(pk_M, seed)`: Same as `ML-KEM-768.Encaps()`
     but derandomized as follows.
     `seed` is 32 bytes and used for `m` in line of 1 algorithm 16.
@@ -584,6 +584,8 @@ TODO acknowledge.
 - Miscellaneous editorial improvements.
 
 - Add Python reference specification.
+
+- Correct definition of `ML-KEM-768.KeyGenDerand(seed)`.
 
 ## Since draft-connolly-cfrg-xwing-kem-00
 
