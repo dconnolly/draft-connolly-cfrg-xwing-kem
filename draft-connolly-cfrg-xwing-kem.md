@@ -466,7 +466,7 @@ This document requests/registers a new entry to the "HPKE KEM Identifiers"
 registry.
 
  Value:
- : TBD (please)
+ : TBD (0x004D please)
 
  KEM:
  : X-Wing
