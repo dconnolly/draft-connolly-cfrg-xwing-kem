@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-07T00:05:52.996780+00:00",
+  "timestamp": "2024-03-10T00:07:52.252294+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1096,6 +1096,70 @@
           "body": "",
           "createdAt": "2024-02-14T17:52:51Z",
           "updatedAt": "2024-02-14T17:52:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOKq5sns5pG6UY",
+      "title": "Add HPKE IANA registry number request",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/16",
+      "state": "MERGED",
+      "author": "raphaelrobert",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-03-08T18:02:18Z",
+      "updatedAt": "2024-03-09T19:08:35Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "2cfbaf46130ab7a4fb1e1e2b3b34604f208fe877",
+      "headRepository": "raphaelrobert/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "patch-1",
+      "headRefOid": "22a7e07255f65c84ed439053943d86f29a04b1a9",
+      "closedAt": "2024-03-08T20:00:04Z",
+      "mergedAt": "2024-03-08T20:00:04Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "f919525bba5f869f7ecc04e888ff4764d56993a1"
+      },
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Please let's revert this. We don't want people to deploy X-Wing and break this code-point before ML-KEM is final.",
+          "createdAt": "2024-03-09T09:30:52Z",
+          "updatedAt": "2024-03-09T09:30:52Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I made the PR because applications need a code point. Any other preliminary code point would work too. Not having one at all would mean interop becomes impossible. ",
+          "createdAt": "2024-03-09T16:51:20Z",
+          "updatedAt": "2024-03-09T16:51:20Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Of course X-Wing will get a codepoint, once it's stable. You can use a temporary one in the reserved range if you want to experiment with a preliminary version now.",
+          "createdAt": "2024-03-09T19:08:35Z",
+          "updatedAt": "2024-03-09T19:08:35Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5yyJON",
+          "commit": {
+            "abbreviatedOid": "22a7e07"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-08T19:59:52Z",
+          "updatedAt": "2024-03-08T19:59:52Z",
           "comments": []
         }
       ]
