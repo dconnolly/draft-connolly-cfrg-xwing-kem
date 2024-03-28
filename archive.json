@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-26T00:07:00.986537+00:00",
+  "timestamp": "2024-03-28T00:07:17.262993+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -131,7 +131,7 @@
       "labels": [],
       "body": "Section 4 defines `ML-KEM-768.KeyGenDerand` as\r\n\r\n> seed[0:32] is used for z in line 1 of algorithm 15 from [[MLKEM](https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/draft-connolly-cfrg-xwing-kem.html#MLKEM)] and seed[32:64] is used for d in line 1 of algorithm 12.\r\n\r\nHowever, the implementation in Appendix B.3 does the opposite\r\n\r\n```\r\nz = seed[32:]\r\npk, sk2 = InnerKeyGen(seed[:32], params)\r\n```\r\n\r\nand the test vector in Appendix C passes when using seed[0:32] for d and seed[32:64] for z.",
       "createdAt": "2024-02-21T06:49:57Z",
-      "updatedAt": "2024-02-21T10:39:01Z",
+      "updatedAt": "2024-03-26T19:01:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -140,6 +140,20 @@
           "body": "Whoops, you're right. Fixed on main.",
           "createdAt": "2024-02-21T10:39:00Z",
           "updatedAt": "2024-02-21T10:39:00Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "NONE",
+          "body": "Thanks @bwesterb. Any chance you'll cut a new version soon? I also ran into this issue.",
+          "createdAt": "2024-03-26T08:37:40Z",
+          "updatedAt": "2024-03-26T08:37:40Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Released `-02`.",
+          "createdAt": "2024-03-26T19:01:22Z",
+          "updatedAt": "2024-03-26T19:01:22Z"
         }
       ]
     },
@@ -164,6 +178,30 @@
           "body": "Oops [wrong repo](https://github.com/dconnolly/draft-connolly-cfrg-hpke-mlkem/issues/2)",
           "createdAt": "2024-03-06T03:04:30Z",
           "updatedAt": "2024-03-06T03:04:30Z"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOKq5sns6DoGih",
+      "title": "Private key format",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/17",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "KeyGen() outputs a private key that is the concatenation of ML-KEM private key, X25519 private key, and X25519 public key. Since the private key never has to go over the wire, I wonder (a) why the spec is prescriptive about how the private key is encoded and (b) why the X25519 public key is redundantly included in the X-Wing private key. (One can recompute it as needed.) \r\n\r\nCan we relax the spec to only specify that the actual ML-KEM and X25519 secrets are output from KeyGen, and then perhaps recommend that implementations also precompute and store the X25519 public key if desired?",
+      "createdAt": "2024-03-26T13:53:18Z",
+      "updatedAt": "2024-03-26T18:34:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See #8.\r\n\r\n`KeyGen()` is very fast, so if you want to save storage and don't care about a little extra computation, you can go all the way and store the seed instead of the private key.",
+          "createdAt": "2024-03-26T18:34:18Z",
+          "updatedAt": "2024-03-26T18:34:18Z"
         }
       ]
     }
