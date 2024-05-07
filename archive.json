@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-05T00:07:53.224021+00:00",
+  "timestamp": "2024-05-07T00:07:10.713783+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -202,6 +202,30 @@
           "body": "See #8.\r\n\r\n`KeyGen()` is very fast, so if you want to save storage and don't care about a little extra computation, you can go all the way and store the seed instead of the private key.",
           "createdAt": "2024-03-26T18:34:18Z",
           "updatedAt": "2024-03-26T18:34:18Z"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "I_kwDOKq5sns6H-KGC",
+      "title": "replace with test vectors that re-use ML-KEM, X25519 values",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/18",
+      "state": "CLOSED",
+      "author": "jmcrawford45",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi all, thanks for putting this RFC together. I see that the test vectors are currently in need of an update, and I'm happy to update those if there aren't any outstanding dependencies. I wanted to clarify whether the TODO comment means to reuse the same key for subsequent test vectors or whether it means to reuse the X25519 test vectors from RFC 9180 (I'm not sure what the analog would be for MLKEM).",
+      "createdAt": "2024-05-06T16:01:08Z",
+      "updatedAt": "2024-05-06T20:10:30Z",
+      "closedAt": "2024-05-06T20:10:30Z",
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for reaching out and offering assistance. The test vectors are current, but of course, not final, as ML-KEM might change. What we would like to have, is a test suite that exercises corner-cases in X25519 and ML-KEM. For the ML-KEM draft, an example are those prepared by Filippo and by Sophie, see [this thread](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/aCAX-2QrUFw/m/hy5gwcESAAAJ). ML-KEM might change and for that matter X-Wing itself, so I feel it might be wasteful to spend a lot of time preparing exhaustive test vectors if we have to redo it. There are similar such test vectors for X25519 (but not in RFC 9180.)",
+          "createdAt": "2024-05-06T17:10:05Z",
+          "updatedAt": "2024-05-06T17:10:05Z"
         }
       ]
     }
