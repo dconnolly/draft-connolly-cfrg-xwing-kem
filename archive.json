@@ -1,0 +1,1230 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2024-05-14T00:07:45.745696+00:00",
+  "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 8,
+      "id": "I_kwDOKq5sns57y0Tm",
+      "title": "Remove encapsulation key as argument to `Decapsulate()`",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/8",
+      "state": "CLOSED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We need the X25519 public key in the combiner to be IND-CCA robust, so we need it during `Decapsulation()`. However, that is quite unexpected for most APIs, and Mike Ounsworth points out that HSMs might find this difficult.\r\n\r\nThere are at least two options:\r\n\r\n1. Recompute the X25519 public key from the secret key in the decapsulation in the spec. (Implementations can still cache the value during unpacking/keygen)\r\n2. Include X25519 public key in the X-Wing private key, similar to ML-KEM. Suggested and preferred by @FiloSottile. \r\n\r\nI also lean to the latter.",
+      "createdAt": "2024-01-11T15:10:13Z",
+      "updatedAt": "2024-01-22T14:33:07Z",
+      "closedAt": "2024-01-22T14:33:07Z",
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "NONE",
+          "body": "From an implementer perspective, I'd lean for 2. as well.",
+          "createdAt": "2024-01-11T15:23:37Z",
+          "updatedAt": "2024-01-11T15:23:37Z"
+        },
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "I don't hate option 2, and it aligns with what ML-KEM does under the hood",
+          "createdAt": "2024-01-11T17:59:11Z",
+          "updatedAt": "2024-01-11T17:59:11Z"
+        },
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "closed with #10",
+          "createdAt": "2024-01-22T14:32:53Z",
+          "updatedAt": "2024-01-22T14:32:53Z"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOKq5sns57zZq3",
+      "title": "Add section to track implementations",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/9",
+      "state": "CLOSED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- https://github.com/FiloSottile/mlkem768 (-00)\r\n- https://github.com/cloudflare/circl/pull/471 (-00)",
+      "createdAt": "2024-01-11T16:15:18Z",
+      "updatedAt": "2024-02-14T13:24:58Z",
+      "closedAt": "2024-02-14T13:24:58Z",
+      "comments": [
+        {
+          "author": "rugo",
+          "authorAssociation": "NONE",
+          "body": "Here is an experimental Rust implementation: https://github.com/rugo/xwing-kem.rs\r\n\r\nAlso suffers from #8 and computes the x25519 pk on every call to `decaps`.",
+          "createdAt": "2024-01-12T17:08:11Z",
+          "updatedAt": "2024-01-12T17:08:11Z"
+        },
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "closed as resolved \u2705",
+          "createdAt": "2024-02-14T13:24:33Z",
+          "updatedAt": "2024-02-14T13:24:33Z"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOKq5sns5_6MbS",
+      "title": "ML-KEM-768.KeyGenDerand definition disagrees with Appendix B and C",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/14",
+      "state": "OPEN",
+      "author": "FiloSottile",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4 defines `ML-KEM-768.KeyGenDerand` as\r\n\r\n> seed[0:32] is used for z in line 1 of algorithm 15 from [[MLKEM](https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/draft-connolly-cfrg-xwing-kem.html#MLKEM)] and seed[32:64] is used for d in line 1 of algorithm 12.\r\n\r\nHowever, the implementation in Appendix B.3 does the opposite\r\n\r\n```\r\nz = seed[32:]\r\npk, sk2 = InnerKeyGen(seed[:32], params)\r\n```\r\n\r\nand the test vector in Appendix C passes when using seed[0:32] for d and seed[32:64] for z.",
+      "createdAt": "2024-02-21T06:49:57Z",
+      "updatedAt": "2024-03-26T19:01:23Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Whoops, you're right. Fixed on main.",
+          "createdAt": "2024-02-21T10:39:00Z",
+          "updatedAt": "2024-02-21T10:39:00Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "NONE",
+          "body": "Thanks @bwesterb. Any chance you'll cut a new version soon? I also ran into this issue.",
+          "createdAt": "2024-03-26T08:37:40Z",
+          "updatedAt": "2024-03-26T08:37:40Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Released `-02`.",
+          "createdAt": "2024-03-26T19:01:22Z",
+          "updatedAt": "2024-03-26T19:01:22Z"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOKq5sns6BX6mm",
+      "title": "Cite RFC 9180",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/15",
+      "state": "CLOSED",
+      "author": "martinthomson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This is in the references, but it is not referred to by the body text.",
+      "createdAt": "2024-03-06T03:02:21Z",
+      "updatedAt": "2024-03-06T03:04:30Z",
+      "closedAt": "2024-03-06T03:04:30Z",
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "body": "Oops [wrong repo](https://github.com/dconnolly/draft-connolly-cfrg-hpke-mlkem/issues/2)",
+          "createdAt": "2024-03-06T03:04:30Z",
+          "updatedAt": "2024-03-06T03:04:30Z"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOKq5sns6DoGih",
+      "title": "Private key format",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/17",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "KeyGen() outputs a private key that is the concatenation of ML-KEM private key, X25519 private key, and X25519 public key. Since the private key never has to go over the wire, I wonder (a) why the spec is prescriptive about how the private key is encoded and (b) why the X25519 public key is redundantly included in the X-Wing private key. (One can recompute it as needed.) \r\n\r\nCan we relax the spec to only specify that the actual ML-KEM and X25519 secrets are output from KeyGen, and then perhaps recommend that implementations also precompute and store the X25519 public key if desired?",
+      "createdAt": "2024-03-26T13:53:18Z",
+      "updatedAt": "2024-03-26T18:34:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See #8.\r\n\r\n`KeyGen()` is very fast, so if you want to save storage and don't care about a little extra computation, you can go all the way and store the seed instead of the private key.",
+          "createdAt": "2024-03-26T18:34:18Z",
+          "updatedAt": "2024-03-26T18:34:18Z"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "I_kwDOKq5sns6H-KGC",
+      "title": "replace with test vectors that re-use ML-KEM, X25519 values",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/18",
+      "state": "CLOSED",
+      "author": "jmcrawford45",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi all, thanks for putting this RFC together. I see that the test vectors are currently in need of an update, and I'm happy to update those if there aren't any outstanding dependencies. I wanted to clarify whether the TODO comment means to reuse the same key for subsequent test vectors or whether it means to reuse the X25519 test vectors from RFC 9180 (I'm not sure what the analog would be for MLKEM).",
+      "createdAt": "2024-05-06T16:01:08Z",
+      "updatedAt": "2024-05-06T20:10:30Z",
+      "closedAt": "2024-05-06T20:10:30Z",
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for reaching out and offering assistance. The test vectors are current, but of course, not final, as ML-KEM might change. What we would like to have, is a test suite that exercises corner-cases in X25519 and ML-KEM. For the ML-KEM draft, an example are those prepared by Filippo and by Sophie, see [this thread](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/aCAX-2QrUFw/m/hy5gwcESAAAJ). ML-KEM might change and for that matter X-Wing itself, so I feel it might be wasteful to spend a lot of time preparing exhaustive test vectors if we have to redo it. There are similar such test vectors for X25519 (but not in RFC 9180.)",
+          "createdAt": "2024-05-06T17:10:05Z",
+          "updatedAt": "2024-05-06T17:10:05Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOKq5sns5fbCKg",
+      "title": "Stubs",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/1",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-14T15:18:26Z",
+      "updatedAt": "2023-11-15T14:07:39Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "7e04acb84671d3d3914265ee6a70a218da364b50",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "bas-initial",
+      "headRefOid": "ba1dbe7d7bcc62c2fe4fca3139d7aa447a86f786",
+      "closedAt": "2023-11-15T14:07:38Z",
+      "mergedAt": "2023-11-15T14:07:38Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "61f3943667621fd0f7132380d6cc798e466af9e8"
+      },
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "Good to merge, we'll keep cranking on the TODOs",
+          "createdAt": "2023-11-15T14:07:32Z",
+          "updatedAt": "2023-11-15T14:07:32Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5nHpmi",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-14T15:42:31Z",
+          "updatedAt": "2023-11-14T15:49:13Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "sha3 also is more secure than sha2 and avoids requiring hkdf",
+              "createdAt": "2023-11-14T15:42:31Z",
+              "updatedAt": "2023-11-14T15:49:13Z"
+            },
+            {
+              "originalPosition": 64,
+              "body": "\ud83d\udc4d",
+              "createdAt": "2023-11-14T15:48:03Z",
+              "updatedAt": "2023-11-14T15:49:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5nIuTG",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-14T17:38:25Z",
+          "updatedAt": "2023-11-14T17:38:25Z",
+          "comments": [
+            {
+              "originalPosition": 126,
+              "body": "\ud83d\udc4d",
+              "createdAt": "2023-11-14T17:38:25Z",
+              "updatedAt": "2023-11-14T17:38:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5nJaNb",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-14T18:59:36Z",
+          "updatedAt": "2023-11-14T18:59:36Z",
+          "comments": [
+            {
+              "originalPosition": 157,
+              "body": "`SHAKE` here, `SHA3-256` elsewhere, ...?",
+              "createdAt": "2023-11-14T18:59:36Z",
+              "updatedAt": "2023-11-14T18:59:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5nNbcC",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-15T09:18:01Z",
+          "updatedAt": "2023-11-15T09:18:02Z",
+          "comments": [
+            {
+              "originalPosition": 157,
+              "body": "We need 96 bytes, hence SHAKE128.\r\n\r\nIn the other place could use SHAKE256 instead of SHA3-256. Doesn't make a difference.",
+              "createdAt": "2023-11-15T09:18:01Z",
+              "updatedAt": "2023-11-15T09:18:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5nNccg",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-15T09:19:57Z",
+          "updatedAt": "2023-11-15T09:19:57Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "Technically SHA3 is more secure, but it feels to me like stating that a 40,000kg rock is harder to lift by a person than a 10,000kg rock. Both are impossible.\r\nThe hkdf point is a good one.",
+              "createdAt": "2023-11-15T09:19:57Z",
+              "updatedAt": "2023-11-15T09:19:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5nPVjd",
+          "commit": {
+            "abbreviatedOid": "ce5f113"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-15T13:49:37Z",
+          "updatedAt": "2023-11-15T13:49:38Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "Added text",
+              "createdAt": "2023-11-15T13:49:37Z",
+              "updatedAt": "2023-11-15T13:49:38Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOKq5sns5gdBAK",
+      "title": "Leave out ML-KEM-768 ciphertext in combiner",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/2",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-27T15:36:17Z",
+      "updatedAt": "2023-11-29T15:19:47Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "253e06b9a9ce941511422e302795c671af847cbe",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "no-mlkem-ct",
+      "headRefOid": "984ccc11ec739d081d41a3f7538a9fae2e38770e",
+      "closedAt": "2023-11-29T15:19:46Z",
+      "mergedAt": "2023-11-29T15:19:46Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "db395fc40ddb114469feef2723d1ba4163ec4aac"
+      },
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "The removal of the mlkem ciphertext is currently not motivated in this version ",
+          "createdAt": "2023-11-27T15:49:25Z",
+          "updatedAt": "2023-11-27T15:49:25Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Explicitly mentioned that in the security considerations TODO. It's not a sealed deal, but to prevent rewriting in a later stage, I think betting that it'll work out is best.",
+          "createdAt": "2023-11-27T16:55:04Z",
+          "updatedAt": "2023-11-27T16:55:04Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5oo0pb",
+          "commit": {
+            "abbreviatedOid": "984ccc1"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-29T15:19:40Z",
+          "updatedAt": "2023-11-29T15:19:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOKq5sns5grm-1",
+      "title": "Add some security considerations",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/3",
+      "state": "CLOSED",
+      "author": "dconnolly",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-11-29T15:14:08Z",
+      "updatedAt": "2023-11-29T15:24:46Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "253e06b9a9ce941511422e302795c671af847cbe",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "dconnolly-patch-1",
+      "headRefOid": "b94a9457bc9ae16eff0cf160a3fa930735428c09",
+      "closedAt": "2023-11-29T15:24:46Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOKq5sns5id0ex",
+      "title": "Big pass",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/4",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See Zulip for discussion on some of these changes.",
+      "createdAt": "2023-12-20T12:27:06Z",
+      "updatedAt": "2024-01-03T17:54:19Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "6ad573a31fc94d40f43245ac0311e9cd56815ee5",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "bas-big-pass",
+      "headRefOid": "da3e5b18c1138f4ba0478b43e8a3ce3dc10d729a",
+      "closedAt": "2024-01-03T17:50:41Z",
+      "mergedAt": "2024-01-03T17:50:41Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "38b29c1d0ccb8ef43500b43e3356c0afbd484e7b"
+      },
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@dconnolly Do you want changes?",
+          "createdAt": "2023-12-21T11:22:26Z",
+          "updatedAt": "2023-12-21T11:22:26Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How do we move forward? :)",
+          "createdAt": "2024-01-02T14:02:39Z",
+          "updatedAt": "2024-01-02T14:02:39Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5qw5RQ",
+          "commit": {
+            "abbreviatedOid": "209d8ef"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T15:52:30Z",
+          "updatedAt": "2023-12-20T15:52:30Z",
+          "comments": [
+            {
+              "originalPosition": 79,
+              "body": "```suggestion\r\n* X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,\r\n  and flattening the DHKEM construction, with the same level of security.\r\n```",
+              "createdAt": "2023-12-20T15:52:30Z",
+              "updatedAt": "2023-12-20T15:52:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw6a5",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T15:54:58Z",
+          "updatedAt": "2023-12-20T15:54:59Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "We need to define the keygen algorithm and point at RFC 7748",
+              "createdAt": "2023-12-20T15:54:59Z",
+              "updatedAt": "2023-12-20T15:54:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw67u",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T15:56:06Z",
+          "updatedAt": "2023-12-20T15:56:06Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "And we need the component scheme serialization routines",
+              "createdAt": "2023-12-20T15:56:06Z",
+              "updatedAt": "2023-12-20T15:56:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw88T",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:00:22Z",
+          "updatedAt": "2023-12-20T16:00:22Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "As in the paper since we need keygen() and serialization stuff having our definition of `X25519 { keygen(), DH(), ... }` etc makes this nicer ",
+              "createdAt": "2023-12-20T16:00:22Z",
+              "updatedAt": "2023-12-20T16:00:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw9uC",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:01:50Z",
+          "updatedAt": "2023-12-20T16:01:50Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "I don't think we need to: I inline the keygen into the definition of X-Kem. That also fits with the proof.",
+              "createdAt": "2023-12-20T16:01:50Z",
+              "updatedAt": "2023-12-20T16:01:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw98H",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:02:18Z",
+          "updatedAt": "2023-12-20T16:02:18Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "Also this makes it simpler to implement as most libraries only expose the DH function of X25519.",
+              "createdAt": "2023-12-20T16:02:18Z",
+              "updatedAt": "2023-12-20T16:02:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qw-Ox",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:02:55Z",
+          "updatedAt": "2023-12-20T16:02:55Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "(eg. https://pkg.go.dev/golang.org/x/crypto/curve25519 )",
+              "createdAt": "2023-12-20T16:02:55Z",
+              "updatedAt": "2023-12-20T16:02:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qxFPp",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:19:10Z",
+          "updatedAt": "2023-12-20T16:19:10Z",
+          "comments": [
+            {
+              "originalPosition": 234,
+              "body": "```suggestion\r\nGiven 32 byte strings ss_M, ss_X, ct_X, pk_X, representing the ML-KEM-768\r\nshared secret, X25519 shared secret, X25519 cipher text (ephemeral public key)\r\nand X25519 public key respectively, the combined shared secret is given by:\r\n```",
+              "createdAt": "2023-12-20T16:19:10Z",
+              "updatedAt": "2023-12-20T16:19:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qxGmk",
+          "commit": {
+            "abbreviatedOid": "aaa0f5a"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:22:24Z",
+          "updatedAt": "2023-12-20T16:22:24Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "> Also this makes it simpler to implement as most libraries only expose the DH function of X25519.\r\n\r\nhm, fair",
+              "createdAt": "2023-12-20T16:22:24Z",
+              "updatedAt": "2023-12-20T16:22:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qxKsb",
+          "commit": {
+            "abbreviatedOid": "aaa0f5a"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:31:57Z",
+          "updatedAt": "2023-12-20T16:31:57Z",
+          "comments": [
+            {
+              "originalPosition": 256,
+              "body": "\ud83d\udcaf",
+              "createdAt": "2023-12-20T16:31:57Z",
+              "updatedAt": "2023-12-20T16:31:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qxP0R",
+          "commit": {
+            "abbreviatedOid": "6509a6b"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:44:19Z",
+          "updatedAt": "2023-12-20T16:44:19Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "I removed the ugly hardcoded 9.",
+              "createdAt": "2023-12-20T16:44:19Z",
+              "updatedAt": "2023-12-20T16:44:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5qxQK1",
+          "commit": {
+            "abbreviatedOid": "1cac1f0"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-12-20T16:45:07Z",
+          "updatedAt": "2023-12-20T16:45:07Z",
+          "comments": [
+            {
+              "originalPosition": 256,
+              "body": "\ud83d\ude0e ",
+              "createdAt": "2023-12-20T16:45:07Z",
+              "updatedAt": "2023-12-20T16:45:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5rBxCi",
+          "commit": {
+            "abbreviatedOid": "da3e5b1"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Merging; I will probably want to go back in and add explicit stuff on serialization but good and aligned with paper for now",
+          "createdAt": "2023-12-24T21:47:41Z",
+          "updatedAt": "2024-01-03T17:50:22Z",
+          "comments": [
+            {
+              "originalPosition": 257,
+              "body": "\ud83d\udc4d\ud83d\udd2b\u2708\ufe0f",
+              "createdAt": "2023-12-24T21:47:42Z",
+              "updatedAt": "2024-01-03T17:50:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5rdPY5",
+          "commit": {
+            "abbreviatedOid": "da3e5b1"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-03T17:54:19Z",
+          "updatedAt": "2024-01-03T17:54:19Z",
+          "comments": [
+            {
+              "originalPosition": 257,
+              "body": "```python\r\n>>> len('\ud83d\udd2b\u2708\ufe0f'.encode('utf-8') )\r\n10\r\n```\r\n\r\n:(",
+              "createdAt": "2024-01-03T17:54:19Z",
+              "updatedAt": "2024-01-03T17:54:19Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOKq5sns5jTGb6",
+      "title": "Fix DeriveKeyPair",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/5",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We swapped the order of ML-KEM and X25519, but forgot to do that in keygen/key derivation. Fixed now.",
+      "createdAt": "2024-01-05T10:21:28Z",
+      "updatedAt": "2024-01-05T15:58:39Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "38b29c1d0ccb8ef43500b43e3356c0afbd484e7b",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "order",
+      "headRefOid": "7248c35057ea4a594143e8cdd402c70c3cacc9e6",
+      "closedAt": "2024-01-05T15:58:39Z",
+      "mergedAt": "2024-01-05T15:58:39Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "0cc854f3b7f2e039290ec4b991b464071180433b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5rqM0x",
+          "commit": {
+            "abbreviatedOid": "7248c35"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-05T15:58:35Z",
+          "updatedAt": "2024-01-05T15:58:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "PR_kwDOKq5sns5jUqG8",
+      "title": "Preliminary test vectors",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/6",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-01-05T15:28:48Z",
+      "updatedAt": "2024-01-05T22:26:16Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "0cc854f3b7f2e039290ec4b991b464071180433b",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "vectors",
+      "headRefOid": "585fb36d3464d87639c990bc72e6cc0cb13af6f2",
+      "closedAt": "2024-01-05T22:26:15Z",
+      "mergedAt": "2024-01-05T22:26:15Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "efc09f0ad34f190fb00f860320fd87934db6c733"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5rqqbl",
+          "commit": {
+            "abbreviatedOid": "70489f8"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-05T16:29:37Z",
+          "updatedAt": "2024-01-05T16:29:37Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\n# Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values\r\n\r\n```",
+              "createdAt": "2024-01-05T16:29:37Z",
+              "updatedAt": "2024-01-05T16:29:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5rtFCE",
+          "commit": {
+            "abbreviatedOid": "585fb36"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-05T22:26:04Z",
+          "updatedAt": "2024-01-05T22:26:04Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "PR_kwDOKq5sns5jZ4Oq",
+      "title": "Remove stretching",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/7",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also fixes a few small things:\r\n\r\n- Refer to ML-KEM functions that are actually defined.\r\n- Better text around derandomized versions.\r\n- Fix X25519 keygen.",
+      "createdAt": "2024-01-07T12:17:13Z",
+      "updatedAt": "2024-01-09T11:54:02Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "efc09f0ad34f190fb00f860320fd87934db6c733",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "no-stretching",
+      "headRefOid": "4357236aeb975a42bd6e8a3b6aac948d8812b011",
+      "closedAt": "2024-01-09T11:54:01Z",
+      "mergedAt": "2024-01-09T11:54:01Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "f4eb938858fa8577df2e519a77133e9047ee0ab5"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOKq5sns5ktXxE",
+      "title": "Store copy of X25519 public key in X-Wing decapsulation key",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/10",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #2",
+      "createdAt": "2024-01-22T11:16:36Z",
+      "updatedAt": "2024-01-22T14:31:50Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "849a345a2296ec292a36ab145956cce43172c4d0",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "issue-2",
+      "headRefOid": "55e673ccb50e37fbd30903ebe2e5550fd5848067",
+      "closedAt": "2024-01-22T14:31:49Z",
+      "mergedAt": "2024-01-22T14:31:49Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "a5f3abd5b139f9cc6840876655535d53630b953c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5teGQQ",
+          "commit": {
+            "abbreviatedOid": "77ea5b8"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-01-22T14:30:31Z",
+          "updatedAt": "2024-01-22T14:31:11Z",
+          "comments": [
+            {
+              "originalPosition": 127,
+              "body": "```suggestion\n  require separate access to the X-Wing public key. See #2.\n```\n",
+              "createdAt": "2024-01-22T14:30:31Z",
+              "updatedAt": "2024-01-22T14:31:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns5teHLC",
+          "commit": {
+            "abbreviatedOid": "55e673c"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-01-22T14:31:35Z",
+          "updatedAt": "2024-01-22T14:31:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "PR_kwDOKq5sns5m292T",
+      "title": "Add reference to implementations",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/11",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "GH #9",
+      "createdAt": "2024-02-14T13:15:48Z",
+      "updatedAt": "2024-02-14T13:23:52Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "6a2adfb0be7ca18022c668052dcf92dba5b7563e",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "impls",
+      "headRefOid": "253aa7c98d472c45f15eba1b4f0f20d4b631d684",
+      "closedAt": "2024-02-14T13:23:51Z",
+      "mergedAt": "2024-02-14T13:23:51Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "8fe6eff72f1d5f5cb8b7eb12856d462755c0edbd"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5wEn4n",
+          "commit": {
+            "abbreviatedOid": "253aa7c"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-14T13:23:47Z",
+          "updatedAt": "2024-02-14T13:23:47Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOKq5sns5m4WsT",
+      "title": "Add Python specification",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/12",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-14T16:30:58Z",
+      "updatedAt": "2024-02-14T17:39:58Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "8fe6eff72f1d5f5cb8b7eb12856d462755c0edbd",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "python",
+      "headRefOid": "b30ade7981489c3fa4597dd99f0c1338b2ee8202",
+      "closedAt": "2024-02-14T17:18:30Z",
+      "mergedAt": "2024-02-14T17:18:30Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "c4bce101625329f3035f79bd3cbf6c8713919341"
+      },
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "boom \r\n<img width=\"796\" alt=\"image\" src=\"https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/assets/552961/94a53c4a-e96a-4b38-87ff-cec4f8516683\">\r\n\r\n",
+          "createdAt": "2024-02-14T17:18:08Z",
+          "updatedAt": "2024-02-14T17:18:08Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks!",
+          "createdAt": "2024-02-14T17:39:57Z",
+          "updatedAt": "2024-02-14T17:39:57Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5wGyB8",
+          "commit": {
+            "abbreviatedOid": "cc65f9e"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-14T17:04:57Z",
+          "updatedAt": "2024-02-14T17:04:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKq5sns5wGzG7",
+          "commit": {
+            "abbreviatedOid": "cc65f9e"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "need to fix the datatracker parsing",
+          "createdAt": "2024-02-14T17:07:08Z",
+          "updatedAt": "2024-02-14T17:07:08Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKq5sns5wG4d1",
+          "commit": {
+            "abbreviatedOid": "b30ade7"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "The CI that checks the ",
+          "createdAt": "2024-02-14T17:18:15Z",
+          "updatedAt": "2024-02-14T17:18:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOKq5sns5m4w-l",
+      "title": "add ref to xwing-kem.rs",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/13",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-14T17:41:56Z",
+      "updatedAt": "2024-02-15T13:36:32Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "c4bce101625329f3035f79bd3cbf6c8713919341",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "xwing-kem.rs",
+      "headRefOid": "10d369db8eb13bfbcdffe07a626a967dc21b97eb",
+      "closedAt": "2024-02-15T13:36:31Z",
+      "mergedAt": "2024-02-15T13:36:31Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "d64a62a4dee1d5f0dd0910de93437cb93ded92f4"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5wHH4u",
+          "commit": {
+            "abbreviatedOid": "10d369d"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-14T17:52:51Z",
+          "updatedAt": "2024-02-14T17:52:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOKq5sns5pG6UY",
+      "title": "Add HPKE IANA registry number request",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/16",
+      "state": "MERGED",
+      "author": "raphaelrobert",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-03-08T18:02:18Z",
+      "updatedAt": "2024-03-09T19:08:35Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "2cfbaf46130ab7a4fb1e1e2b3b34604f208fe877",
+      "headRepository": "raphaelrobert/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "patch-1",
+      "headRefOid": "22a7e07255f65c84ed439053943d86f29a04b1a9",
+      "closedAt": "2024-03-08T20:00:04Z",
+      "mergedAt": "2024-03-08T20:00:04Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "f919525bba5f869f7ecc04e888ff4764d56993a1"
+      },
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Please let's revert this. We don't want people to deploy X-Wing and break this code-point before ML-KEM is final.",
+          "createdAt": "2024-03-09T09:30:52Z",
+          "updatedAt": "2024-03-09T09:30:52Z"
+        },
+        {
+          "author": "raphaelrobert",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I made the PR because applications need a code point. Any other preliminary code point would work too. Not having one at all would mean interop becomes impossible. ",
+          "createdAt": "2024-03-09T16:51:20Z",
+          "updatedAt": "2024-03-09T16:51:20Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Of course X-Wing will get a codepoint, once it's stable. You can use a temporary one in the reserved range if you want to experiment with a preliminary version now.",
+          "createdAt": "2024-03-09T19:08:35Z",
+          "updatedAt": "2024-03-09T19:08:35Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns5yyJON",
+          "commit": {
+            "abbreviatedOid": "22a7e07"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-08T19:59:52Z",
+          "updatedAt": "2024-03-08T19:59:52Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
+}

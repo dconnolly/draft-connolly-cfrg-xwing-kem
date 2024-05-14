@@ -1,0 +1,3019 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>X-Wing: general-purpose hybrid post-quantum KEM</title>
+<meta content="Deirdre Connolly" name="author">
+<meta content="Peter Schwabe" name="author">
+<meta content="Bas Westerbaan" name="author">
+<meta content="
+       This memo defines X-Wing, a general-purpose post-quantum/traditional
+hybrid key encapsulation mechanism (PQ/T KEM) built on X25519 and
+ML-KEM-768. 
+    " name="description">
+<meta content="xml2rfc 3.20.1" name="generator">
+<meta content="post quantum" name="keyword">
+<meta content="kem" name="keyword">
+<meta content="PQ/T hybrid" name="keyword">
+<meta content="draft-connolly-cfrg-xwing-kem-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.20.1
+    Python 3.11.8
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.0
+    intervaltree 3.1.0
+    Jinja2 3.1.2
+    lxml 4.9.3
+    platformdirs 4.2.0
+    pycountry 22.3.5
+    PyYAML 6.0.1
+    requests 2.31.0
+    setuptools 68.2.2
+    six 1.16.0
+    wcwidth 0.2.13
+-->
+<link href="draft-connolly-cfrg-xwing-kem.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+}
+:is(ol, ul) :is(ol, ul) {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  line-height: 1;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+}
+dl.olPercent {
+  --indent: 5ch;
+}
+dl > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+dl.olPercent > dt {
+  min-width: calc(var(--indent) - 2ch);
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
+  margin-top: 0;
+}
+:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
+  margin-bottom: 0;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    overflow-x: auto;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+}
+a.pilcrow[href] { color: var(--pilcrow-weak); }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  min-width: var(--identifier-width);
+  clear: left;
+  float: left;
+  text-align: right;
+  margin-right: 1ch;
+}
+#identifiers dd {
+  margin: 0;
+  margin-left: calc(1em + var(--identifier-width)) !important;
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 2px 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 10ch;
+  margin-right: 1.5ch;
+}
+.references dt:target::before {
+  content: "⇒";
+  width: 15px;
+  margin: 0 10px 0 -25px;
+}
+.references dd {
+  margin-left: 12ch !important;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul :is(p, li) {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Provide styling for table cell text alignment */
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">xwing</td>
+<td class="right">March 2024</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Connolly, et al.</td>
+<td class="center">Expires 27 September 2024</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Crypto Forum</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-connolly-cfrg-xwing-kem-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2024-03-26" class="published">26 March 2024</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Informational</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2024-09-27">27 September 2024</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">D. Connolly</div>
+<div class="org">SandboxAQ</div>
+</div>
+<div class="author">
+      <div class="author-name">P. Schwabe</div>
+<div class="org">MPI-SP &amp; Radboud University</div>
+</div>
+<div class="author">
+      <div class="author-name">B. E. Westerbaan</div>
+<div class="org">Cloudflare</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">X-Wing: general-purpose hybrid post-quantum KEM</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This memo defines X-Wing, a general-purpose post-quantum/traditional
+hybrid key encapsulation mechanism (PQ/T KEM) built on X25519 and
+ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        The latest revision of this draft can be found at <span><a href="https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/draft-connolly-cfrg-xwing-kem.html">https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/draft-connolly-cfrg-xwing-kem.html</a></span>.
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-connolly-cfrg-xwing-kem/">https://datatracker.ietf.org/doc/draft-connolly-cfrg-xwing-kem/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        Crypto Forum Research Group mailing list (<span><a href="mailto:cfrg@ietf.org">mailto:cfrg@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/search/?email_list=cfrg">https://mailarchive.ietf.org/arch/search/?email_list=cfrg</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/cfrg/">https://www.ietf.org/mailman/listinfo/cfrg/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-4">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem">https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 27 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2024 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-warning-ml-kem-768-has-not-" class="internal xref">Warning: ML-KEM-768 has not been standardised</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-design-goals" class="internal xref">Design goals</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.4">
+                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-not-an-interactive-key-agre" class="internal xref">Not an interactive key-agreement</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5">
+                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-not-an-authenticated-kem" class="internal xref">Not an authenticated KEM</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6">
+                <p id="section-toc.1-1.1.2.6.1"><a href="#section-1.6" class="auto internal xref">1.6</a>.  <a href="#name-comparisons" class="internal xref">Comparisons</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6.2.1">
+                    <p id="section-toc.1-1.1.2.6.2.1.1"><a href="#section-1.6.1" class="auto internal xref">1.6.1</a>.  <a href="#name-with-hpke-x25519kyber768dra" class="internal xref">With HPKE X25519Kyber768Draft00</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6.2.2">
+                    <p id="section-toc.1-1.1.2.6.2.2.1"><a href="#section-1.6.2" class="auto internal xref">1.6.2</a>.  <a href="#name-with-generic-combiner" class="internal xref">With generic combiner</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-requirements-notation" class="internal xref">Requirements Notation</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-cryptographic-dependencies" class="internal xref">Cryptographic Dependencies</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-x-wing-construction" class="internal xref">X-Wing Construction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-encoding-and-sizes" class="internal xref">Encoding and sizes</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-key-generation" class="internal xref">Key generation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.1">
+                    <p id="section-toc.1-1.5.2.2.2.1.1"><a href="#section-5.2.1" class="auto internal xref">5.2.1</a>.  <a href="#name-key-derivation" class="internal xref">Key derivation</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-combiner" class="internal xref">Combiner</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-encapsulation" class="internal xref">Encapsulation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4.2.1">
+                    <p id="section-toc.1-1.5.2.4.2.1.1"><a href="#section-5.4.1" class="auto internal xref">5.4.1</a>.  <a href="#name-derandomized" class="internal xref">Derandomized</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
+                <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-decapsulation" class="internal xref">Decapsulation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
+                <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-use-in-hpke" class="internal xref">Use in HPKE</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-use-in-tls-13" class="internal xref">Use in TLS 1.3</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-todo" class="internal xref">TODO</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-implementations" class="internal xref">Implementations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-machine-readable-specificat" class="internal xref">Machine-readable specification</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-xwingpy" class="internal xref">xwing.py</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-x25519py" class="internal xref">x25519.py</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
+                <p id="section-toc.1-1.11.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-mlkempy" class="internal xref">mlkem.py</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-test-vectors-todo-replace-w" class="internal xref">Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-D" class="auto internal xref">Appendix D</a>.  <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-change-log" class="internal xref">Change log</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
+                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-E.1" class="auto internal xref">E.1</a>.  <a href="#name-since-draft-connolly-cfrg-x" class="internal xref">Since draft-connolly-cfrg-xwing-kem-01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.2">
+                <p id="section-toc.1-1.14.2.2.1"><a href="#appendix-E.2" class="auto internal xref">E.2</a>.  <a href="#name-since-draft-connolly-cfrg-xw" class="internal xref">Since draft-connolly-cfrg-xwing-kem-00</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-F" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="intro">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<div id="warning-ml-kem-768-has-not-been-standardised">
+<section id="section-1.1">
+        <h3 id="name-warning-ml-kem-768-has-not-">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-warning-ml-kem-768-has-not-" class="section-name selfRef">Warning: ML-KEM-768 has not been standardised</a>
+        </h3>
+<p id="section-1.1-1">X-Wing uses ML-KEM-768, which has not been standardised yet. Thus X-Wing
+is not finished, yet, and should not be used, yet.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="motivation">
+<section id="section-1.2">
+        <h3 id="name-motivation">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
+        </h3>
+<p id="section-1.2-1">There are many choices that can be made when specifying a hybrid KEM:
+the constituent KEMs; their security levels; the combiner; and the hash
+within, to name but a few. Having too many similar options are a burden
+to the ecosystem.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">The aim of X-Wing is to provide a concrete, simple choice for
+post-quantum hybrid KEM, that should be suitable for the vast majority
+of use cases.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="goals">
+<section id="section-1.3">
+        <h3 id="name-design-goals">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-design-goals" class="section-name selfRef">Design goals</a>
+        </h3>
+<p id="section-1.3-1">By making concrete choices, we can simplify and improve many aspects of
+X-Wing.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.3-2.1">
+            <p id="section-1.3-2.1.1">Simplicity of definition. Because all shared secrets and cipher texts
+are fixed length, we do not need to encode the length. Using SHA3-256,
+we do not need HMAC-based construction. For the concrete choice of
+ML-KEM-768, we do not need to mix in its ciphertext, see <a href="#secc" class="auto internal xref">Section 6</a>.<a href="#section-1.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.3-2.2">
+            <p id="section-1.3-2.2.1">Security analysis. Because ML-KEM-768 already assumes the Quantum Random
+Oracle Model (QROM), we do not need to complicate the analysis
+of X-Wing by considering stronger models.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.3-2.3">
+            <p id="section-1.3-2.3.1">Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice
+performance benefit. Furthermore, by using SHA3-256 in the combiner,
+which matches the hashing in ML-KEM-768, this hash can be computed in
+one go on platforms where two-way Keccak is available.<a href="#section-1.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-1.3-3">We aim for "128 bits" security (NIST PQC level 1). Although at the
+moment there is no peer-reviewed evidence that ML-KEM-512 does not reach
+this level, we would like to hedge against future cryptanalytic
+improvements, and feel ML-KEM-768 provides a comfortable margin.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+<p id="section-1.3-4">We aim for X-Wing to be usable for most applications, including
+specifically HPKE <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-1.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="not-an-interactive-key-agreement">
+<section id="section-1.4">
+        <h3 id="name-not-an-interactive-key-agre">
+<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-not-an-interactive-key-agre" class="section-name selfRef">Not an interactive key-agreement</a>
+        </h3>
+<p id="section-1.4-1">Traditionally most protocols use a Diffie-Hellman (DH) style
+non-interactive key-agreement.  In many cases, a DH key agreement can be
+replaced by the interactive key-agreement afforded by a KEM without
+change in the protocol flow.  One notable example is TLS <span>[<a href="#HYBRID" class="cite xref">HYBRID</a>]</span>
+          <span>[<a href="#XYBERTLS" class="cite xref">XYBERTLS</a>]</span>.  However, not all uses of DH can be replaced in a
+straight-forward manner by a plain KEM.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="auth">
+<section id="section-1.5">
+        <h3 id="name-not-an-authenticated-kem">
+<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-not-an-authenticated-kem" class="section-name selfRef">Not an authenticated KEM</a>
+        </h3>
+<p id="section-1.5-1">In particular, X-Wing is not, borrowing the language of <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>, an
+<em>authenticated</em> KEM.<a href="#section-1.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="comparisons">
+<section id="section-1.6">
+        <h3 id="name-comparisons">
+<a href="#section-1.6" class="section-number selfRef">1.6. </a><a href="#name-comparisons" class="section-name selfRef">Comparisons</a>
+        </h3>
+<div id="with-hpke-x25519kyber768draft00">
+<section id="section-1.6.1">
+          <h4 id="name-with-hpke-x25519kyber768dra">
+<a href="#section-1.6.1" class="section-number selfRef">1.6.1. </a><a href="#name-with-hpke-x25519kyber768dra" class="section-name selfRef">With HPKE X25519Kyber768Draft00</a>
+          </h4>
+<p id="section-1.6.1-1">X-Wing is most similar to HPKE's X25519Kyber768Draft00
+<span>[<a href="#XYBERHPKE" class="cite xref">XYBERHPKE</a>]</span>. The key differences are:<a href="#section-1.6.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.6.1-2.1">
+              <p id="section-1.6.1-2.1.1">X-Wing uses the final version of ML-KEM-768.<a href="#section-1.6.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.6.1-2.2">
+              <p id="section-1.6.1-2.2.1">X-Wing hashes the shared secrets, to be usable outside of HPKE.<a href="#section-1.6.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.6.1-2.3">
+              <p id="section-1.6.1-2.3.1">X-Wing has a simpler combiner by flattening DHKEM(X25519) into the
+final hash.<a href="#section-1.6.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.6.1-2.4">
+              <p id="section-1.6.1-2.4.1">X-Wing does not hash in the ML-KEM-768 ciphertext.<a href="#section-1.6.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-1.6.1-3">There is also a different KEM called X25519Kyber768Draft00 <span>[<a href="#XYBERTLS" class="cite xref">XYBERTLS</a>]</span>
+which is used in TLS. This one should not be used outside of TLS, as it
+assumes the presence of the TLS transcript to ensure non malleability.<a href="#section-1.6.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="with-generic-combiner">
+<section id="section-1.6.2">
+          <h4 id="name-with-generic-combiner">
+<a href="#section-1.6.2" class="section-number selfRef">1.6.2. </a><a href="#name-with-generic-combiner" class="section-name selfRef">With generic combiner</a>
+          </h4>
+<p id="section-1.6.2-1">The generic combiner of <span>[<a href="#I-D.ounsworth-cfrg-kem-combiners" class="cite xref">I-D.ounsworth-cfrg-kem-combiners</a>]</span> can be
+instantiated with ML-KEM-768 and DHKEM(X25519). That achieves similar
+security, but:<a href="#section-1.6.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.6.2-2.1">
+              <p id="section-1.6.2-2.1.1">X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,
+and flattening the DHKEM construction, with the same level of
+security.<a href="#section-1.6.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.6.2-2.2">
+              <p id="section-1.6.2-2.2.1">X-Wing has a fixed 32 byte shared secret, instead of a variable shared
+secret.<a href="#section-1.6.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.6.2-2.3">
+              <p id="section-1.6.2-2.3.1">X-Wing does not accept the optional counter and fixedInfo arguments.<a href="#section-1.6.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="requirements-notation">
+<section id="section-2">
+      <h2 id="name-requirements-notation">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-requirements-notation" class="section-name selfRef">Requirements Notation</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-3">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-3-1">This document is consistent with all terminology defined in
+<span>[<a href="#I-D.driscoll-pqt-hybrid-terminology" class="cite xref">I-D.driscoll-pqt-hybrid-terminology</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">The following terms are used throughout this document to describe the
+operations, roles, and behaviors of HPKE:<a href="#section-3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-3.1">
+          <p id="section-3-3.1.1"><code>concat(x0, ..., xN)</code>: returns the concatenation of byte
+strings. <code>concat(0x01, 0x0203, 0x040506) = 0x010203040506</code>.<a href="#section-3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-3.2">
+          <p id="section-3-3.2.1"><code>random(n)</code>: return a pseudorandom byte string of length <code>n</code> bytes produced by
+a cryptographically-secure random number generator.<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="base-crypto">
+<section id="section-4">
+      <h2 id="name-cryptographic-dependencies">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-cryptographic-dependencies" class="section-name selfRef">Cryptographic Dependencies</a>
+      </h2>
+<p id="section-4-1">X-Wing relies on the following primitives:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-2.1">
+          <p id="section-4-2.1.1">ML-KEM-768 post-quantum key-encapsulation mechanism (KEM) <span>[<a href="#MLKEM" class="cite xref">MLKEM</a>]</span>:<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-2.1.2.1">
+              <p id="section-4-2.1.2.1.1"><code>ML-KEM-768.KeyGen()</code>: Randomized algorithm to generate an
+ML-KEM-768 key pair <code>(pk_M, sk_M)</code> of an encapsulation key <code>pk_M</code>
+and decapsulation key <code>sk_M</code>.
+Note that <code>ML-KEM-768.KeyGen()</code> returns the keys in reverse
+order of <code>GenerateKeyPair()</code> defined below.<a href="#section-4-2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-2.1.2.2">
+              <p id="section-4-2.1.2.2.1"><code>ML-KEM-768.Encaps(pk_M)</code>: Randomized algorithm to generate <code>(ss_M,
+ct_M)</code>, an ephemeral 32 byte shared key <code>ss_M</code>, and a fixed-length
+encapsulation (ciphertext) of that key <code>ct_M</code> for encapsulation key
+<code>pk_M</code>.<a href="#section-4-2.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-2.1.2.3">
+              <p id="section-4-2.1.2.3.1"><code>ML-KEM-768.Decap(ct_M, sk_M)</code>: Deterministic algorithm using the
+decapsulation key <code>sk_M</code> to recover the shared key from <code>ct_M</code>.<a href="#section-4-2.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-4-2.1.3">
+To generate deterministic test vectors, we also use<a href="#section-4-2.1.3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-2.1.4.1">
+              <p id="section-4-2.1.4.1.1"><code>ML-KEM-768.KeyGenDerand(seed)</code>: Same as <code>ML-KEM-768.KeyGen()</code>,
+but derandomized as follows.
+<code>seed[0:32]</code> is used for <code>d</code> in line 1 of algorithm 12 from <span>[<a href="#MLKEM" class="cite xref">MLKEM</a>]</span>
+and <code>seed</code> is 64 bytes. <code>seed[32:64]</code> is used for <code>z</code> in line 1 of
+algorithm 15.<a href="#section-4-2.1.4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-2.1.4.2">
+              <p id="section-4-2.1.4.2.1"><code>ML-KEM-768.EncapsDerand(pk_M, seed)</code>: Same as <code>ML-KEM-768.Encaps()</code>
+but derandomized as follows.
+<code>seed</code> is 32 bytes and used for <code>m</code> in line of 1 algorithm 16.<a href="#section-4-2.1.4.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="section-4-2.2">
+          <p id="section-4-2.2.1">X25519 elliptic curve Diffie-Hellman key-exchange defined in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>:<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-2.2.2.1">
+              <p id="section-4-2.2.2.1.1"><code>X25519(k,u)</code>: takes 32 byte strings k and u representing a
+Curve25519 scalar and curvepoint respectively, and returns
+the 32 byte string representing their scalar multiplication.<a href="#section-4-2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-2.2.2.2">
+              <p id="section-4-2.2.2.2.1"><code>X25519_BASE</code>: the 32 byte string representing the standard base point
+of Curve25519. In hex
+it is given by <code>0900000000000000000000000000000000000000000000000000000000000000</code>.<a href="#section-4-2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+<p id="section-4-3">Note that 9 is the standard basepoint for X25519, cf <span><a href="https://rfc-editor.org/rfc/rfc7748#section-6.1" class="relref">Section 6.1</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-4.1">
+          <p id="section-4-4.1.1">Symmetric cryptography.<a href="#section-4-4.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-4.1.2.1">
+              <p id="section-4-4.1.2.1.1"><code>SHAKE128(message, outlen)</code>: The extendable-output function (XOF)
+defined in Section 6.2 of <span>[<a href="#FIPS202" class="cite xref">FIPS202</a>]</span>.<a href="#section-4-4.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-4.1.2.2">
+              <p id="section-4-4.1.2.2.1"><code>SHA3-256(message)</code>: The hash defined in Section 6.1 of <span>[<a href="#FIPS202" class="cite xref">FIPS202</a>]</span>.<a href="#section-4-4.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+</section>
+</div>
+<div id="x-wing-construction">
+<section id="section-5">
+      <h2 id="name-x-wing-construction">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-x-wing-construction" class="section-name selfRef">X-Wing Construction</a>
+      </h2>
+<div id="encoding">
+<section id="section-5.1">
+        <h3 id="name-encoding-and-sizes">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-encoding-and-sizes" class="section-name selfRef">Encoding and sizes</a>
+        </h3>
+<p id="section-5.1-1">X-Wing encapsulation key, decapsulation key, ciphertexts and shared secrets are all
+fixed length byte strings.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-5.1-2">
+          <dt id="section-5.1-2.1">Decapsulation key (private):</dt>
+          <dd style="margin-left: 1.5em" id="section-5.1-2.2">
+            <p id="section-5.1-2.2.1">2464 bytes<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-5.1-2.3">Encapsulation key (public):</dt>
+          <dd style="margin-left: 1.5em" id="section-5.1-2.4">
+            <p id="section-5.1-2.4.1">1216 bytes<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-5.1-2.5">Ciphertext:</dt>
+          <dd style="margin-left: 1.5em" id="section-5.1-2.6">
+            <p id="section-5.1-2.6.1">1120 bytes<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-5.1-2.7">Shared secret:</dt>
+          <dd style="margin-left: 1.5em" id="section-5.1-2.8">
+            <p id="section-5.1-2.8.1">32 bytes<a href="#section-5.1-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="key-generation">
+<section id="section-5.2">
+        <h3 id="name-key-generation">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-key-generation" class="section-name selfRef">Key generation</a>
+        </h3>
+<p id="section-5.2-1">An X-Wing keypair (decapsulation key, encapsulation key) is generated as
+follows.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2-2">
+<pre>
+def GenerateKeyPair():
+  (pk_M, sk_M) = ML-KEM-768.KeyGen()
+  sk_X = random(32)
+  pk_X = X25519(sk_X, X25519_BASE)
+  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+</pre><a href="#section-5.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.2-3"><code>GenerateKeyPair()</code> returns the 2464 byte secret decapsulation key <code>sk</code>
+and the 1216 byte encapsulation key <code>pk</code>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Here and in the balance of the document for clarity we use
+the <code>M</code> and <code>X</code>subscripts for ML-KEM-768 and X25519 components respectively.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<div id="derive-key-pair">
+<section id="section-5.2.1">
+          <h4 id="name-key-derivation">
+<a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-key-derivation" class="section-name selfRef">Key derivation</a>
+          </h4>
+<p id="section-5.2.1-1">For testing, it is convenient to have a deterministic version
+of key generation. An X-Wing implementation <span class="bcp14">MAY</span> provide the following
+derandomized variant of key generation.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2.1-2">
+<pre>
+def GenerateKeyPairDerand(seed):
+  (pk_M, sk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
+  sk_X = seed[64:96]
+  pk_X = X25519(sk_X, X25519_BASE)
+  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+</pre><a href="#section-5.2.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.2.1-3"><code>seed</code> must be 96 bytes.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-4"><code>GenerateKeyPairDerand()</code> returns the 2464 byte secret encapsulation key
+<code>sk</code> and the 1216 byte decapsulation key <code>pk</code>.<a href="#section-5.2.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="combiner">
+<section id="section-5.3">
+        <h3 id="name-combiner">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-combiner" class="section-name selfRef">Combiner</a>
+        </h3>
+<p id="section-5.3-1">Given 32 byte strings <code>ss_M</code>, <code>ss_X</code>, <code>ct_X</code>, <code>pk_X</code>, representing the
+ML-KEM-768 shared secret, X25519 shared secret, X25519 ciphertext
+(ephemeral public key) and X25519 public key respectively, the 32 byte
+combined shared secret is given by:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.3-2">
+<pre>
+def Combiner(ss_M, ss_X, ct_X, pk_X):
+  return SHA3-256(concat(
+    XWingLabel,
+    ss_M,
+    ss_X,
+    ct_X,
+    pk_X
+  ))
+</pre><a href="#section-5.3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.3-3">where XWingLabel is the following 6 byte ASCII string<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.3-4">
+<pre>
+XWingLabel = concat(
+    "\./",
+    "/^\",
+)
+</pre><a href="#section-5.3-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.3-5">In hex XWingLabel is given by <code>5c2e2f2f5e5c</code>.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="encaps">
+<section id="section-5.4">
+        <h3 id="name-encapsulation">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-encapsulation" class="section-name selfRef">Encapsulation</a>
+        </h3>
+<p id="section-5.4-1">Given an X-Wing encapsulation key <code>pk</code>, encapsulation proceeds as follows.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4-2">
+<pre>
+def Encapsulate(pk):
+  pk_M = pk[0:1184]
+  pk_X = pk[1184:1216]
+  ek_X = random(32)
+  ct_X = X25519(ek_X, X25519_BASE)
+  ss_X = X25519(ek_X, pk_X)
+  (ss_M, ct_M) = ML-KEM-768.Encaps(pk_M)
+  ss = Combiner(ss_M, ss_X, ct_X, pk_X)
+  ct = concat(ct_M, ct_X)
+  return (ss, ct)
+</pre><a href="#section-5.4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4-3"><code>pk</code> is a 1216 byte X-Wing encapsulation key resulting from <code>GeneratePublicKey()</code><a href="#section-5.4-3" class="pilcrow">¶</a></p>
+<p id="section-5.4-4"><code>Encapsulate()</code> returns the 32 byte shared secret <code>ss</code> and the 1120 byte
+ciphertext <code>ct</code>.<a href="#section-5.4-4" class="pilcrow">¶</a></p>
+<div id="derandomized">
+<section id="section-5.4.1">
+          <h4 id="name-derandomized">
+<a href="#section-5.4.1" class="section-number selfRef">5.4.1. </a><a href="#name-derandomized" class="section-name selfRef">Derandomized</a>
+          </h4>
+<p id="section-5.4.1-1">For testing, it is convenient to have a deterministic version
+of encapsulation. An X-Wing implementation <span class="bcp14">MAY</span> provide
+the following derandomized function.<a href="#section-5.4.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4.1-2">
+<pre>
+def EncapsulateDerand(pk, eseed):
+  pk_M = pk[0:1184]
+  pk_X = pk[1184:1216]
+  ek_X = eseed[32:64]
+  ct_X = X25519(ek_X, X25519_BASE)
+  ss_X = X25519(ek_X, pk_X)
+  (ss_M, ct_M) = ML-KEM-768.EncapsDerand(pk_M, eseed[0:32])
+  ss = Combiner(ss_M, ss_X, ct_X, pk_X)
+  ct = concat(ct_M, ct_X)
+  return (ss, ct)
+</pre><a href="#section-5.4.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.4.1-3"><code>pk</code> is a 1216 byte X-Wing encapsulation key resulting from <code>GeneratePublicKey()</code>
+            <code>eseed</code> <span class="bcp14">MUST</span> be 64 bytes.<a href="#section-5.4.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.4.1-4"><code>EncapsulateDerand()</code> returns the 32 byte shared secret <code>ss</code> and the 1120 byte
+ciphertext <code>ct</code>.<a href="#section-5.4.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="decaps">
+<section id="section-5.5">
+        <h3 id="name-decapsulation">
+<a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-decapsulation" class="section-name selfRef">Decapsulation</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="section-5.5-1">
+<pre>
+def Decapsulate(ct, sk):
+  ct_M = ct[0:1088]
+  ct_X = ct[1088:1120]
+  sk_M = sk[0:2400]
+  sk_X = sk[2400:2432]
+  pk_X = sk[2432:2464]
+  ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
+  ss_X = X25519(sk_X, ct_X)
+  return Combiner(ss_M, ss_X, ct_X, pk_X)
+</pre><a href="#section-5.5-1" class="pilcrow">¶</a>
+</div>
+<p id="section-5.5-2"><code>ct</code> is the 1120 byte ciphertext resulting from <code>Encapsulate()</code>
+          <code>sk</code> is a 2464 byte X-Wing decapsulation key resulting from <code>GenerateKeyPair()</code><a href="#section-5.5-2" class="pilcrow">¶</a></p>
+<p id="section-5.5-3"><code>Decapsulate()</code> returns the 32 byte shared secret.<a href="#section-5.5-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="use-in-hpke">
+<section id="section-5.6">
+        <h3 id="name-use-in-hpke">
+<a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-use-in-hpke" class="section-name selfRef">Use in HPKE</a>
+        </h3>
+<p id="section-5.6-1">X-Wing satisfies the HPKE KEM interface as follows.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<p id="section-5.6-2">The <code>SerializePublicKey</code>, <code>DeserializePublicKey</code>,
+<code>SerializePrivateKey</code> and <code>DeserializePrivateKey</code> are the identity functions,
+as X-Wing keys are fixed-length byte strings, see <a href="#encoding" class="auto internal xref">Section 5.1</a>.<a href="#section-5.6-2" class="pilcrow">¶</a></p>
+<p id="section-5.6-3"><code>DeriveKeyPair()</code> is given by<a href="#section-5.6-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.6-4">
+<pre>
+def DeriveKeyPair(ikm):
+  return GenerateKeyPairDerand(SHAKE128(ikm, 96))
+</pre><a href="#section-5.6-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.6-5">where the HPKE private key and public key are the X-Wing decapsulation
+key and encapsulation key respectively.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
+<p id="section-5.6-6">The argument <code>ikm</code> to <code>DeriveKeyPair()</code> <span class="bcp14">SHOULD</span> be at least 32 octets in
+length.  (This is contrary to <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span> which stipulates it should be
+at least Nsk=2432 octets in length.)<a href="#section-5.6-6" class="pilcrow">¶</a></p>
+<p id="section-5.6-7"><code>Encap()</code> is <code>Encapsulate()</code> from <a href="#encaps" class="auto internal xref">Section 5.4</a>.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
+<p id="section-5.6-8"><code>Decap()</code> is <code>Decapsulate()</code> from <a href="#decaps" class="auto internal xref">Section 5.5</a>.<a href="#section-5.6-8" class="pilcrow">¶</a></p>
+<p id="section-5.6-9">X-Wing is not an authenticated KEM: it does not support <code>AuthEncap()</code>
+and <code>AuthDecap()</code>, see <a href="#auth" class="auto internal xref">Section 1.5</a>.<a href="#section-5.6-9" class="pilcrow">¶</a></p>
+<p id="section-5.6-10">Nsecret, Nenc, Npk, and Nsk are defined in <a href="#iana" class="auto internal xref">Section 7</a>.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="use-in-tls-13">
+<section id="section-5.7">
+        <h3 id="name-use-in-tls-13">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-use-in-tls-13" class="section-name selfRef">Use in TLS 1.3</a>
+        </h3>
+<p id="section-5.7-1">For the client's share, the key_exchange value contains
+the X-Wing encapsulation key.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<p id="section-5.7-2">For the server's share, the key_exchange value contains
+the X-Wing ciphertext.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="secc">
+<section id="section-6">
+      <h2 id="name-security-considerations">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-6-1">Informally, X-Wing is secure if SHA3 is secure, and either X25519 is
+secure, or ML-KEM-768 is secure.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">More precisely, if SHA3-256, SHA3-512, SHAKE-128, and SHAKE-256 may be
+modelled as a random oracle, then the IND-CCA security of X-Wing is
+bounded by the IND-CCA security of ML-KEM-768, and the gap-CDH security
+of Curve25519, see <span>[<a href="#PROOF" class="cite xref">PROOF</a>]</span>.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">The security of X-Wing relies crucially on the specifics of the
+Fujisaki-Okamoto transformation used in ML-KEM-768: the X-Wing
+combiner cannot be assumed to be secure, when used with different
+KEMs. In particular it is not known to be safe to leave
+out the post-quantum ciphertext from the combiner in the general case.<a href="#section-6-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana">
+<section id="section-7">
+      <h2 id="name-iana-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-7-1">This document requests/registers a new entry to the "HPKE KEM Identifiers"
+registry.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-7-2">
+        <dt id="section-7-2.1">Value:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.2">
+          <p id="section-7-2.2.1">TBD (please)<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.3">KEM:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.4">
+          <p id="section-7-2.4.1">X-Wing<a href="#section-7-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.5">Nsecret:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.6">
+          <p id="section-7-2.6.1">32<a href="#section-7-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.7">Nenc:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.8">
+          <p id="section-7-2.8.1">1120<a href="#section-7-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.9">Npk:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.10">
+          <p id="section-7-2.10.1">1216<a href="#section-7-2.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.11">Nsk:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.12">
+          <p id="section-7-2.12.1">2464<a href="#section-7-2.12.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.13">Auth:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.14">
+          <p id="section-7-2.14.1">no<a href="#section-7-2.14.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-2.15">Reference:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-2.16">
+          <p id="section-7-2.16.1">This document<a href="#section-7-2.16.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
+</dl>
+<p id="section-7-3">Furthermore, this document requests/registers a new entry to the TLS
+Named Group (or Supported Group) registry, according to the procedures
+in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08#section-6" class="relref">Section 6</a> of [<a href="#TLSIANA" class="cite xref">TLSIANA</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-7-4">
+        <dt id="section-7-4.1">Value:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.2">
+          <p id="section-7-4.2.1">TBD (please)<a href="#section-7-4.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-4.3">Description:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.4">
+          <p id="section-7-4.4.1">X-Wing<a href="#section-7-4.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-4.5">DTLS-OK:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.6">
+          <p id="section-7-4.6.1">Y<a href="#section-7-4.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-4.7">Recommended:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.8">
+          <p id="section-7-4.8.1">Y<a href="#section-7-4.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-4.9">Reference:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.10">
+          <p id="section-7-4.10.1">This document<a href="#section-7-4.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-4.11">Comment:</dt>
+        <dd style="margin-left: 1.5em" id="section-7-4.12">
+          <p id="section-7-4.12.1">PQ/T hybrid of X25519 and ML-KEM-768<a href="#section-7-4.12.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="todo">
+<section id="section-8">
+      <h2 id="name-todo">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-todo" class="section-name selfRef">TODO</a>
+      </h2>
+<ul class="normal">
+<li class="normal" id="section-8-1.1">
+          <p id="section-8-1.1.1">Which validation do we want to require?<a href="#section-8-1.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<section id="section-9">
+      <h2 id="name-references">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-9.1">
+        <h3 id="name-normative-references">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+      <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-9.2">
+        <h3 id="name-informative-references">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="FIPS202">[FIPS202]</dt>
+        <dd>
+<span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"FIPS 202: SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"</span>, <span>n.d.</span>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HYBRID">[HYBRID]</dt>
+        <dd>
+<span class="refAuthor">Stebila, D.</span>, <span class="refAuthor">Fluhrer, S.</span>, and <span class="refAuthor">S. Gueron</span>, <span class="refTitle">"Hybrid key exchange in TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-stebila-tls-hybrid-design-03</span>, <time datetime="2020-02-12" class="refDate">12 February 2020</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-stebila-tls-hybrid-design-03">https://datatracker.ietf.org/doc/html/draft-stebila-tls-hybrid-design-03</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.driscoll-pqt-hybrid-terminology">[I-D.driscoll-pqt-hybrid-terminology]</dt>
+        <dd>
+<span class="refAuthor">D, F.</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-driscoll-pqt-hybrid-terminology-02</span>, <time datetime="2023-03-07" class="refDate">7 March 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-driscoll-pqt-hybrid-terminology-02">https://datatracker.ietf.org/doc/html/draft-driscoll-pqt-hybrid-terminology-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ounsworth-cfrg-kem-combiners">[I-D.ounsworth-cfrg-kem-combiners]</dt>
+        <dd>
+<span class="refAuthor">Ounsworth, M.</span>, <span class="refAuthor">Wussler, A.</span>, and <span class="refAuthor">S. Kousidis</span>, <span class="refTitle">"Combiner function for hybrid key encapsulation mechanisms (Hybrid KEMs)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ounsworth-cfrg-kem-combiners-05</span>, <time datetime="2024-01-31" class="refDate">31 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ounsworth-cfrg-kem-combiners-05">https://datatracker.ietf.org/doc/html/draft-ounsworth-cfrg-kem-combiners-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="MLKEM">[MLKEM]</dt>
+        <dd>
+<span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"FIPS 203 (Initial Draft): Module-Lattice-Based Key-Encapsulation Mechanism Standard"</span>, <span>n.d.</span>, <span>&lt;<a href="https://csrc.nist.gov/pubs/fips/203/ipd">https://csrc.nist.gov/pubs/fips/203/ipd</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="PROOF">[PROOF]</dt>
+        <dd>
+<span class="refAuthor">Barbosa, M.</span>, <span class="refAuthor">Connolly, D.</span>, <span class="refAuthor">Duarte, J.</span>, <span class="refAuthor">Kaiser, A.</span>, <span class="refAuthor">Schwabe, P.</span>, <span class="refAuthor">Varner, K.</span>, and <span class="refAuthor">B. E. Westerbraan</span>, <span class="refTitle">"X-Wing: The Hybrid KEM You’ve Been Looking For"</span>, <span>n.d.</span>, <span>&lt;<a href="https://eprint.iacr.org/2024/039">https://eprint.iacr.org/2024/039</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7748">[RFC7748]</dt>
+        <dd>
+<span class="refAuthor">Langley, A.</span>, <span class="refAuthor">Hamburg, M.</span>, and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"Elliptic Curves for Security"</span>, <span class="seriesInfo">RFC 7748</span>, <span class="seriesInfo">DOI 10.17487/RFC7748</span>, <time datetime="2016-01" class="refDate">January 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7748">https://www.rfc-editor.org/rfc/rfc7748</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9180">[RFC9180]</dt>
+        <dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lipp, B.</span>, and <span class="refAuthor">C. Wood</span>, <span class="refTitle">"Hybrid Public Key Encryption"</span>, <span class="seriesInfo">RFC 9180</span>, <span class="seriesInfo">DOI 10.17487/RFC9180</span>, <time datetime="2022-02" class="refDate">February 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9180">https://www.rfc-editor.org/rfc/rfc9180</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="TLSIANA">[TLSIANA]</dt>
+        <dd>
+<span class="refAuthor">Salowey, J. A.</span> and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"IANA Registry Updates for TLS and DTLS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8447bis-08</span>, <time datetime="2024-01-23" class="refDate">23 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="XYBERHPKE">[XYBERHPKE]</dt>
+        <dd>
+<span class="refAuthor">Westerbaan, B.</span> and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"X25519Kyber768Draft00 hybrid post-quantum KEM for HPKE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-westerbaan-cfrg-hpke-xyber768d00-02</span>, <time datetime="2023-05-04" class="refDate">4 May 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-02">https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="XYBERTLS">[XYBERTLS]</dt>
+      <dd>
+<span class="refAuthor">Westerbaan, B.</span> and <span class="refAuthor">D. Stebila</span>, <span class="refTitle">"X25519Kyber768Draft00 hybrid post-quantum key agreement"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-tls-westerbaan-xyber768d00-03</span>, <time datetime="2023-09-24" class="refDate">24 September 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-tls-westerbaan-xyber768d00-03">https://datatracker.ietf.org/doc/html/draft-tls-westerbaan-xyber768d00-03</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+<div id="implementations">
+<section id="appendix-A">
+      <h2 id="name-implementations">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-implementations" class="section-name selfRef">Implementations</a>
+      </h2>
+<ul class="normal">
+<li class="normal" id="appendix-A-1.1">
+          <p id="appendix-A-1.1.1">Go<a href="#appendix-A-1.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A-1.1.2.1">
+              <p id="appendix-A-1.1.2.1.1"><a href="https://github.com/cloudflare/circl/pull/471">CIRCL</a><a href="#appendix-A-1.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-A-1.1.2.2">
+              <p id="appendix-A-1.1.2.2.1"><a href="https://github.com/FiloSottile/mlkem768">Filippo</a><a href="#appendix-A-1.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="appendix-A-1.2">
+          <p id="appendix-A-1.2.1">Rust<a href="#appendix-A-1.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A-1.2.2.1">
+              <p id="appendix-A-1.2.2.1.1"><a href="https://github.com/rugo/xwing-kem.rs]">xwing-kem.rs</a><a href="#appendix-A-1.2.2.1.1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1.2.2.1.2">
+Note: implements the older <code>-00</code> version of this memo at the time of
+writing.<a href="#appendix-A-1.2.2.1.2" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+</section>
+</div>
+<div id="S-spec">
+<section id="appendix-B">
+      <h2 id="name-machine-readable-specificat">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-machine-readable-specificat" class="section-name selfRef">Machine-readable specification</a>
+      </h2>
+<p id="appendix-B-1">For the convenience of implementors, we provide a reference specification
+in Python. This is a specification; not production ready code:
+it should not be deployed as-is, as it leaks the private key by its runtime.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<div id="xwingpy">
+<section id="appendix-B.1">
+        <h3 id="name-xwingpy">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-xwingpy" class="section-name selfRef">xwing.py</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="appendix-B.1-1">
+<pre>
+# WARNING This is a specification of X-Wing; not a production-ready
+# implementation. It is slow and does not run in constant time.
+
+# Requires the CryptoDome for SHAKE, and pytest for testing. To install, run
+#
+#   pip install pycryptodome pytest
+
+import binascii
+import hashlib
+
+import mlkem
+import x25519
+
+XWingLabel = br"""
+                \./
+                /^\
+              """.replace(b'\n', b'').replace(b' ', b'')
+
+assert len(XWingLabel) == 6
+assert binascii.hexlify(XWingLabel) == b'5c2e2f2f5e5c'
+
+def GenerateKeyPairDerand(seed):
+    assert len(seed) == 96
+    pkM, skM = mlkem.KeyGen(seed[0:64], mlkem.params768)
+    skX = seed[64:96]
+    pkX = x25519.X(skX, x25519.BASE)
+    return skM + skX + pkX, pkM + pkX
+
+def Combiner(ssM, ssX, ctX, pkX):
+    return hashlib.sha3_256(
+        XWingLabel +
+        ssM +
+        ssX +
+        ctX +
+        pkX
+    ).digest()
+
+def EncapsulateDerand(pk, eseed):
+    assert len(eseed) == 64
+    assert len(pk) == 1216
+    pkM = pk[0:1184]
+    pkX = pk[1184:1216]
+    ekX = eseed[32:64]
+    ctX = x25519.X(ekX, x25519.BASE)
+    ssX = x25519.X(ekX, pkX)
+    ctM, ssM = mlkem.Enc(pkM, eseed[0:32], mlkem.params768)
+    ss = Combiner(ssM, ssX, ctX, pkX)
+    return ss, ctM + ctX
+
+def Decapsulate(ct, sk):
+    assert len(ct) == 1120
+    assert len(sk) == 2464
+    ctM = ct[0:1088]
+    ctX = ct[1088:1120]
+    skM = sk[0:2400]
+    skX = sk[2400:2432]
+    pkX = sk[2432:2464]
+    ssM = mlkem.Dec(skM, ctM, mlkem.params768)
+    ssX = x25519.X(skX, ctX)
+    return Combiner(ssM, ssX, ctX, pkX)
+</pre><a href="#appendix-B.1-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="x25519py">
+<section id="appendix-B.2">
+        <h3 id="name-x25519py">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-x25519py" class="section-name selfRef">x25519.py</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="appendix-B.2-1">
+<pre>
+# WARNING This is a specification of X25519; not a production-ready
+# implementation. It is slow and does not run in constant time.
+
+p = 2**255 - 19
+a24 = 121665
+
+BASE = b'\x09' + b'\x00'*31
+
+def decode(bs):
+    return sum(bs[i] &lt;&lt; 8*i for i in range(32)) % p
+
+def decodeScalar(k):
+    bs = list(k)
+    bs[0] &amp;= 248
+    bs[31] &amp;= 127
+    bs[31] |= 64
+    return decode(bs)
+
+# See rfc7748 §5.
+def X(k, u):
+    assert len(k) == 32
+    assert len(u) == 32
+
+    k = decodeScalar(k)
+    u = decode(u)
+    x1, x2, x3, z2, z3, swap = u, 1, u, 0, 1, 0
+
+    for t in range(255, -1, -1):
+        kt = (k &gt;&gt; t) &amp; 1
+        swap ^= kt
+        if swap == 1:
+            x3, x2 = x2, x3
+            z3, z2 = z2, z3
+        swap = kt
+
+        A = x2 + z2
+        AA = (A*A) % p
+        B = x2 - z2
+        BB = (B*B) % p
+        E = AA - BB
+        C = x3 + z3
+        D = x3 - z3
+        DA = (D*A) % p
+        CB = (C*B) % p
+        x3 = DA + CB
+        x3 = (x3 * x3) % p
+        z3 = DA - CB
+        z3 = (x1 * z3 * z3) % p
+        x2 = (AA * BB) % p
+        z2 = (E * (AA + (a24 * E) % p)) % p
+
+    if swap == 1:
+        x3, x2 = x2, x3
+        z2, z3 = z3, z2
+
+    ret = (x2 * pow(z2, p-2, p)) % p
+    return bytes((ret &gt;&gt; 8*i) &amp; 255 for i in range(32))
+</pre><a href="#appendix-B.2-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="mlkempy">
+<section id="appendix-B.3">
+        <h3 id="name-mlkempy">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-mlkempy" class="section-name selfRef">mlkem.py</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="appendix-B.3-1">
+<pre>
+# WARNING This is a specification of Kyber; not a production ready
+# implementation. It is slow and does not run in constant time.
+
+# Requires the CryptoDome for SHAKE. To install, run
+#
+#   pip install pycryptodome pytest
+from Crypto.Hash import SHAKE128, SHAKE256
+
+import io
+import hashlib
+import functools
+import collections
+
+from math import floor
+
+q = 3329
+nBits = 8
+zeta = 17
+eta2 = 2
+
+n = 2**nBits
+inv2 = (q+1)//2 # inverse of 2
+
+params = collections.namedtuple('params', ('k', 'du', 'dv', 'eta1'))
+
+params512  = params(k = 2, du = 10, dv = 4, eta1 = 3)
+params768  = params(k = 3, du = 10, dv = 4, eta1 = 2)
+params1024 = params(k = 4, du = 11, dv = 5, eta1 = 2)
+
+def smod(x):
+    r = x % q
+    if r &gt; (q-1)//2:
+        r -= q
+    return r
+
+# Rounds to nearest integer with ties going up
+def Round(x):
+    return int(floor(x + 0.5))
+
+def Compress(x, d):
+    return Round((2**d / q) * x) % (2**d)
+
+def Decompress(y, d):
+    assert 0 &lt;= y and y &lt;= 2**d
+    return Round((q / 2**d) * y)
+
+def BitsToWords(bs, w):
+    assert len(bs) % w == 0
+    return [sum(bs[i+j] * 2**j for j in range(w))
+            for i in range(0, len(bs), w)]
+
+def WordsToBits(bs, w):
+    return sum([[(b &gt;&gt; i) % 2 for i in range(w)] for b in bs], [])
+
+def Encode(a, w):
+    return bytes(BitsToWords(WordsToBits(a, w), 8))
+
+def Decode(a, w):
+    return BitsToWords(WordsToBits(a, 8), w)
+
+def brv(x):
+    """ Reverses a 7-bit number """
+    return int(''.join(reversed(bin(x)[2:].zfill(nBits-1))), 2)
+
+class Poly:
+    def __init__(self, cs=None):
+        self.cs = (0,)*n if cs is None else tuple(cs)
+        assert len(self.cs) == n
+
+    def __add__(self, other):
+        return Poly((a+b) % q for a,b in zip(self.cs, other.cs))
+
+    def __neg__(self):
+        return Poly(q-a for a in self.cs)
+    def __sub__(self, other):
+        return self + -other
+
+    def __str__(self):
+        return f"Poly({self.cs}"
+
+    def __eq__(self, other):
+        return self.cs == other.cs
+
+    def NTT(self):
+        cs = list(self.cs)
+        layer = n // 2
+        zi = 0
+        while layer &gt;= 2:
+            for offset in range(0, n-layer, 2*layer):
+                zi += 1
+                z = pow(zeta, brv(zi), q)
+
+                for j in range(offset, offset+layer):
+                    t = (z * cs[j + layer]) % q
+                    cs[j + layer] = (cs[j] - t) % q
+                    cs[j] = (cs[j] + t) % q
+            layer //= 2
+        return Poly(cs)
+
+    def RefNTT(self):
+        # Slower, but simpler, version of the NTT.
+        cs = [0]*n
+        for i in range(0, n, 2):
+            for j in range(n // 2):
+                z = pow(zeta, (2*brv(i//2)+1)*j, q)
+                cs[i] = (cs[i] + self.cs[2*j] * z) % q
+                cs[i+1] = (cs[i+1] + self.cs[2*j+1] * z) % q
+        return Poly(cs)
+
+    def InvNTT(self):
+        cs = list(self.cs)
+        layer = 2
+        zi = n//2
+        while layer &lt; n:
+            for offset in range(0, n-layer, 2*layer):
+                zi -= 1
+                z = pow(zeta, brv(zi), q)
+
+                for j in range(offset, offset+layer):
+                    t = (cs[j+layer] - cs[j]) % q
+                    cs[j] = (inv2*(cs[j] + cs[j+layer])) % q
+                    cs[j+layer] = (inv2 * z * t) % q
+            layer *= 2
+        return Poly(cs)
+
+    def MulNTT(self, other):
+        """ Computes self o other, the multiplication of self and other
+            in the NTT domain. """
+        cs = [None]*n
+        for i in range(0, n, 2):
+            a1 = self.cs[i]
+            a2 = self.cs[i+1]
+            b1 = other.cs[i]
+            b2 = other.cs[i+1]
+            z = pow(zeta, 2*brv(i//2)+1, q)
+            cs[i] = (a1 * b1 + z * a2 * b2) % q
+            cs[i+1] = (a2 * b1 + a1 * b2) % q
+        return Poly(cs)
+
+    def Compress(self, d):
+        return Poly(Compress(c, d) for c in self.cs)
+
+    def Decompress(self, d):
+        return Poly(Decompress(c, d) for c in self.cs)
+
+    def Encode(self, d):
+        return Encode(self.cs, d)
+
+def sampleUniform(stream):
+    cs = []
+    while True:
+        b = stream.read(3)
+        d1 = b[0] + 256*(b[1] % 16)
+        d2 = (b[1] &gt;&gt; 4) + 16*b[2]
+        assert d1 + 2**12 * d2 == b[0] + 2**8 * b[1] + 2**16*b[2]
+        for d in [d1, d2]:
+            if d &gt;= q:
+                continue
+            cs.append(d)
+            if len(cs) == n:
+                return Poly(cs)
+
+def CBD(a, eta):
+    assert len(a) == 64*eta
+    b = WordsToBits(a, 8)
+    cs = []
+    for i in range(n):
+        cs.append((sum(b[:eta]) - sum(b[eta:2*eta])) % q)
+        b = b[2*eta:]
+    return Poly(cs)
+
+def XOF(seed, j, i):
+    h = SHAKE128.new()
+    h.update(seed + bytes([j, i]))
+    return h
+
+def PRF1(seed, nonce):
+    assert len(seed) == 32
+    h = SHAKE256.new()
+    h.update(seed + bytes([nonce]))
+    return h
+
+def PRF2(seed, msg):
+    assert len(seed) == 32
+    h = SHAKE256.new()
+    h.update(seed + msg)
+    return h.read(32)
+
+def G(seed):
+    h = hashlib.sha3_512(seed).digest()
+    return h[:32], h[32:]
+
+def H(msg): return hashlib.sha3_256(msg).digest()
+
+class Vec:
+    def __init__(self, ps):
+        self.ps = tuple(ps)
+
+    def NTT(self):
+        return Vec(p.NTT() for p in self.ps)
+
+    def InvNTT(self):
+        return Vec(p.InvNTT() for p in self.ps)
+
+    def DotNTT(self, other):
+        """ Computes the dot product &lt;self, other&gt; in NTT domain. """
+        return sum((a.MulNTT(b) for a, b in zip(self.ps, other.ps)),
+                   Poly())
+
+    def __add__(self, other):
+        return Vec(a+b for a,b in zip(self.ps, other.ps))
+
+    def Compress(self, d):
+        return Vec(p.Compress(d) for p in self.ps)
+
+    def Decompress(self, d):
+        return Vec(p.Decompress(d) for p in self.ps)
+
+    def Encode(self, d):
+        return Encode(sum((p.cs for p in self.ps), ()), d)
+
+    def __eq__(self, other):
+        return self.ps == other.ps
+
+def EncodeVec(vec, w):
+    return Encode(sum([p.cs for p in vec.ps], ()), w)
+def DecodeVec(bs, k, w):
+    cs = Decode(bs, w)
+    return Vec(Poly(cs[n*i:n*(i+1)]) for i in range(k))
+def DecodePoly(bs, w):
+    return Poly(Decode(bs, w))
+
+class Matrix:
+    def __init__(self, cs):
+        """ Samples the matrix uniformly from seed rho """
+        self.cs = tuple(tuple(row) for row in cs)
+
+    def MulNTT(self, vec):
+        """ Computes matrix multiplication A*vec in the NTT domain. """
+        return Vec(Vec(row).DotNTT(vec) for row in self.cs)
+
+    def T(self):
+        """ Returns transpose of matrix """
+        k = len(self.cs)
+        return Matrix((self.cs[j][i] for j in range(k))
+                      for i in range(k))
+
+def sampleMatrix(rho, k):
+    return Matrix([[sampleUniform(XOF(rho, j, i))
+            for j in range(k)] for i in range(k)])
+
+def sampleNoise(sigma, eta, offset, k):
+    return Vec(CBD(PRF1(sigma, i+offset).read(64*eta), eta)
+               for i in range(k))
+
+def constantTimeSelectOnEquality(a, b, ifEq, ifNeq):
+    # WARNING! In production code this must be done in a
+    # data-independent constant-time manner, which this implementation
+    # is not. In fact, many more lines of code in this
+    # file are not constant-time.
+    return ifEq if a == b else ifNeq
+
+def InnerKeyGen(seed, params):
+    assert len(seed) == 32
+    rho, sigma = G(seed)
+    A = sampleMatrix(rho, params.k)
+    s = sampleNoise(sigma, params.eta1, 0, params.k)
+    e = sampleNoise(sigma, params.eta1, params.k, params.k)
+    sHat = s.NTT()
+    eHat = e.NTT()
+    tHat = A.MulNTT(sHat) + eHat
+    pk = EncodeVec(tHat, 12) + rho
+    sk = EncodeVec(sHat, 12)
+    return (pk, sk)
+
+def InnerEnc(pk, msg, seed, params):
+    assert len(msg) == 32
+    tHat = DecodeVec(pk[:-32], params.k, 12)
+    rho = pk[-32:]
+    A = sampleMatrix(rho, params.k)
+    r = sampleNoise(seed, params.eta1, 0, params.k)
+    e1 = sampleNoise(seed, eta2, params.k, params.k)
+    e2 = sampleNoise(seed, eta2, 2*params.k, 1).ps[0]
+    rHat = r.NTT()
+    u = A.T().MulNTT(rHat).InvNTT() + e1
+    m = Poly(Decode(msg, 1)).Decompress(1)
+    v = tHat.DotNTT(rHat).InvNTT() + e2 + m
+    c1 = u.Compress(params.du).Encode(params.du)
+    c2 = v.Compress(params.dv).Encode(params.dv)
+    return c1 + c2
+
+def InnerDec(sk, ct, params):
+    split = params.du * params.k * n // 8
+    c1, c2 = ct[:split], ct[split:]
+    u = DecodeVec(c1, params.k, params.du).Decompress(params.du)
+    v = DecodePoly(c2, params.dv).Decompress(params.dv)
+    sHat = DecodeVec(sk, params.k, 12)
+    return (v - sHat.DotNTT(u.NTT()).InvNTT()).Compress(1).Encode(1)
+
+def KeyGen(seed, params):
+    assert len(seed) == 64
+    z = seed[32:]
+    pk, sk2 = InnerKeyGen(seed[:32], params)
+    h = H(pk)
+    return (pk, sk2 + pk + h + z)
+
+def Enc(pk, seed, params):
+    assert len(seed) == 32
+
+    K, r = G(seed + H(pk))
+    ct = InnerEnc(pk, seed, r, params)
+    return (ct, K)
+
+def Dec(sk, ct, params):
+    sk2 = sk[:12 * params.k * n//8]
+    pk = sk[12 * params.k * n//8 : 24 * params.k * n//8 + 32]
+    h = sk[24 * params.k * n//8 + 32 : 24 * params.k * n//8 + 64]
+    z = sk[24 * params.k * n//8 + 64 : 24 * params.k * n//8 + 96]
+    m2 = InnerDec(sk, ct, params)
+    K2, r2 = G(m2 + h)
+    ct2 = InnerEnc(pk, m2, r2, params)
+    return constantTimeSelectOnEquality(
+        ct2, ct,
+        K2,                 # if ct == ct2
+        PRF2(z, ct),        # if ct != ct2
+    )
+</pre><a href="#appendix-B.3-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="test-vectors-todo-replace-with-test-vectors-that-re-use-ml-kem-x25519-values">
+<section id="appendix-C">
+      <h2 id="name-test-vectors-todo-replace-w">
+<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-test-vectors-todo-replace-w" class="section-name selfRef">Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values</a>
+      </h2>
+<div class="alignLeft art-text artwork" id="appendix-C-1">
+<pre>
+seed
+  7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef263cb1eea9
+  88004b93103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc873c23dc62
+  b8d260169afa2f75ab916a58d974918835d25e6a435085b2
+sk
+  24c59d1c7603e7b74bc7aa1bc2cb3a214b3cfaebb63bd85b65408427c498ba394371bb27
+  1f92a3b506b81d54a95a7c0ddfbaa1519553d6f3cd5a601b7db6b0e91a5149468f1f68ad
+  26478bf3c6670e093ac4c49e7a90ba46595de94c50e04129a811a841b39534a87f0ae7b1
+  116553e20c9a566b9b8ff7c7e728b8b201893403a4f252a55230874c256b897834cda349
+  807b25cbd75a30867bfb80328200017f1cb70b56cc546b65d3dc9cdb45107cf10dba3496
+  19043ac35c0b9546309a239039813ed5c40f353a5e8e42193564496112bda56cb38c081d
+  f252ae9c2c7e441a062e92a7c8da7a240c9952d86b5f1bb6a53b38a5ac0a54a84b43f12d
+  a1d0525655684a12090b60b28b0c628db092015547d1070af5d6192e639636615d03c654
+  bb90008ca15b784119f6178a00d7bef4a54a274ac922e55c61a3a8840aa258639484a3bc
+  e2e43b6c969b11275631daa129a61ea0e2939f0877e1a110c8a44b24c54fbb07a958db9f
+  eeca1eb52b086c87bf43a9b02a5b2c4762117c3a99ae4c4e2eaa7a33b9a714737215c103
+  17514f6c4299ef92acd64c4858e85ce737a801890022d7381f3540230c0c8ef50a848a28
+  b09ba0bf8b50619c905751601d7629767449c9c0b2bae321f438a77f412a55e45ecab4b3
+  9053c6561801c639be6495be8fa144ef6029af663407ca9181946de5f3aec7236343ab3b
+  c5a38a09c01b412baf0afb23f9e9b8f2b40810f2ce4ffbcdbfd87972323e98065160bcba
+  34b3afd6c25b664745fca99a9ea75cef019d768485ec23336d9b39e4d05d8d587b30633d
+  4f69ade5753a39680235e44f27995da96798f3a85e184a9fad19320829629f4140417bb7
+  dbf5851ab79258134146d088452774991a087a1c2beaea89f218087ba774ae253b494c27
+  750b1de04b44d953c5e47ab10f65205ee212f9c30391e5299553954916873a0b41164543
+  e801c0b099cb44f48995675823c10b40f4bbac9177a558ca0c30765c2aabfd6a4da54c84
+  13e33902d63f064330f0464982429de2604cd03b4de84a9f821a5470423a40a964dcc418
+  63363d77b02c3127304f942ee71c98c643a427533ef300104948b825277953aaabfd8555
+  88f75a77d199a213ad348116e9e539f6d37068a551c710548b7a2c7ee95f9cd9b3483332
+  673cc44bcb18a778a49455c768e0b340f81102ac6b76b064057151ef101ae143787f5485
+  53558df8035a3ce00c9c43cda43142cca39034b09a7e6089867b4c64980a69ecab2e6818
+  724c35cb909d5d45bc6a349c71b306567664adc0cc8ef698049b4b4b432dd0f69fac0758
+  0f77c4f79b22bb90cb97b341880716853431694c9120f6724ad58d57127fced999ff6229
+  a5d4c3c240129cc812acc73698f949d8e73661f2528262bfccfa5cdf5a2104649806e295
+  ea161217083365aa26cee6ae2f1356e8e1c5cefcc85703447ef1160a1b4a0e8c017b1738
+  02c66c88ab70d39a6c96c1569d5a86245a7eeb087d682219080768745b44bf244f65b567
+  b2658dbae6962ba52b322118e214cfadd7cf3502582dc9cafba952a9637ad36007102597
+  78d99d23f8235da90791604b4f0a4f7640680f59b633d93dfb84282ba54c674b115684a4
+  1bc331b659a61a04883d0c5ebbc0772754a4c33b6a90e52e0678ce06a0453ba8a188b15a
+  496bae6a24177b636d12fbb088f2cd9504ac200231473031a31a5c62e46288fb3edb858b
+  21bc0ea59a212fd1c6dba09e920712d068a2be7abcf4f2a3533443ee1780dd419681a960
+  cd90af5fcaab8c1552ef25572f157a2bbb934a18a5c57a761b54a45d774ac6bc593583a1
+  bcfc4dcd0cca87ab9cff463dc5e80ebbb501d18c8b39e324dbd07ca06cbf75ba33297abc
+  c7aabdd5b308401ba387f533f3927b51e91380f5a59b119e354835ab182db62c76d6d85f
+  a63241743a52012aac281222bc0037e2c493b4777a99cb5929aba155a006bc9b461c365f
+  a3583fac5414b403af9135079b33a10df8819cb462f067253f92b3c45a7fb1c1478d4091
+  e39010ba44071019010daa15c0f43d14641a8fa3a94cfaa2a877ae8113bbf8221ee13223
+  376494fb128b825952d5105ae4157dd6d70f71d5bd48f34d469976629bce6c12931c88ca
+  0882965e27538f272b19796b251226075b131b38564f90159583cd9c4c3c098c8f06a267
+  b262b8731b9e962976c41152a76c30b502d0425635357b43cd3a3ecef5bc9910bb89ca9e
+  91ba75e8121d53c2329b5222df12560d242724523ff60b6ead310d99954d483b91383a72
+  6a937f1b60b474b22ea5b81954580339d81c9f47bab44a3fe0c833a7dba1f5b33a5a2a45
+  9812645c6537c2317163d71b7bd7a4a5459a28a1c28659aad9a1ca9a99a363062d453355
+  108445a673438e77624e73757c1a84d031cf0fb24b1187aafbe6738e9abaf5b42b004b1f
+  a0d96426d3c5324235dd871e7a89364d335ebb6718ad098154208b143b2b43eb9e5fd881
+  6c5225d494b40809b2459903c6486a1db9ac3414945e1867b5869c2f88cf9edc0a216681
+  804578d34923e5a353babba923db907725b384e74e66987292e007e05c6766f267f839b7
+  617c55e28b0fa2121da2d037d6830af9d869e1fb52b0cb645fe221a79b2a46e41980d346
+  71ccc58d8756054b2cca7b13715a05f3925355cca838ab8d2425255f61135727167ad6bc
+  b0632ebf86384b950ad21088c292b4a4fcc0e59c42d3f77fac85cd9f5cb049b3a29505a9
+  84c4c6ac98ca3d0a8f30d2b1bd9815b94b27051b40ffc3455a668b9e141428611b280c1b
+  8f2b55f6eb04e10c68f1340ef1582115f10ee2b785b7ebb0ec3a0c61670cf48107b594cd
+  6e238e0d68961b47983b87879771519d2b7c21681cd494b420f03d004bb06eeb54f9c080
+  c2f2aff6759074d5b3a3b11c73f1af6dc874eeec254d5409fceaa90ff66d90b6930a540f
+  d1d9be1844af1d861ff96a611a414a6c61a78fb2a78e74383ab05ebc73855a818a627242
+  d523a3e2a35ab4285b4a2564f76772aaf8cdc9f87c65f1b4b5819905fb4f9ea59166fbbd
+  b201c5eefc0df7418ca211b5b079a511b8b94429847b537fbed82d57632d63e815d8212d
+  8a280d43328604a6c4d2c1887e7ab061f120a0168db2f4735369b193780f0aeb381ff265
+  3f3b46e206afe77a7e814c7716a1b166727dd2a0b9a7d8aeace425da63977f8103457c9f
+  438a2676c10e3a9c630b855873288ee560ca05c37cc7329e9e502cfac918b9420544445d
+  4cfa93f56ee922c7d660937b5937c3074d62968f006d1211c60296685953e5def3804c2d
+  ad5c36180137c1df12f31385b670fde5cfe76447f6c4b5b50083553c3cb1eea988004b93
+  103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc873c23dc62b8d26016
+  9afa2f75ab916a58d974918835d25e6a435085b2e56f17576740ce2a32fc5145030145cf
+  b97e63e0e41d354274a079d3e6fb2e15
+pk
+  1bc331b659a61a04883d0c5ebbc0772754a4c33b6a90e52e0678ce06a0453ba8a188b15a
+  496bae6a24177b636d12fbb088f2cd9504ac200231473031a31a5c62e46288fb3edb858b
+  21bc0ea59a212fd1c6dba09e920712d068a2be7abcf4f2a3533443ee1780dd419681a960
+  cd90af5fcaab8c1552ef25572f157a2bbb934a18a5c57a761b54a45d774ac6bc593583a1
+  bcfc4dcd0cca87ab9cff463dc5e80ebbb501d18c8b39e324dbd07ca06cbf75ba33297abc
+  c7aabdd5b308401ba387f533f3927b51e91380f5a59b119e354835ab182db62c76d6d85f
+  a63241743a52012aac281222bc0037e2c493b4777a99cb5929aba155a006bc9b461c365f
+  a3583fac5414b403af9135079b33a10df8819cb462f067253f92b3c45a7fb1c1478d4091
+  e39010ba44071019010daa15c0f43d14641a8fa3a94cfaa2a877ae8113bbf8221ee13223
+  376494fb128b825952d5105ae4157dd6d70f71d5bd48f34d469976629bce6c12931c88ca
+  0882965e27538f272b19796b251226075b131b38564f90159583cd9c4c3c098c8f06a267
+  b262b8731b9e962976c41152a76c30b502d0425635357b43cd3a3ecef5bc9910bb89ca9e
+  91ba75e8121d53c2329b5222df12560d242724523ff60b6ead310d99954d483b91383a72
+  6a937f1b60b474b22ea5b81954580339d81c9f47bab44a3fe0c833a7dba1f5b33a5a2a45
+  9812645c6537c2317163d71b7bd7a4a5459a28a1c28659aad9a1ca9a99a363062d453355
+  108445a673438e77624e73757c1a84d031cf0fb24b1187aafbe6738e9abaf5b42b004b1f
+  a0d96426d3c5324235dd871e7a89364d335ebb6718ad098154208b143b2b43eb9e5fd881
+  6c5225d494b40809b2459903c6486a1db9ac3414945e1867b5869c2f88cf9edc0a216681
+  804578d34923e5a353babba923db907725b384e74e66987292e007e05c6766f267f839b7
+  617c55e28b0fa2121da2d037d6830af9d869e1fb52b0cb645fe221a79b2a46e41980d346
+  71ccc58d8756054b2cca7b13715a05f3925355cca838ab8d2425255f61135727167ad6bc
+  b0632ebf86384b950ad21088c292b4a4fcc0e59c42d3f77fac85cd9f5cb049b3a29505a9
+  84c4c6ac98ca3d0a8f30d2b1bd9815b94b27051b40ffc3455a668b9e141428611b280c1b
+  8f2b55f6eb04e10c68f1340ef1582115f10ee2b785b7ebb0ec3a0c61670cf48107b594cd
+  6e238e0d68961b47983b87879771519d2b7c21681cd494b420f03d004bb06eeb54f9c080
+  c2f2aff6759074d5b3a3b11c73f1af6dc874eeec254d5409fceaa90ff66d90b6930a540f
+  d1d9be1844af1d861ff96a611a414a6c61a78fb2a78e74383ab05ebc73855a818a627242
+  d523a3e2a35ab4285b4a2564f76772aaf8cdc9f87c65f1b4b5819905fb4f9ea59166fbbd
+  b201c5eefc0df7418ca211b5b079a511b8b94429847b537fbed82d57632d63e815d8212d
+  8a280d43328604a6c4d2c1887e7ab061f120a0168db2f4735369b193780f0aeb381ff265
+  3f3b46e206afe77a7e814c7716a1b166727dd2a0b9a7d8aeace425da63977f8103457c9f
+  438a2676c10e3a9c630b855873288ee560ca05c37cc7329e9e502cfac918b9420544445d
+  4cfa93f56ee922c7d660937b5937c3074d62968f006d1211c60296685953e5dee56f1757
+  6740ce2a32fc5145030145cfb97e63e0e41d354274a079d3e6fb2e15
+eseed
+  badfd6dfaac359a5efbb7bcc4b59d538df9a04302e10c8bc1cbf1a0b3a5120ea17cda7cf
+  ad765f5623474d368ccca8af0007cd9f5e4c849f167a580b14aabdef
+ct
+  718ad10318b367fc4390f63147fa5250ef61b65384a563f2c7951b2d45881fcf9f446ddd
+  4443417eed0c001e635a994cda366f118bdd1cf0be0417abd1b615cc669e1b949280e28f
+  52d3d5035c6420ff6c943421ee7589e681828c95942d4f9968f32b9ad30cccff0d98fa84
+  b187164530dc83f9cde75ab1958c22dbff8af921c9ebc678a658b69663f72e7c1632b6ac
+  8ddcbc6c8a06c3316b1aefdd07989ef944fc51406e12db6865344e03f447520d50c93fab
+  1513d80cbc836950e2b52f424bb46155ba4c2e21ec5dff762bf7e92e54e0fb7618e73072
+  607ba03b1de16f109e22dd5832a7eadfeb2ef00244bbaf930106cbcd2ab008f468de6d98
+  632e9e225091a010e361ce751d633e6c37ba2530bca6fbe9d2e5348e4e168e154922992a
+  ef45a265ec649ce21480504b609ad5f1b0b094b74d55aaea60b8f71398cd9340802e9141
+  5937ffaa482c6678f8421c63583e8acd8d00bf285b52a26fa577aed109acd94ef7559554
+  aa378f87283a7ee94af98e21a6fbac8802336ff980e15e498042a8148b69e1d8aab0b712
+  6d0b885f9a57c1ea83efcce8dccfee076dbc2f9c074525ed4e7472c3e09a9f1c50ff5111
+  50159c1be7730686c04e46368e37f2e8c82b8436463445b0edaefab876731497abcc563b
+  1978eac34cf73b5b213549d1f74271d48f6a085155acd8d7db739ce6e70ad25ee636231e
+  4151725d55ea781d483e54850e1ebda401276616e7a62b22efa2e3098a006dfacaa1fca5
+  4ade6a119f3a215b523210164a7f299d2c7b8ad8a637bc1fba56de28ffa800b522246dbe
+  c7148ced56ed292c7d92004065598bc573dd30259d84b6d923d2769ce260cdab0ad17673
+  ef7388c020b8e8bcd055232a7240fe2fa4fcbeadbc46366aa47729f5502dbfee8a623ab8
+  ec6f6020013aeff975f255b597a11eed1335457b9903da42a27a39fdb0edbb11742e4e52
+  1c833b7952d3fd28f428eecb6f78b99ff0a5eb097793f78f1a70612811766fcbe0f9aa3c
+  a4afd8a364f5584333d8a4cdc096a3762ea6cce70dfa42967f5a7c2dbef688b37885fa26
+  220dc800bcb1ae83d35ffca54a6dabba730764d60b1a4a506206efa380d7d1d89069778b
+  082bb92396af4547024797797e01c927c78c9f70750ef2002dfe1516baa4f165a3176942
+  d35d9527f4b33505484130cd573f9d4a1f1e6656aff881aab482fb3d6151ab02f7626703
+  3f3feb9718fbfed05a9b69a8d817a7e4a41efbe3ffeb355d1013778f14d4c30c92a38619
+  0fa23b388feddc635b22d8fa4998b65d483cd3b595553092123e144c49d91ddc2f7a88f3
+  ef1ad2b0b19636bc3f50f61ea5157c73a1a5b956349b6cdf3ff50ec9ef7cbc1137b27d78
+  39276a3ed4e778c505206669686ef038b5808117fedf60ef3598e8ed1db1e5ad64f04af3
+  8e60e82fe04bc75594fd9fcd8bb79237adb9c9ffd3dc2c907345f874aec7055576a32263
+  486120ff62ad690a988919e941d33ed93706f6984032e205084cc46585b5aef035c22ddb
+  b3b0ba04e83f80c1b06b4975f00207b357550d24405189412ea6a83ad56c4873f499fdbd
+  c761aa72
+ss     2fae7214767890c4703fad953f5e3f91303111498caa135d77cde634151e71b5
+
+seed
+  aee7eef47cb0fca9767be1fda69419dfb927e9df07348b196691abaeb580b32def58538b
+  8d23f87732ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c922a96188d032675c
+  8ac850933c7aff1533b94c834adbb69c6115bad4692d8619
+sk
+  89722dd1c8829af93f6e5405ecd93a5aaabcb9264aafc363d731bb4f276021b0c0682636
+  3022ae1e85acc6679ccb583a37ba4d30e0564ae6421ab1b5c2374a058cb6bca4050ce15e
+  d5c51bcc90be82454b332aa21069623d8a8b393a2c2b6cb5bffc55ae369614a77d9bc982
+  d47496ab21239bb7691ac65494225889b7b45ba10b0aac10c3c41fa7a4a51fa14d3e92bb
+  d364be59ba7d9d4592944968e97a2d947868a0624a97a9c8ad226d81a12a17777eafaa6d
+  e30436a5c743003078d830734ec97e6a625f6d9c10f9da3f956b5583578478e6311f2778
+  9d6188ede84510442c9f556696378faa622b1e935be62c733da96b023c31b2ba6abfbc5c
+  748088251042d46559bf132d2a43b7690cb4666722ebc53849843125f9a900aa476af424
+  b7b410f18300f048ce26dc7f35b50f7eb5bccf23c95b7c0064e92662eb22927359df1b9a
+  ce43ce014384ae68822f4c3f64583643355c6746290d224a70c818158884e2aa8f15e187
+  09100848255c277144f051ab8b40775c297cafb238cdb70e8ce687c9e195d0823b390341
+  e245852ca99c079211161a79409247ae721a59b358ef097ed8dc386f982d36a9220c3511
+  eacb3674f671f171afb0d14f0890c0c7f77d06f7c61ca83a15974083e72678f180f35c1a
+  aa633166d429432599f9d9432fe791318ab14a3988496a14c2417e03990136e91aa3a817
+  085abbc4aa0c38a45e7e009f3577739172396f7b7e61734eaacc5b484971e9a9384b58aa
+  dff9307a98222a3813f9269fe793b7ef582ab8c36feaf447d3136285f76d5f4631413567
+  73650441e092dc73bcf483cb1f2944016936db2a34b743830cb890e85660acd077ea51c0
+  7e664df7ab803c9b0c96e143b4f5788311a841b76be728aea60270104564575bb723f51d
+  acaab5e379c3cdd97bdac84ad6738587bcbbdf1c66a0da65f87a673f840e1d7c5a722a26
+  5568429ae36cdde9cd54ac3d4a94c4c6508361984e1c211771998641816fa392a4ffb976
+  64381a84900eb52502f04816a3d70090b55ee2d3b7f3d459af4008ec8c1b19c08d1284b6
+  fdc81508647ecb9b45e65c084d456f9fa87a68f26bc05b4e8415887b602ff28b28e41263
+  7ff9019a90ac21c7c4ae9670a538a2bd2604616689b034c33cb1cc9d634eb37c8d4d46bc
+  40e335582b539d3215bf70960cc1c0b11011449c2a09265101f55366dc0213a641128851
+  76c3a223b19cf6951b5968452aa7b839370646db5eee1893346a58c116133dbc8fc1c5ac
+  34e04cda171b041c0133563a682855a9cb18896c6179ac2eac83c70547942e54b2e133a6
+  f68450f4f4b14bda3af5f129b3e292c6a676aa0b7a045c7251e315ca3707ff23bec349a9
+  50d49718560b2ff66cbd49c848b4036c2186a0315c4e6a32f3035207a48651891f50ec6c
+  0eb19d13e90457611e0c7ccdf012a3e19412d8c1563f1ab22b39859b27a7bcac72cbf2c8
+  3c666deb401e4239603645872b997673b6205d97cdd68b0a782742e62c24ad746261085d
+  e3c95f49dbb8172c05f3f2414e63652c3b358d603e867173e03203af06a26bb0bfc0b521
+  118b6fd99613a160829b04475374b8214859bcc316f4e06a84f264ec3cb513f66b71ac3a
+  3d135aa589198cb02113cc17e13a0f15fc1d3d734966c3751a74ac27c781323043e36389
+  dca9a2af6508bdba0260662691426d1d8899cd77736c21b17eb3a31fc118154264e2b10e
+  22c506b7803b1f4b25d178b688b641d0943185107eed18b228e8b68753a8d75a77f29b5b
+  5e97abd028354ce4cd6961797a757c4ff44aeea2c0a16cbfdcb07314fb3e64d7c26a4c9e
+  5782a2ee198d73e7bf05eb85bd420cee20ac24c36613d6bd0c53133443527c32bd0f8b3b
+  3be9918c7caea71748de6bacfa27710845ad0b528c087349e9faa3c83869e1d0ac926797
+  4dba1dc3434976f60b59d443bad51e87d974c9f747b76017bd17021c24246a9987db1b31
+  8562bf665b41fb153c0ba675cac593b990ce595a7851fa18ea345bf20c3524862532544e
+  05e5c69daa0dc4f2b24704338e29144d653657d47a20f39ed2b1174cb3120ed1590e4ac9
+  32579dc2da9f12f6c07ec7a31963208faa5c758615713965b9d5661860cfe5652d74231d
+  2ce9b696ea9e45305a28d84c082709d2238bbc849b6b3cac64b78b532995af6b4ce9880f
+  9149a5ae083320624e3b54851d48a6f24266258a0a14d342e4ca3133c33c5e16ad91b22d
+  521100076527cefc5f0417b332463c5c5c52dc4b00a2d29959109244d2810839a310cb1d
+  f282503d5cbf3f0cbe3e68873407b7e5e960ca214709919b65301da2b3a7e488205a3a9c
+  5f24cd61d18c757040b14a4e80e8c09e74a9a71265ed213a91da6d7a8655de3b4a83125e
+  e2e66cb673733e3717d99023a6683712767ab2da9b54a26dd3b695a80b54226a1a967b08
+  c3f76e679914470803bc6805a6b4b1b78261259acd8f703dd10ba6e8e1a00dd94e774113
+  d13103253cb70edab948c38072629b949261b7c439445bc498444e86b6a9a7da8b153038
+  0bf2939532a8e7ea84ea0b5c6db5335e826aa0325b536ccc21d943890b2c2a5c44f33768
+  2355867be87965175f2dbbb0aba89f9311b0873a15db6a4128682a8bca019a04a351a0ce
+  646868f9bbb6f8d0bea3db0865f1239b16c93ca09d19857d747abfc846b27dd77ee5d405
+  fab5ce949635e7d34ec1b9546aea75df571cfed74b7112218e4153e7f6a7a3a910ec4c11
+  1576b3bb27c29852746e645fa501b0642678aefa2209c745939a2ab000033862b88e7011
+  e7e25ec1e3cd379b54bc457a85d9af0680160c57b3a4e90308bc28b8da13ac0c563c55b3
+  9a88bd90b51f691525e50a260a0507a2174447ea93f5d5acec6c16a5d7909e275f612c9f
+  283310e8124d28f18000f811fb929e03f30d1472644851bcb73c4af6b095acd7328a072b
+  e9187a836a15307c6076210c9b410493505bc4814e3c327386796c5932c8cab7a695b97c
+  ac24561b2a9657c3157531ba3cba699b6424fda24cc6c72edac1a6bf091b87c3c594c917
+  d24a1126f998aee120ae372a27a268a0c76ab8f84957f461e7c04dd2d59f0f217d9e0700
+  8990533b16bbc125b2737a1a7e1cc1ed7c47e8f8464ba78c5d3298f2dc7d0be944ad2990
+  7ec774ad1b1f1485b114a9a9b93c488c89c0c7609f2bf9533c2929f667bca8b68999e340
+  54597cf83ba7450b237188c3364172c1351bd349a699672d31b9598bab79a18b3d8cb25f
+  5f53c0b22bfa065690a16184db4f9731cea1a08f5876ec187e7b1ae79c593415d068838e
+  5ce0bf2c28b1e389ae4a768f871b2761a29178a51845eb0b939f0ee9ef58538b8d23f877
+  32ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c922a96188d032675c8ac85093
+  3c7aff1533b94c834adbb69c6115bad4692d8619c7dd2bf4e3b5b93f77f4576d55d30073
+  9e75e14084b0bc85620499bf468ae161
+pk
+  3d135aa589198cb02113cc17e13a0f15fc1d3d734966c3751a74ac27c781323043e36389
+  dca9a2af6508bdba0260662691426d1d8899cd77736c21b17eb3a31fc118154264e2b10e
+  22c506b7803b1f4b25d178b688b641d0943185107eed18b228e8b68753a8d75a77f29b5b
+  5e97abd028354ce4cd6961797a757c4ff44aeea2c0a16cbfdcb07314fb3e64d7c26a4c9e
+  5782a2ee198d73e7bf05eb85bd420cee20ac24c36613d6bd0c53133443527c32bd0f8b3b
+  3be9918c7caea71748de6bacfa27710845ad0b528c087349e9faa3c83869e1d0ac926797
+  4dba1dc3434976f60b59d443bad51e87d974c9f747b76017bd17021c24246a9987db1b31
+  8562bf665b41fb153c0ba675cac593b990ce595a7851fa18ea345bf20c3524862532544e
+  05e5c69daa0dc4f2b24704338e29144d653657d47a20f39ed2b1174cb3120ed1590e4ac9
+  32579dc2da9f12f6c07ec7a31963208faa5c758615713965b9d5661860cfe5652d74231d
+  2ce9b696ea9e45305a28d84c082709d2238bbc849b6b3cac64b78b532995af6b4ce9880f
+  9149a5ae083320624e3b54851d48a6f24266258a0a14d342e4ca3133c33c5e16ad91b22d
+  521100076527cefc5f0417b332463c5c5c52dc4b00a2d29959109244d2810839a310cb1d
+  f282503d5cbf3f0cbe3e68873407b7e5e960ca214709919b65301da2b3a7e488205a3a9c
+  5f24cd61d18c757040b14a4e80e8c09e74a9a71265ed213a91da6d7a8655de3b4a83125e
+  e2e66cb673733e3717d99023a6683712767ab2da9b54a26dd3b695a80b54226a1a967b08
+  c3f76e679914470803bc6805a6b4b1b78261259acd8f703dd10ba6e8e1a00dd94e774113
+  d13103253cb70edab948c38072629b949261b7c439445bc498444e86b6a9a7da8b153038
+  0bf2939532a8e7ea84ea0b5c6db5335e826aa0325b536ccc21d943890b2c2a5c44f33768
+  2355867be87965175f2dbbb0aba89f9311b0873a15db6a4128682a8bca019a04a351a0ce
+  646868f9bbb6f8d0bea3db0865f1239b16c93ca09d19857d747abfc846b27dd77ee5d405
+  fab5ce949635e7d34ec1b9546aea75df571cfed74b7112218e4153e7f6a7a3a910ec4c11
+  1576b3bb27c29852746e645fa501b0642678aefa2209c745939a2ab000033862b88e7011
+  e7e25ec1e3cd379b54bc457a85d9af0680160c57b3a4e90308bc28b8da13ac0c563c55b3
+  9a88bd90b51f691525e50a260a0507a2174447ea93f5d5acec6c16a5d7909e275f612c9f
+  283310e8124d28f18000f811fb929e03f30d1472644851bcb73c4af6b095acd7328a072b
+  e9187a836a15307c6076210c9b410493505bc4814e3c327386796c5932c8cab7a695b97c
+  ac24561b2a9657c3157531ba3cba699b6424fda24cc6c72edac1a6bf091b87c3c594c917
+  d24a1126f998aee120ae372a27a268a0c76ab8f84957f461e7c04dd2d59f0f217d9e0700
+  8990533b16bbc125b2737a1a7e1cc1ed7c47e8f8464ba78c5d3298f2dc7d0be944ad2990
+  7ec774ad1b1f1485b114a9a9b93c488c89c0c7609f2bf9533c2929f667bca8b68999e340
+  54597cf83ba7450b237188c3364172c1351bd349a699672d31b9598bab79a18b3d8cb25f
+  5f53c0b22bfa065690a16184db4f9731cea1a08f5876ec187e7b1ae79c593415c7dd2bf4
+  e3b5b93f77f4576d55d300739e75e14084b0bc85620499bf468ae161
+eseed
+  f90b0cdf8a7b9c264029ac185b70b83f2801f2f4b3f70c593ea3aeeb613a7f1b1de33fd7
+  5081f592305f2e4526edc09631b10958f464d889f31ba010250fda7f
+ct
+  f98f274dc74db1798915be81f089fbf792116ec03539b6c02cfbe649267f100df0ef51ec
+  6e51fd4a9b75cc2f1806d470b56984df3d368e4d09be4b4ffd59907e11b2d4497b7dd2b6
+  1afb3cc52a6ea661f2c6495a7f5fbef3dfac143f65bc9f6eb48d548df01d6a0bb52dab84
+  fda5e92f7a223289ec4e45cf76d47ab3a79086481f4bb4e95cd69bfdf388762e775bf63b
+  9694f72ca5a90883be5b8ac08c1737d5eced830466e9426fe5bec61bc63f1962358b66cb
+  3d8fdd5dfa887b0da5f15c8868bafce3d998b85ab34ced43ac9b9869c84c59fb2f094ddc
+  a1dee97db9a941c3cc319401d9db08569d8eb248ec2ff51e7e18c22d810bf512c28d5d71
+  9c4bf5237bac6d14ec33b673453cb0129f31a0b532240ac257d7813370c7addd3ec957a1
+  034b8e4c539506c7827a82e37f5b2405236c914783c35a8aaeaacdea194d699dcfd6d040
+  27cbfcac58e3157a16c20b11dfaf6256ae3037252baac3a25f3d1f7e3f14dd231fc50db2
+  f8788575799e6be241717e9634456be9eb04989cdf312dddd8a24939ebb90de0f5b006d5
+  9b2b19350dce76a415230f49374fa45ced3eed165cc92ed1d6e17c233f36030a61cb610b
+  93a55d939c9c7e964f9086ccdb41b8638f14f9202cdb9f1e3ffac235ccda32a92a71e851
+  88297cdba4a309e085c56826bb6121462ac6ee36beb9ee72c824294b6026c60d478f17dd
+  082cca6d6d7a3e86dbe5f7fc9bbc2a07873c686e53f9040aa60dce89b179643741457f5d
+  e371c8aaf41eceee8e1a1b324666572322499731242ee48134eb6dfb8961b06b5a04c586
+  c6a9113a9c161f36806a284e03b01940286b2de59689607b2b64b46d6fc2ba044c9a42c5
+  cb600cfd6ca0bdf4915a47fe02d71b8fcc27f0f17c78a300c6345ccc2f77a438772f4297
+  f7b2160aec93e4c8c72c0dbe67868753c18491861a1c1b96eaae07023436602fbb6f2bfb
+  161a5f778bb3086c2255423a8c51052833f6b63ed2cc732a7e2c4d36123471b451b64083
+  0421fd4edc83a9527d91203aa7e41867e3a7dfd5610aa20646738754883935af2b09cb24
+  d93a332c9671e6a00cc29a6346de406f5fb28fe84f0b0d3a43c98213bfc2eb2802f1ca07
+  1c560a705edceb262c44c2fd2e9e5caf0bf9eafc6be84c8a00d4bfd57e2468254e4560aa
+  6e8d62ff72c55c403ce5a8e8c87cb4d7f693344918138a8f1621107492d8c0a8c74ae773
+  23f7e1fa84220da14a9ae978b207aa692e2ba13ee5ed924c75e472e1b77cc496519704ab
+  87bde2ac15fdde0184d799288b60873b7f85a113b5b8d76a5237f26586ef2cb5cb940c9c
+  5a4789267575ed223fdb9d7ed57a390076857d3c0207360a3d039e4f7961dfe25d8e7c03
+  4df6ec0503b5589a89911e54d4831b5cc9ed0abc66143b5482d35dec97ed94e65ba7d013
+  126348960804ec2f19463b8daaa9927c05eecae3bb58b2575fcec762c14cd7d27f51e05a
+  ec3ddf00e90dafcf91d31ac09eaad73d675504798170b703667d2175a37b40e4b7809056
+  b1c1ca3062cdb98b0ba79b61c1c3f692b6e75940077ab7aea8649f38e34406282704f108
+  0208a15c
+ss     d482dd1a592f072109a0d8a86991ca6bd5bab25f13e788377fc34506f508ffdd
+
+seed
+  1368ec2967fc84ef2ae9aff268e0b1700affc6820b523a3d917135f2dff2ee06bfe72b31
+  24721d4a26c04e53a75e30e73a7a9c4a95d91c55d495e9f51dd0b5e9d83c6d5e8ce803aa
+  62b8d654db53d09b8dcff273cdfeb573fad8bcd45578bec2
+sk
+  f58497af7a5854c214be50bd9694011740619f4042d1a9b5e3d813bf419c9e70b6b6e339
+  17644378d7a097047c1be007b9973f3ec7c2c1c7af23726160db834503bc5381625ab08e
+  c831b60a04c54a360d2222ab0918358e84a038c41775456f7c6c1de0f27d5b538a9e8091
+  1484cb96d17b52825410661cc43a576669a92cb7b97b97aa0e7b55a0589bc1295000a09b
+  dfa5236a737a95a7029d2a5f4429494ee4b1299613fb76a573092915f6c37d472beea0b9
+  3b082eb546b4ad268fc0fa9eedc8a19faab8a857ad09e24b042374ce9566e3b3ba33bc06
+  441781f74421d00bcf0598103d9620fe0b35ab904c3676c3e970525c7507917850ff99ae
+  4eb57eeaf4b0615097a1e970de6aa9ba609fe8ac11fdfa4e7c4cb90a30c03cb8baeb5033
+  cb6ba6c755bdaca4c9448bcc24188991a659adfbc219b3ca16258f3c0b8791846cd9e8b1
+  7ed33f97b1bfebeaa93628421a348596a72ed8a248219779cedb38f9fb0f064a4bf89a0c
+  5dd485564c30ab16bc83d19fc9257467598ef713cff3a0470f4983db6540e52a7667fc27
+  85c031e989601972b2ca61c97218c6470498679523c5957ccd0b4f30836429287d47204d
+  8a32ad0c3c01c38611537a417e28284d58b1dc415f8cc6025ba1603073206e9372bcd125
+  d94311eb2966fa9ac48ea68fb889c292585901796118949545a77ad8129d3c989f0f0449
+  77d35ce9b715695b61e46aaf74fb9b753a489842592514c2c41b1e3a22621a5369ff4a19
+  6702b2805cba6f945209a22613ec254937bc65fb40371b26f808cac5fa66437603fe175f
+  4f039ebef88e2e3757692718229a7167780f032666e9f35a1f316c278270891057390a1b
+  552b9b53e92ce6325b12a8475768a5eaba388b5b4740a4b4867705c74caa54eb139d47b1
+  6b845fd6c97a01138509aa3cb34232504a4609850f464b27d3a6c792a2a326f78ea75083
+  7ffb36349405442bcb7914be2bd482f4686cebf96c38fa67db608953039eb5446a26968a
+  a0f023499261bc29356547612a472d9dd135e8744649656995178ad2b38d80850b180b6e
+  6c255a0aba7e8c656fe782a63f48bde8cc5899351e308a3d48e5322a7b8b48ec1c99395d
+  9cc39d381146846567ed0143c6c1682cd06faa64467a00919c53a374281b86e6744569c0
+  eb1b099bea5b5c8a9e8024498ad70fc2cab20bd67a72073901a3bae643619342aa01071c
+  3992428dea1755d870cbb86315b2bea4a6753359216e939f7d1aaaf0903b82fba7228a4a
+  15f0779de2a19056c4e0b066e98b2a99865df3825caca00a1313c2e8a66cb8165fbebbc7
+  fefb9e2e0916f4d753bb354b1cdb0ec61840ae14a0b0a6b89419cbcd4c2cc9fa8df8da7b
+  ef4a829e17b996461b499ca051b5989b17738b158057342454745051e7b01aa5a8971181
+  c4d44e20f3950873aa1a436cf7255328dc73f312119395213ec852dcbc9d0634c722b259
+  3e154746402a3d289b3abb14a8d70494b761c3f66242f06cc534a761c19cee82a41ea7a3
+  08fb580a19762ea34f2f931cc3fca3a7484b0c0023ea2285dc1b04a46489ea5a673a5a4d
+  5db5745b72704670487c1c1c61f06184d1be1fb8c770857cfb03c5c3575181cb7f54eb8b
+  8c8b6a200a0ef6b66eec364c0015ceb802081800ab5bd1150ba20e5d2c6012d70fe700a5
+  6c101752242397627c89156f667a28ffc32c56d20abe3834d2a05a0390c7f2a893d64127
+  fb772ae12468a1f6260af39066ab7ecf694db179436c54a707092a87aa22a274691ee008
+  3e7a98a6d2c633d6c0f13a1542b094e7505d8dd92063b3972dd036a2e68ca9d2af000da3
+  28b27fb55178b3794d41755a4dd32abde2cf2d93a5c59605e372114bfbbbc44304536533
+  d1aaad9d385f82278576840cb1f340c0d53db7b0c8cf3794d2f0ba99267ef5d01064c99f
+  3aca71aaa2cbb85011c6687472e20419680441cb0c7bc70aaf1361797b1c2f5a5c60c100
+  86d981299bbfc2c15d77f4077c40500938bbb2e52aef37c3d516148d5ac84e216e056861
+  6ea476fde89685578f8df91281b648d1359bbd53768f27596f3b3845293d698b3a1ae278
+  5e0190be513cf950234399a51487073671736a0c4479672595b2b07a7c3b1143a2fa46cf
+  383a183e0880e580793e5892349600cd6c3adb903e078c31d7d50a90c573453778426757
+  8d35a6982b61098190befc3185020d2c175df7b1acec91c3d5fc6f7cd298f878bd2ab814
+  e7ca340ae21377f79a2f73cf219c7f9e85649d089356cc082f655d72e8035128b910b44c
+  e7833abc11348305943b049a9d6b7df1f98af6c5bf9a6214f073ab28f1492748574881cd
+  f160139e60307d32086515bb93c502e6c20106801c095380d82467b9d56b72f566830a74
+  72aaaba8dbbd755c262704af12475febf3cb6268289bdaab09997b8c309dfb436927e734
+  7dcbba3f772b85e753493417cb134c3604410399238da584d1c495c0793fc5e9583f8797
+  e97c9d45e63c1fd42ee7c5aaf9cc901748c87438c91d6964fcab436c6c0b74b34c6a35aa
+  f688ace32a869411ca57cc3bb0455d981a16b655984ad90bf7c3add506b6821248cc5221
+  5da27310fb57738254c8730241e2281c3b18728a12c458b8af8c2c3b500bed5c749e9979
+  b4c44f116aa971b043a8b77b62f7a2fc9621ae71763fb0a43758b40e09aae6f574f93266
+  1372a7bc120331c34800ed2113203eeb180905d89a88a4cc48d8c3acf19f44ba00b8466e
+  1ddc0fe1e3554ac059a9fa2b11807173f1190dea271119c087c605dc8b945fb069bfb159
+  c464a28758c1822b2c1e5a8ba0779833c6937c9c02ca61285c67557dd958e00840fd1c59
+  9095409dc6caf13360a8d5a1d864a903c429b3054ee83448a1f71beb70a93dccae8e69a0
+  485b47df44202d931e2c99316a23a4e396b7c704b832a0b855106f29c20c3c447ad39176
+  b77186cfb94b3e973d415636a0950284f50efa9248bb1643e793cc7a6c343395a8a245b6
+  69b32821f2b80214481ca4416d9009dd3174c4cbb29da7386a7404b21a72ce5a295deb62
+  712a3fb01c927b9b2e73d95aa65c3e92169c72662d7ccab10c8a369d50b90a74c41d590d
+  bc4ac104a147855131b1da730116bc17e430599a8d64999d9450b237002fa1021237dbbf
+  a096a95ea0542ca7937b7c1971b53ce82087d7e114e446b81265cfd540176cd069deb988
+  6fa45bd2f3464e7cc908cac220e642fd3610f18aac2b594192bb7a72a64ffe156e77ac8f
+  576a0511b9768798c79590d8d37f58628ef69837335bfa984cde027d87d45cf83e597b70
+  5d3130d6210e9d974bab5643cdf4d1cc7c8282ffe68f827e0cac9926bfe72b3124721d4a
+  26c04e53a75e30e73a7a9c4a95d91c55d495e9f51dd0b5e9d83c6d5e8ce803aa62b8d654
+  db53d09b8dcff273cdfeb573fad8bcd45578bec241c2f9459a0447d7f7ae5f1e8dc1cf4e
+  76cdd9add2eba7768b4ac7abb269b07e
+pk
+  8c8b6a200a0ef6b66eec364c0015ceb802081800ab5bd1150ba20e5d2c6012d70fe700a5
+  6c101752242397627c89156f667a28ffc32c56d20abe3834d2a05a0390c7f2a893d64127
+  fb772ae12468a1f6260af39066ab7ecf694db179436c54a707092a87aa22a274691ee008
+  3e7a98a6d2c633d6c0f13a1542b094e7505d8dd92063b3972dd036a2e68ca9d2af000da3
+  28b27fb55178b3794d41755a4dd32abde2cf2d93a5c59605e372114bfbbbc44304536533
+  d1aaad9d385f82278576840cb1f340c0d53db7b0c8cf3794d2f0ba99267ef5d01064c99f
+  3aca71aaa2cbb85011c6687472e20419680441cb0c7bc70aaf1361797b1c2f5a5c60c100
+  86d981299bbfc2c15d77f4077c40500938bbb2e52aef37c3d516148d5ac84e216e056861
+  6ea476fde89685578f8df91281b648d1359bbd53768f27596f3b3845293d698b3a1ae278
+  5e0190be513cf950234399a51487073671736a0c4479672595b2b07a7c3b1143a2fa46cf
+  383a183e0880e580793e5892349600cd6c3adb903e078c31d7d50a90c573453778426757
+  8d35a6982b61098190befc3185020d2c175df7b1acec91c3d5fc6f7cd298f878bd2ab814
+  e7ca340ae21377f79a2f73cf219c7f9e85649d089356cc082f655d72e8035128b910b44c
+  e7833abc11348305943b049a9d6b7df1f98af6c5bf9a6214f073ab28f1492748574881cd
+  f160139e60307d32086515bb93c502e6c20106801c095380d82467b9d56b72f566830a74
+  72aaaba8dbbd755c262704af12475febf3cb6268289bdaab09997b8c309dfb436927e734
+  7dcbba3f772b85e753493417cb134c3604410399238da584d1c495c0793fc5e9583f8797
+  e97c9d45e63c1fd42ee7c5aaf9cc901748c87438c91d6964fcab436c6c0b74b34c6a35aa
+  f688ace32a869411ca57cc3bb0455d981a16b655984ad90bf7c3add506b6821248cc5221
+  5da27310fb57738254c8730241e2281c3b18728a12c458b8af8c2c3b500bed5c749e9979
+  b4c44f116aa971b043a8b77b62f7a2fc9621ae71763fb0a43758b40e09aae6f574f93266
+  1372a7bc120331c34800ed2113203eeb180905d89a88a4cc48d8c3acf19f44ba00b8466e
+  1ddc0fe1e3554ac059a9fa2b11807173f1190dea271119c087c605dc8b945fb069bfb159
+  c464a28758c1822b2c1e5a8ba0779833c6937c9c02ca61285c67557dd958e00840fd1c59
+  9095409dc6caf13360a8d5a1d864a903c429b3054ee83448a1f71beb70a93dccae8e69a0
+  485b47df44202d931e2c99316a23a4e396b7c704b832a0b855106f29c20c3c447ad39176
+  b77186cfb94b3e973d415636a0950284f50efa9248bb1643e793cc7a6c343395a8a245b6
+  69b32821f2b80214481ca4416d9009dd3174c4cbb29da7386a7404b21a72ce5a295deb62
+  712a3fb01c927b9b2e73d95aa65c3e92169c72662d7ccab10c8a369d50b90a74c41d590d
+  bc4ac104a147855131b1da730116bc17e430599a8d64999d9450b237002fa1021237dbbf
+  a096a95ea0542ca7937b7c1971b53ce82087d7e114e446b81265cfd540176cd069deb988
+  6fa45bd2f3464e7cc908cac220e642fd3610f18aac2b594192bb7a72a64ffe156e77ac8f
+  576a0511b9768798c79590d8d37f58628ef69837335bfa984cde027d87d45cf841c2f945
+  9a0447d7f7ae5f1e8dc1cf4e76cdd9add2eba7768b4ac7abb269b07e
+eseed
+  e770d01efde86e721a3f7c6cce275dabe6e2143f1af18da7efddc4c7b70b5e345db93cc9
+  36bea323491ccb38a388f546a9ff00dd4e1300b9b2153d2041d205b4
+ct
+  137d93a41362f50229305c688633ded3c474cf399858d60e668ca77d04fd869168a235d5
+  e177eed970cd8c4b8a8bcad3ba1bdf3cef0d697b2c1a1e9a4259cce54248d5f47b59e93f
+  ca20799888ec7ee44efd7414bfc71a543648bea1edd9da0234a3af27dcfe4854792caae4
+  6a3dcce1eb31cf4d5d8b85855fe1ba7dd94b188ffec719354d43c445960766e26f17561a
+  5ec3872bfa9cfa370a00ac6bb9e196bb57a9f1fd0577d664077b81558565e50b0f2964c8
+  e0093353618de2f2f6d5999c1d27279032f788cb3cf59c127e7c7e029787111226454355
+  d06c81b2affbd099493c34704bb8f0759c4ce568cf721239014b1f00e808b5dc76ea4fe1
+  20408c7e510e27832921b022000f9dabdac2e5bcb47060efd1a169e4eefa80ed6fbd1f94
+  473c2038d742df4e286bbcb854281aa28c283f81d8d8c0324b5d354e8b6e2c5e28d5b39a
+  88a790f926c7b5270630c5087990f7ce5afe2fc9e327ed33f760c8d3ea520d9c01960dd3
+  60566647820c98c859052ea770c5efbed12b0e7536a409562e2fbb0cd6ce67011f6233c6
+  23239f1ed44035963ca9470c439a7e588226307be4cf7a6e27766a28730843a6865c9a8d
+  53f66e8ab121ff234fa3dd0cfc9736b40fb8bb3e64919ec4a5de20282928f60260c63a81
+  439e0658339437b3f1735f38c9481d7edc344ef6dd34d93e0ee013a93cdc8a7207b9d796
+  65bee8a768934c2b386f47d85891fd316aaa378af13c8892099075b75cc8d9ce0419ce57
+  f0f55ea0aeea03fcce14e3a4c766ed09fe4577c6cb9372d00e95c86b41989d6e6ff2359a
+  579b66f76a5a1bf41b2c1f53db1e8b49d822455ea4afe8198b5e7f039263e10885d38d3b
+  fa0ee727cc4ff2769f9ed0abc08a3e77f8bc65a7a75b7b0fc74c2a9027e94f1757acaff4
+  ee5e6e28c0b0238a5435712ea1c055d79e0558a2d149ecfb8d129e19c2d9aef804b3e49e
+  6f60ab43c5254f81a9cccbb3bed13a67f436159b0cf5c7134d6d5a577bcea4f8648eb07b
+  728b0864ec8751576c6fc302a76831d1672daaa2e17c5991efca743cf55d64ca59e8feed
+  a59ec52099d7bfb00a3ccde4084825145f022d89a126519f7904eb7ec4db0b08e70d7d67
+  bf18e537476b4ce97b2ad1c84c0630ba053a13affff42ecea695c080942df74369a23f93
+  a1f397f14dce28acbedb6a90e7a0a6423c277254b71be2d887386915e5924e85f1c65218
+  2f8c0db076364a97d7acaf0f238c912fd56403593a8b2526884737790a887d9a8382fab3
+  d2967803d0a1e62b610289af4ea26c66ef29c4832a4b48ffa225d5be2401656753a9ed00
+  c45a057efc666abaecfaeef972643de281f5d6a6ef43ed2fbba963a95c8d36461323d51d
+  18f92e58e4de1b4edd1d93ba14ea6adc3b8b63e71d0edc92555f3f962e68fbf42a0fc04c
+  b7da107203468589655f1b3b979ccc2efee6f10f0ec631c040e4436b8acaa4716708bf96
+  d2db8108a36117d10664cb2a3e3af672a10b0de5c2a284e6b9de37533bd181bc14fa0490
+  35d5050b5526ba59f893a1778103b6e2d946090c0eba049e5c1ad843a3121d539564866a
+  f5647437
+ss     1e037823ddbf1875756d86a3374b2d2347d5b7f3c84d229ecc5960523cdaa8b4
+
+</pre><a href="#appendix-C-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-D">
+      <h2 id="name-acknowledgments">
+<a href="#appendix-D" class="section-number selfRef">Appendix D. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-D-1">TODO acknowledge.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="change-log">
+<section id="appendix-E">
+      <h2 id="name-change-log">
+<a href="#appendix-E" class="section-number selfRef">Appendix E. </a><a href="#name-change-log" class="section-name selfRef">Change log</a>
+      </h2>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="appendix-E-1.1">
+          <p id="appendix-E-1.1.1"><strong>RFC Editor's Note:</strong> Please remove this section prior to publication of a
+final version of this document.<a href="#appendix-E-1.1.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<div id="since-draft-connolly-cfrg-xwing-kem-01">
+<section id="appendix-E.1">
+        <h3 id="name-since-draft-connolly-cfrg-x">
+<a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-since-draft-connolly-cfrg-x" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-01</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-E.1-1.1">
+            <p id="appendix-E.1-1.1.1">Add list of implementations.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.2">
+            <p id="appendix-E.1-1.2.1">Miscellaneous editorial improvements.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.3">
+            <p id="appendix-E.1-1.3.1">Add Python reference specification.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.4">
+            <p id="appendix-E.1-1.4.1">Correct definition of <code>ML-KEM-768.KeyGenDerand(seed)</code>.<a href="#appendix-E.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="since-draft-connolly-cfrg-xwing-kem-00">
+<section id="appendix-E.2">
+        <h3 id="name-since-draft-connolly-cfrg-xw">
+<a href="#appendix-E.2" class="section-number selfRef">E.2. </a><a href="#name-since-draft-connolly-cfrg-xw" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-00</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-E.2-1.1">
+            <p id="appendix-E.2-1.1.1">A copy of the X25519 public key is now included in the X-Wing
+decapsulation (private) key, so that decapsulation does not
+require separate access to the X-Wing public key. See #2.<a href="#appendix-E.2-1.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-F">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Deirdre Connolly</span></div>
+<div dir="auto" class="left"><span class="org">SandboxAQ</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:durumcrustulum@gmail.com" class="email">durumcrustulum@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Peter Schwabe</span></div>
+<div dir="auto" class="left"><span class="org">MPI-SP &amp; Radboud University</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:peter@cryptojedi.org" class="email">peter@cryptojedi.org</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Bas Westerbaan</span></div>
+<div dir="auto" class="left"><span class="org">Cloudflare</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:bas@cloudflare.com" class="email">bas@cloudflare.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
