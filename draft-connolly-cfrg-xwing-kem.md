@@ -240,7 +240,7 @@ X-Wing relies on the following primitives:
 
   To generate deterministic test vectors, we also use
 
-  - `ML-KEM-768.KeyGen_internal(d, z)`: Algorith to generate an
+  - `ML-KEM-768.KeyGen_internal(d, z)`: Algorithm to generate an
     ML-KEM-768 key pair `(pk_M, sk_M)` of an encapsulation key `pk_M`
     and decapsulation key `sk_M`.
     Note that `ML-KEM-768.KeyGen()` returns the keys in reverse
