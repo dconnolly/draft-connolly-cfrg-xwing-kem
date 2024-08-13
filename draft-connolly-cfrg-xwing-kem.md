@@ -434,7 +434,7 @@ This is useful in two cases:
 2. If a ciphertext is decapsulated for a key that has just been generated.
    This happen on the client-side for TLS.
 
-A typical API pattern to achieve this optimisation is to have an
+A typical API pattern to achieve this optimization is to have an
 opaque decapsulation key object that hides the cached values.
 For instance, such an API could have the following functions.
 
