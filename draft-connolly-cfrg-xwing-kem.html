@@ -13,25 +13,24 @@
 hybrid key encapsulation mechanism (PQ/T KEM) built on X25519 and
 ML-KEM-768. 
     " name="description">
-<meta content="xml2rfc 3.20.1" name="generator">
+<meta content="xml2rfc 3.22.0" name="generator">
 <meta content="post quantum" name="keyword">
 <meta content="kem" name="keyword">
 <meta content="PQ/T hybrid" name="keyword">
 <meta content="draft-connolly-cfrg-xwing-kem-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.20.1
-    Python 3.11.8
+  xml2rfc 3.22.0
+    Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
-    Jinja2 3.1.2
-    lxml 4.9.3
-    platformdirs 4.2.0
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
     pycountry 22.3.5
     PyYAML 6.0.1
-    requests 2.31.0
-    setuptools 68.2.2
-    six 1.16.0
+    requests 2.32.3
+    setuptools 69.5.1
     wcwidth 0.2.13
 -->
 <link href="draft-connolly-cfrg-xwing-kem.xml" rel="alternate" type="application/rfc+xml">
@@ -1031,11 +1030,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">xwing</td>
-<td class="right">March 2024</td>
+<td class="right">August 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Connolly, et al.</td>
-<td class="center">Expires 27 September 2024</td>
+<td class="center">Expires 14 February 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1048,12 +1047,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-connolly-cfrg-xwing-kem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-03-26" class="published">26 March 2024</time>
+<time datetime="2024-08-13" class="published">13 August 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-09-27">27 September 2024</time></dd>
+<dd class="expires"><time datetime="2025-02-14">14 February 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1113,7 +1112,7 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1206,6 +1205,11 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
                 <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-decapsulation" class="internal xref">Decapsulation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.1">
+                    <p id="section-toc.1-1.5.2.5.2.1.1"><a href="#section-5.5.1" class="auto internal xref">5.5.1</a>.  <a href="#name-keeping-expanded-decapsulat" class="internal xref">Keeping expanded decapsulation key around</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
                 <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-use-in-hpke" class="internal xref">Use in HPKE</a></p>
@@ -1217,6 +1221,11 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-binding-properties" class="internal xref">Binding properties</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -1262,10 +1271,13 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.14.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-change-log" class="internal xref">Change log</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
-                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-E.1" class="auto internal xref">E.1</a>.  <a href="#name-since-draft-connolly-cfrg-x" class="internal xref">Since draft-connolly-cfrg-xwing-kem-01</a></p>
+                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-E.1" class="auto internal xref">E.1</a>.  <a href="#name-since-draft-connolly-cfrg-x" class="internal xref">Since draft-connolly-cfrg-xwing-kem-02</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.2">
-                <p id="section-toc.1-1.14.2.2.1"><a href="#appendix-E.2" class="auto internal xref">E.2</a>.  <a href="#name-since-draft-connolly-cfrg-xw" class="internal xref">Since draft-connolly-cfrg-xwing-kem-00</a></p>
+                <p id="section-toc.1-1.14.2.2.1"><a href="#appendix-E.2" class="auto internal xref">E.2</a>.  <a href="#name-since-draft-connolly-cfrg-xw" class="internal xref">Since draft-connolly-cfrg-xwing-kem-01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.3">
+                <p id="section-toc.1-1.14.2.3.1"><a href="#appendix-E.3" class="auto internal xref">E.3</a>.  <a href="#name-since-draft-connolly-cfrg-xwi" class="internal xref">Since draft-connolly-cfrg-xwing-kem-00</a></p>
 </li>
             </ul>
 </li>
@@ -1484,16 +1496,18 @@ decapsulation key <code>sk_M</code> to recover the shared key from <code>ct_M</c
 To generate deterministic test vectors, we also use<a href="#section-4-2.1.3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-2.1.4.1">
-              <p id="section-4-2.1.4.1.1"><code>ML-KEM-768.KeyGenDerand(seed)</code>: Same as <code>ML-KEM-768.KeyGen()</code>,
-but derandomized as follows.
-<code>seed[0:32]</code> is used for <code>d</code> in line 1 of algorithm 12 from <span>[<a href="#MLKEM" class="cite xref">MLKEM</a>]</span>
-and <code>seed</code> is 64 bytes. <code>seed[32:64]</code> is used for <code>z</code> in line 1 of
-algorithm 15.<a href="#section-4-2.1.4.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4-2.1.4.1.1"><code>ML-KEM-768.KeyGen_internal(d, z)</code>: Algorithm to generate an
+ML-KEM-768 key pair <code>(pk_M, sk_M)</code> of an encapsulation key <code>pk_M</code>
+and decapsulation key <code>sk_M</code>.
+Note that <code>ML-KEM-768.KeyGen()</code> returns the keys in reverse
+order of <code>GenerateKeyPair()</code> defined below.
+<code>d</code> and <code>z</code> are both 32 byte strings.<a href="#section-4-2.1.4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4-2.1.4.2">
-              <p id="section-4-2.1.4.2.1"><code>ML-KEM-768.EncapsDerand(pk_M, seed)</code>: Same as <code>ML-KEM-768.Encaps()</code>
-but derandomized as follows.
-<code>seed</code> is 32 bytes and used for <code>m</code> in line of 1 algorithm 16.<a href="#section-4-2.1.4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-4-2.1.4.2.1"><code>ML-KEM-768.Encaps_internal(pk_M, m)</code>: Algorithm to generate <code>(ss_M, ct_M)</code>,
+an ephemeral 32 byte shared key <code>ss_M</code>, and a fixed-length
+encapsulation (ciphertext) of that key <code>ct_M</code> for encapsulation key
+<code>pk_M</code>. <code>m</code> is a 32 byte string.<a href="#section-4-2.1.4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
@@ -1545,7 +1559,7 @@ fixed length byte strings.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.1-2">
           <dt id="section-5.1-2.1">Decapsulation key (private):</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.2">
-            <p id="section-5.1-2.2.1">2464 bytes<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.2.1">32 bytes<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-5.1-2.3">Encapsulation key (public):</dt>
@@ -1575,14 +1589,20 @@ fixed length byte strings.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 follows.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-2">
 <pre>
-def GenerateKeyPair():
-  (pk_M, sk_M) = ML-KEM-768.KeyGen()
-  sk_X = random(32)
+def expandDecapsulationKey(sk):
+  expanded = SHAKE128(sk, 96)
+  (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
+  sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+  return (sk_M, sk_X, pk_M, pk_X)
+
+def GenerateKeyPair():
+  sk = random(32)
+  (sk_M, sk_X, pk_M, pk_X) = expandDecapsulationKey(sk)
+  return sk, concat(pk_M, pk_X)
 </pre><a href="#section-5.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-3"><code>GenerateKeyPair()</code> returns the 2464 byte secret decapsulation key <code>sk</code>
+<p id="section-5.2-3"><code>GenerateKeyPair()</code> returns the 32 byte secret decapsulation key <code>sk</code>
 and the 1216 byte encapsulation key <code>pk</code>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">Here and in the balance of the document for clarity we use
 the <code>M</code> and <code>X</code>subscripts for ML-KEM-768 and X25519 components respectively.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
@@ -1596,16 +1616,14 @@ of key generation. An X-Wing implementation <span class="bcp14">MAY</span> provi
 derandomized variant of key generation.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2.1-2">
 <pre>
-def GenerateKeyPairDerand(seed):
-  (pk_M, sk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
-  sk_X = seed[64:96]
-  pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+def GenerateKeyPairDerand(sk):
+  sk_M, sk_X, pk_M, pk_X = expandDecapsulationKey(sk)
+  return sk, concat(pk_M, pk_X)
 </pre><a href="#section-5.2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2.1-3"><code>seed</code> must be 96 bytes.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.2.1-4"><code>GenerateKeyPairDerand()</code> returns the 2464 byte secret encapsulation key
-<code>sk</code> and the 1216 byte decapsulation key <code>pk</code>.<a href="#section-5.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-3"><code>seed</code> must be 32 bytes.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-4"><code>GenerateKeyPairDerand()</code> returns the 32 byte secret encapsulation key
+<code>sk</code> and the 32 byte decapsulation key <code>pk</code>.<a href="#section-5.2.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1704,19 +1722,62 @@ ciphertext <code>ct</code>.<a href="#section-5.4.1-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.5-1">
 <pre>
 def Decapsulate(ct, sk):
+  (sk_M, sk_X, pk_M, pk_X) = expandDecapsulationKey(sk)
   ct_M = ct[0:1088]
   ct_X = ct[1088:1120]
-  sk_M = sk[0:2400]
-  sk_X = sk[2400:2432]
-  pk_X = sk[2432:2464]
   ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
   ss_X = X25519(sk_X, ct_X)
   return Combiner(ss_M, ss_X, ct_X, pk_X)
 </pre><a href="#section-5.5-1" class="pilcrow">¶</a>
 </div>
 <p id="section-5.5-2"><code>ct</code> is the 1120 byte ciphertext resulting from <code>Encapsulate()</code>
-          <code>sk</code> is a 2464 byte X-Wing decapsulation key resulting from <code>GenerateKeyPair()</code><a href="#section-5.5-2" class="pilcrow">¶</a></p>
+          <code>sk</code> is a 32 byte X-Wing decapsulation key resulting from <code>GenerateKeyPair()</code><a href="#section-5.5-2" class="pilcrow">¶</a></p>
 <p id="section-5.5-3"><code>Decapsulate()</code> returns the 32 byte shared secret.<a href="#section-5.5-3" class="pilcrow">¶</a></p>
+<div id="keeping-expanded-decapsulation-key-around">
+<section id="section-5.5.1">
+          <h4 id="name-keeping-expanded-decapsulat">
+<a href="#section-5.5.1" class="section-number selfRef">5.5.1. </a><a href="#name-keeping-expanded-decapsulat" class="section-name selfRef">Keeping expanded decapsulation key around</a>
+          </h4>
+<p id="section-5.5.1-1">For efficiency, an implementation <span class="bcp14">MAY</span> cache the result of <code>expandDecapsulationKey</code>.
+This is useful in two cases:<a href="#section-5.5.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.5.1-2">
+<li id="section-5.5.1-2.1">
+              <p id="section-5.5.1-2.1.1">If multiple ciphertexts for the same key are decapsulated.<a href="#section-5.5.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-5.5.1-2.2">
+              <p id="section-5.5.1-2.2.1">If a ciphertext is decapsulated for a key that has just been generated.
+This happen on the client-side for TLS.<a href="#section-5.5.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+<p id="section-5.5.1-3">A typical API pattern to achieve this optimization is to have an
+opaque decapsulation key object that hides the cached values.
+For instance, such an API could have the following functions.<a href="#section-5.5.1-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.5.1-4">
+<li id="section-5.5.1-4.1">
+              <p id="section-5.5.1-4.1.1"><code>UnpackDecapsulationKey(sk)</code> takes a decapsulation key, and returns
+ an opaque object that contains the expanded decapsulation key.<a href="#section-5.5.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-5.5.1-4.2">
+              <p id="section-5.5.1-4.2.1"><code>Decapsulate(ct, esk)</code> takes a ciphertext and an expanded decapsulation key.<a href="#section-5.5.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-5.5.1-4.3">
+              <p id="section-5.5.1-4.3.1"><code>GenerateKeyPair()</code> returns an encapsulation key and an expanded
+ decapsulation key.<a href="#section-5.5.1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-5.5.1-4.4">
+              <p id="section-5.5.1-4.4.1"><code>PackDecapsulationKey(sk)</code> takes an expanded decapsulation key,
+ and returns the packed decapsulation key.<a href="#section-5.5.1-4.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+<p id="section-5.5.1-5">The expanded decapsulation key could cache more computation,
+such as the expanded matrix A in ML-KEM.<a href="#section-5.5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.5.1-6">Any such expanded decapsulation key <span class="bcp14">MUST NOT</span> be transmitted between
+implementations, as this could break the security analysis of X-Wing.
+In particular, the MAL-BIND-K-PK and MAL-BIND-K-CT binding
+properties of X-Wing do not hold when transmitting the regular ML-KEM
+decapsulation key.<a href="#section-5.5.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="use-in-hpke">
@@ -1776,6 +1837,51 @@ Fujisaki-Okamoto transformation used in ML-KEM-768: the X-Wing
 combiner cannot be assumed to be secure, when used with different
 KEMs. In particular it is not known to be safe to leave
 out the post-quantum ciphertext from the combiner in the general case.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<div id="binding-properties">
+<section id="section-6.1">
+        <h3 id="name-binding-properties">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-binding-properties" class="section-name selfRef">Binding properties</a>
+        </h3>
+<p id="section-6.1-1">Some protocols rely on further properties of the KEM.
+X-Wing satisfies the binding properties MAL-BIND-K-PK and MAL-BIND-K-CT
+(TODO: reference to proof).
+This implies <span>[<a href="#KSMW" class="cite xref">KSMW</a>]</span> X-Wing also satisfies<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.1-2.1">
+            <p id="section-6.1-2.1.1">MAL-BIND-K,CT-PK<a href="#section-6.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.2">
+            <p id="section-6.1-2.2.1">MAL-BIND-K,PK-CT<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.3">
+            <p id="section-6.1-2.3.1">LEAK-BIND-K-PK<a href="#section-6.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.4">
+            <p id="section-6.1-2.4.1">LEAK-BIND-K-CT<a href="#section-6.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.5">
+            <p id="section-6.1-2.5.1">LEAK-BIND-K,CT-PK<a href="#section-6.1-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.6">
+            <p id="section-6.1-2.6.1">LEAK-BIND-K,PK-CT<a href="#section-6.1-2.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.7">
+            <p id="section-6.1-2.7.1">HON-BIND-K-PK<a href="#section-6.1-2.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.8">
+            <p id="section-6.1-2.8.1">HON-BIND-K-CT<a href="#section-6.1-2.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.9">
+            <p id="section-6.1-2.9.1">HON-BIND-K,CT-PK<a href="#section-6.1-2.9.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.1-2.10">
+            <p id="section-6.1-2.10.1">HON-BIND-K,PK-CT<a href="#section-6.1-2.10.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-6.1-3">In contrast, ML-KEM on its own does not achieve
+MAL-BIND-K-PK, MAL-BIND-K-CT, nor MAL-BIND-K,PK-CT. <span>[<a href="#SCHMIEG" class="cite xref">SCHMIEG</a>]</span><a href="#section-6.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="iana">
@@ -1813,7 +1919,7 @@ registry.<a href="#section-7-1" class="pilcrow">¶</a></p>
         <dd class="break"></dd>
 <dt id="section-7-2.11">Nsk:</dt>
         <dd style="margin-left: 1.5em" id="section-7-2.12">
-          <p id="section-7-2.12.1">2464<a href="#section-7-2.12.1" class="pilcrow">¶</a></p>
+          <p id="section-7-2.12.1">32<a href="#section-7-2.12.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-7-2.13">Auth:</dt>
@@ -1829,7 +1935,7 @@ registry.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </dl>
 <p id="section-7-3">Furthermore, this document requests/registers a new entry to the TLS
 Named Group (or Supported Group) registry, according to the procedures
-in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08#section-6" class="relref">Section 6</a> of [<a href="#TLSIANA" class="cite xref">TLSIANA</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-09#section-6" class="relref">Section 6</a> of [<a href="#TLSIANA" class="cite xref">TLSIANA</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-7-4">
         <dt id="section-7-4.1">Value:</dt>
         <dd style="margin-left: 1.5em" id="section-7-4.2">
@@ -1876,6 +1982,7 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
       </ul>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-9">
       <h2 id="name-references">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
@@ -1919,9 +2026,13 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
         <dd>
 <span class="refAuthor">Ounsworth, M.</span>, <span class="refAuthor">Wussler, A.</span>, and <span class="refAuthor">S. Kousidis</span>, <span class="refTitle">"Combiner function for hybrid key encapsulation mechanisms (Hybrid KEMs)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ounsworth-cfrg-kem-combiners-05</span>, <time datetime="2024-01-31" class="refDate">31 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ounsworth-cfrg-kem-combiners-05">https://datatracker.ietf.org/doc/html/draft-ounsworth-cfrg-kem-combiners-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="KSMW">[KSMW]</dt>
+        <dd>
+<span class="refAuthor">Kraemer, J.</span>, <span class="refAuthor">Struck, P.</span>, and <span class="refAuthor">M. Weishaupl</span>, <span class="refTitle">"Binding Security of Implicitly-Rejecting KEMs and Application to BIKE and HQC"</span>, <span>n.d.</span>, <span>&lt;<a href="https://eprint.iacr.org/2024/1233">https://eprint.iacr.org/2024/1233</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="MLKEM">[MLKEM]</dt>
         <dd>
-<span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"FIPS 203 (Initial Draft): Module-Lattice-Based Key-Encapsulation Mechanism Standard"</span>, <span>n.d.</span>, <span>&lt;<a href="https://csrc.nist.gov/pubs/fips/203/ipd">https://csrc.nist.gov/pubs/fips/203/ipd</a>&gt;</span>. </dd>
+<span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"</span>, <span>n.d.</span>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.203.pdf">https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.203.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="PROOF">[PROOF]</dt>
         <dd>
@@ -1935,13 +2046,17 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
         <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lipp, B.</span>, and <span class="refAuthor">C. Wood</span>, <span class="refTitle">"Hybrid Public Key Encryption"</span>, <span class="seriesInfo">RFC 9180</span>, <span class="seriesInfo">DOI 10.17487/RFC9180</span>, <time datetime="2022-02" class="refDate">February 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9180">https://www.rfc-editor.org/rfc/rfc9180</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="SCHMIEG">[SCHMIEG]</dt>
+        <dd>
+<span class="refAuthor">Schmieg, S.</span>, <span class="refTitle">"Unbindable Kemmy Schmidt: ML-KEM is neither MAL-BIND-K-CT nor MAL-BIND-K-PK"</span>, <span>n.d.</span>, <span>&lt;<a href="https://eprint.iacr.org/2024/523">https://eprint.iacr.org/2024/523</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="TLSIANA">[TLSIANA]</dt>
         <dd>
-<span class="refAuthor">Salowey, J. A.</span> and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"IANA Registry Updates for TLS and DTLS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8447bis-08</span>, <time datetime="2024-01-23" class="refDate">23 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Salowey, J. A.</span> and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"IANA Registry Updates for TLS and DTLS"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8447bis-09</span>, <time datetime="2024-04-30" class="refDate">30 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-09">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bis-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="XYBERHPKE">[XYBERHPKE]</dt>
         <dd>
-<span class="refAuthor">Westerbaan, B.</span> and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"X25519Kyber768Draft00 hybrid post-quantum KEM for HPKE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-westerbaan-cfrg-hpke-xyber768d00-02</span>, <time datetime="2023-05-04" class="refDate">4 May 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-02">https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Westerbaan, B.</span> and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"X25519Kyber768Draft00 hybrid post-quantum KEM for HPKE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-westerbaan-cfrg-hpke-xyber768d00-03</span>, <time datetime="2024-05-14" class="refDate">14 May 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-03">https://datatracker.ietf.org/doc/html/draft-westerbaan-cfrg-hpke-xyber768d00-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="XYBERTLS">[XYBERTLS]</dt>
       <dd>
@@ -1951,6 +2066,7 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
 </section>
 </div>
 </section>
+</div>
 <div id="implementations">
 <section id="appendix-A">
       <h2 id="name-implementations">
@@ -1972,7 +2088,7 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
           <p id="appendix-A-1.2.1">Rust<a href="#appendix-A-1.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A-1.2.2.1">
-              <p id="appendix-A-1.2.2.1.1"><a href="https://github.com/rugo/xwing-kem.rs]">xwing-kem.rs</a><a href="#appendix-A-1.2.2.1.1" class="pilcrow">¶</a></p>
+              <p id="appendix-A-1.2.2.1.1"><a href="https://github.com/rugo/xwing-kem.rs%5D">xwing-kem.rs</a><a href="#appendix-A-1.2.2.1.1" class="pilcrow">¶</a></p>
 <p id="appendix-A-1.2.2.1.2">
 Note: implements the older <code>-00</code> version of this memo at the time of
 writing.<a href="#appendix-A-1.2.2.1.2" class="pilcrow">¶</a></p>
@@ -2018,12 +2134,17 @@ XWingLabel = br"""
 assert len(XWingLabel) == 6
 assert binascii.hexlify(XWingLabel) == b'5c2e2f2f5e5c'
 
-def GenerateKeyPairDerand(seed):
-    assert len(seed) == 96
-    pkM, skM = mlkem.KeyGen(seed[0:64], mlkem.params768)
-    skX = seed[64:96]
+def expandDecapsulationKey(seed):
+    expanded = hashlib.shake_128(seed).digest(length=96)
+    pkM, skM = mlkem.KeyGen(expanded[0:64], mlkem.params768)
+    skX = expanded[64:96]
     pkX = x25519.X(skX, x25519.BASE)
-    return skM + skX + pkX, pkM + pkX
+    return skM, skX, pkM, pkX
+
+def GenerateKeyPairDerand(seed):
+    assert len(seed) == 32
+    skM, skX, pkM, pkX = expandDecapsulationKey(seed)
+    return seed, pkM + pkX
 
 def Combiner(ssM, ssX, ctX, pkX):
     return hashlib.sha3_256(
@@ -2048,12 +2169,10 @@ def EncapsulateDerand(pk, eseed):
 
 def Decapsulate(ct, sk):
     assert len(ct) == 1120
-    assert len(sk) == 2464
+    assert len(sk) == 32
     ctM = ct[0:1088]
     ctX = ct[1088:1120]
-    skM = sk[0:2400]
-    skX = sk[2400:2432]
-    pkX = sk[2432:2464]
+    skM, skX, pkM, pkX = expandDecapsulationKey(sk)
     ssM = mlkem.Dec(skM, ctM, mlkem.params768)
     ssX = x25519.X(skX, ctX)
     return Combiner(ssM, ssX, ctX, pkX)
@@ -2400,7 +2519,7 @@ def constantTimeSelectOnEquality(a, b, ifEq, ifNeq):
 
 def InnerKeyGen(seed, params):
     assert len(seed) == 32
-    rho, sigma = G(seed)
+    rho, sigma = G(seed + bytes([params.k]))
     A = sampleMatrix(rho, params.k)
     s = sampleNoise(sigma, params.eta1, 0, params.k)
     e = sampleNoise(sigma, params.eta1, params.k, params.k)
@@ -2414,6 +2533,8 @@ def InnerKeyGen(seed, params):
 def InnerEnc(pk, msg, seed, params):
     assert len(msg) == 32
     tHat = DecodeVec(pk[:-32], params.k, 12)
+    if EncodeVec(tHat, 12) != pk[:-32]:
+        raise Exception("ML-KEM public key not normalized")
     rho = pk[-32:]
     A = sampleMatrix(rho, params.k)
     r = sampleNoise(seed, params.eta1, 0, params.k)
@@ -2475,446 +2596,230 @@ def Dec(sk, ct, params):
       </h2>
 <div class="alignLeft art-text artwork" id="appendix-C-1">
 <pre>
-seed
-  7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef263cb1eea9
-  88004b93103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc873c23dc62
-  b8d260169afa2f75ab916a58d974918835d25e6a435085b2
-sk
-  24c59d1c7603e7b74bc7aa1bc2cb3a214b3cfaebb63bd85b65408427c498ba394371bb27
-  1f92a3b506b81d54a95a7c0ddfbaa1519553d6f3cd5a601b7db6b0e91a5149468f1f68ad
-  26478bf3c6670e093ac4c49e7a90ba46595de94c50e04129a811a841b39534a87f0ae7b1
-  116553e20c9a566b9b8ff7c7e728b8b201893403a4f252a55230874c256b897834cda349
-  807b25cbd75a30867bfb80328200017f1cb70b56cc546b65d3dc9cdb45107cf10dba3496
-  19043ac35c0b9546309a239039813ed5c40f353a5e8e42193564496112bda56cb38c081d
-  f252ae9c2c7e441a062e92a7c8da7a240c9952d86b5f1bb6a53b38a5ac0a54a84b43f12d
-  a1d0525655684a12090b60b28b0c628db092015547d1070af5d6192e639636615d03c654
-  bb90008ca15b784119f6178a00d7bef4a54a274ac922e55c61a3a8840aa258639484a3bc
-  e2e43b6c969b11275631daa129a61ea0e2939f0877e1a110c8a44b24c54fbb07a958db9f
-  eeca1eb52b086c87bf43a9b02a5b2c4762117c3a99ae4c4e2eaa7a33b9a714737215c103
-  17514f6c4299ef92acd64c4858e85ce737a801890022d7381f3540230c0c8ef50a848a28
-  b09ba0bf8b50619c905751601d7629767449c9c0b2bae321f438a77f412a55e45ecab4b3
-  9053c6561801c639be6495be8fa144ef6029af663407ca9181946de5f3aec7236343ab3b
-  c5a38a09c01b412baf0afb23f9e9b8f2b40810f2ce4ffbcdbfd87972323e98065160bcba
-  34b3afd6c25b664745fca99a9ea75cef019d768485ec23336d9b39e4d05d8d587b30633d
-  4f69ade5753a39680235e44f27995da96798f3a85e184a9fad19320829629f4140417bb7
-  dbf5851ab79258134146d088452774991a087a1c2beaea89f218087ba774ae253b494c27
-  750b1de04b44d953c5e47ab10f65205ee212f9c30391e5299553954916873a0b41164543
-  e801c0b099cb44f48995675823c10b40f4bbac9177a558ca0c30765c2aabfd6a4da54c84
-  13e33902d63f064330f0464982429de2604cd03b4de84a9f821a5470423a40a964dcc418
-  63363d77b02c3127304f942ee71c98c643a427533ef300104948b825277953aaabfd8555
-  88f75a77d199a213ad348116e9e539f6d37068a551c710548b7a2c7ee95f9cd9b3483332
-  673cc44bcb18a778a49455c768e0b340f81102ac6b76b064057151ef101ae143787f5485
-  53558df8035a3ce00c9c43cda43142cca39034b09a7e6089867b4c64980a69ecab2e6818
-  724c35cb909d5d45bc6a349c71b306567664adc0cc8ef698049b4b4b432dd0f69fac0758
-  0f77c4f79b22bb90cb97b341880716853431694c9120f6724ad58d57127fced999ff6229
-  a5d4c3c240129cc812acc73698f949d8e73661f2528262bfccfa5cdf5a2104649806e295
-  ea161217083365aa26cee6ae2f1356e8e1c5cefcc85703447ef1160a1b4a0e8c017b1738
-  02c66c88ab70d39a6c96c1569d5a86245a7eeb087d682219080768745b44bf244f65b567
-  b2658dbae6962ba52b322118e214cfadd7cf3502582dc9cafba952a9637ad36007102597
-  78d99d23f8235da90791604b4f0a4f7640680f59b633d93dfb84282ba54c674b115684a4
-  1bc331b659a61a04883d0c5ebbc0772754a4c33b6a90e52e0678ce06a0453ba8a188b15a
-  496bae6a24177b636d12fbb088f2cd9504ac200231473031a31a5c62e46288fb3edb858b
-  21bc0ea59a212fd1c6dba09e920712d068a2be7abcf4f2a3533443ee1780dd419681a960
-  cd90af5fcaab8c1552ef25572f157a2bbb934a18a5c57a761b54a45d774ac6bc593583a1
-  bcfc4dcd0cca87ab9cff463dc5e80ebbb501d18c8b39e324dbd07ca06cbf75ba33297abc
-  c7aabdd5b308401ba387f533f3927b51e91380f5a59b119e354835ab182db62c76d6d85f
-  a63241743a52012aac281222bc0037e2c493b4777a99cb5929aba155a006bc9b461c365f
-  a3583fac5414b403af9135079b33a10df8819cb462f067253f92b3c45a7fb1c1478d4091
-  e39010ba44071019010daa15c0f43d14641a8fa3a94cfaa2a877ae8113bbf8221ee13223
-  376494fb128b825952d5105ae4157dd6d70f71d5bd48f34d469976629bce6c12931c88ca
-  0882965e27538f272b19796b251226075b131b38564f90159583cd9c4c3c098c8f06a267
-  b262b8731b9e962976c41152a76c30b502d0425635357b43cd3a3ecef5bc9910bb89ca9e
-  91ba75e8121d53c2329b5222df12560d242724523ff60b6ead310d99954d483b91383a72
-  6a937f1b60b474b22ea5b81954580339d81c9f47bab44a3fe0c833a7dba1f5b33a5a2a45
-  9812645c6537c2317163d71b7bd7a4a5459a28a1c28659aad9a1ca9a99a363062d453355
-  108445a673438e77624e73757c1a84d031cf0fb24b1187aafbe6738e9abaf5b42b004b1f
-  a0d96426d3c5324235dd871e7a89364d335ebb6718ad098154208b143b2b43eb9e5fd881
-  6c5225d494b40809b2459903c6486a1db9ac3414945e1867b5869c2f88cf9edc0a216681
-  804578d34923e5a353babba923db907725b384e74e66987292e007e05c6766f267f839b7
-  617c55e28b0fa2121da2d037d6830af9d869e1fb52b0cb645fe221a79b2a46e41980d346
-  71ccc58d8756054b2cca7b13715a05f3925355cca838ab8d2425255f61135727167ad6bc
-  b0632ebf86384b950ad21088c292b4a4fcc0e59c42d3f77fac85cd9f5cb049b3a29505a9
-  84c4c6ac98ca3d0a8f30d2b1bd9815b94b27051b40ffc3455a668b9e141428611b280c1b
-  8f2b55f6eb04e10c68f1340ef1582115f10ee2b785b7ebb0ec3a0c61670cf48107b594cd
-  6e238e0d68961b47983b87879771519d2b7c21681cd494b420f03d004bb06eeb54f9c080
-  c2f2aff6759074d5b3a3b11c73f1af6dc874eeec254d5409fceaa90ff66d90b6930a540f
-  d1d9be1844af1d861ff96a611a414a6c61a78fb2a78e74383ab05ebc73855a818a627242
-  d523a3e2a35ab4285b4a2564f76772aaf8cdc9f87c65f1b4b5819905fb4f9ea59166fbbd
-  b201c5eefc0df7418ca211b5b079a511b8b94429847b537fbed82d57632d63e815d8212d
-  8a280d43328604a6c4d2c1887e7ab061f120a0168db2f4735369b193780f0aeb381ff265
-  3f3b46e206afe77a7e814c7716a1b166727dd2a0b9a7d8aeace425da63977f8103457c9f
-  438a2676c10e3a9c630b855873288ee560ca05c37cc7329e9e502cfac918b9420544445d
-  4cfa93f56ee922c7d660937b5937c3074d62968f006d1211c60296685953e5def3804c2d
-  ad5c36180137c1df12f31385b670fde5cfe76447f6c4b5b50083553c3cb1eea988004b93
-  103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc873c23dc62b8d26016
-  9afa2f75ab916a58d974918835d25e6a435085b2e56f17576740ce2a32fc5145030145cf
-  b97e63e0e41d354274a079d3e6fb2e15
+seed     7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26
+sk     7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26
 pk
-  1bc331b659a61a04883d0c5ebbc0772754a4c33b6a90e52e0678ce06a0453ba8a188b15a
-  496bae6a24177b636d12fbb088f2cd9504ac200231473031a31a5c62e46288fb3edb858b
-  21bc0ea59a212fd1c6dba09e920712d068a2be7abcf4f2a3533443ee1780dd419681a960
-  cd90af5fcaab8c1552ef25572f157a2bbb934a18a5c57a761b54a45d774ac6bc593583a1
-  bcfc4dcd0cca87ab9cff463dc5e80ebbb501d18c8b39e324dbd07ca06cbf75ba33297abc
-  c7aabdd5b308401ba387f533f3927b51e91380f5a59b119e354835ab182db62c76d6d85f
-  a63241743a52012aac281222bc0037e2c493b4777a99cb5929aba155a006bc9b461c365f
-  a3583fac5414b403af9135079b33a10df8819cb462f067253f92b3c45a7fb1c1478d4091
-  e39010ba44071019010daa15c0f43d14641a8fa3a94cfaa2a877ae8113bbf8221ee13223
-  376494fb128b825952d5105ae4157dd6d70f71d5bd48f34d469976629bce6c12931c88ca
-  0882965e27538f272b19796b251226075b131b38564f90159583cd9c4c3c098c8f06a267
-  b262b8731b9e962976c41152a76c30b502d0425635357b43cd3a3ecef5bc9910bb89ca9e
-  91ba75e8121d53c2329b5222df12560d242724523ff60b6ead310d99954d483b91383a72
-  6a937f1b60b474b22ea5b81954580339d81c9f47bab44a3fe0c833a7dba1f5b33a5a2a45
-  9812645c6537c2317163d71b7bd7a4a5459a28a1c28659aad9a1ca9a99a363062d453355
-  108445a673438e77624e73757c1a84d031cf0fb24b1187aafbe6738e9abaf5b42b004b1f
-  a0d96426d3c5324235dd871e7a89364d335ebb6718ad098154208b143b2b43eb9e5fd881
-  6c5225d494b40809b2459903c6486a1db9ac3414945e1867b5869c2f88cf9edc0a216681
-  804578d34923e5a353babba923db907725b384e74e66987292e007e05c6766f267f839b7
-  617c55e28b0fa2121da2d037d6830af9d869e1fb52b0cb645fe221a79b2a46e41980d346
-  71ccc58d8756054b2cca7b13715a05f3925355cca838ab8d2425255f61135727167ad6bc
-  b0632ebf86384b950ad21088c292b4a4fcc0e59c42d3f77fac85cd9f5cb049b3a29505a9
-  84c4c6ac98ca3d0a8f30d2b1bd9815b94b27051b40ffc3455a668b9e141428611b280c1b
-  8f2b55f6eb04e10c68f1340ef1582115f10ee2b785b7ebb0ec3a0c61670cf48107b594cd
-  6e238e0d68961b47983b87879771519d2b7c21681cd494b420f03d004bb06eeb54f9c080
-  c2f2aff6759074d5b3a3b11c73f1af6dc874eeec254d5409fceaa90ff66d90b6930a540f
-  d1d9be1844af1d861ff96a611a414a6c61a78fb2a78e74383ab05ebc73855a818a627242
-  d523a3e2a35ab4285b4a2564f76772aaf8cdc9f87c65f1b4b5819905fb4f9ea59166fbbd
-  b201c5eefc0df7418ca211b5b079a511b8b94429847b537fbed82d57632d63e815d8212d
-  8a280d43328604a6c4d2c1887e7ab061f120a0168db2f4735369b193780f0aeb381ff265
-  3f3b46e206afe77a7e814c7716a1b166727dd2a0b9a7d8aeace425da63977f8103457c9f
-  438a2676c10e3a9c630b855873288ee560ca05c37cc7329e9e502cfac918b9420544445d
-  4cfa93f56ee922c7d660937b5937c3074d62968f006d1211c60296685953e5dee56f1757
-  6740ce2a32fc5145030145cfb97e63e0e41d354274a079d3e6fb2e15
+  ec367a5c586f3817a98698b5fc4082907a8873909a7e79ce5d18c84d425362c7956aeb61
+  0b9b68949107335ba676142aadd93ed27211c57c2d319c805a01204f5c2948158759f063
+  27825379ac8428113e59c215a582a50d0c89505390ecf868e9270cf96c4fa0f94793b599
+  8b38a1e3c9039bf4147695c08413a7e190b5d9a8c22a4759bda51fd11064a21c4dadc3bc
+  28510697f3a442205214a6cd3f54a9ba45a309437d372654e2c6226e8640810128597abe
+  9042932be6af1eb71a6ef156a9baa4c0c05764a8314fc1565d1825a5eb3604f278bc175b
+  0666af85a13d97c650a571564eca080a36727bf76460c81a842895e87c9d4fc9c57fc6b1
+  49692eed526fb632cd476232a9f3035b4c96d6a14f8cf92e2735a766c7a168e6034369b6
+  c17750afcc483af5654b82439f6b9a136cb4f47986dab4c427327675061d7b130572e207
+  1f22339a997cf1e1618133ac8b8acd1d7177943c0d1971c84fc48cce7c4c00b95a9f7741
+  4c4c07fb3b0c6d51144d36cc8be4ae9b236f89accdd4336bcff11f4fc997ef13c01bb45d
+  4001b1949749ebf14e469788ebdbbeced68ba149ca81aab111d0756f1074b7e60031da43
+  7709027c4676edc35318a74b1308a8f2b6aef905668bb031a6403ab7a328ba74b9231866
+  e287424b42acd1d69b6eab657f2340f433717e581a048ac9be5196fedc36ec212de48149
+  bbec9e07ccc8b1f50293e78e469079a3d3588ae146c1859ced376dc13040c4535f253cb4
+  0a61b8be95b8b6606d2f607c1035a23566ade289391829ae61cacd36d247a3a864bab43b
+  23198481f10f9a5b25b64cb6314baaa0282c59792fe987687b06cb23b397302962cacb9f
+  7327301310c7e66b9f5aab93b0f9ba9b5633a1db72fa637c4f6611ca9117788bb335b80d
+  d0c989af6b0d8fc9b5c3707a1d848b220a3002b612c294a004c4b52ad1b4b57619d960a6
+  59646622a73de9a55de1191dcf8253b50bb2d6e0bed3ab12c4bb81b2826afec87dabccb5
+  6b74bdd4c844005097ac94cafea715a57b6e20b49e49869bfdc8015e37a0b3f942f9467b
+  7c749f76c951623340660bbd88c16dfbf5176ca855689bbf7287391935b71eda6ef8bab6
+  a2ea6e3095a1f2719d10b205130982942c1bbad0bb6c1901879587ac3a290ff20043010e
+  181337eb2a20eda44b24e07f12255bbe78279adc51de276d2e602b72dc1ed7489240ab2c
+  4e672b527082e363b0b5f51ffbbb79d724435484ca0c7874aff654d61a254eb7ae420b4d
+  0a9958a48144e013972cda7f8adcc7c36206725221a79426e7c798e99cb645198c506194
+  c3da36415501ea6bccb377921f0172cf9634232b211d626074020cdec29c4d59248c4056
+  88f15d6bc556f72bb01d11ae0b2167d33bb2389a2d6dec911a3513fc680d21a265c3f3b1
+  90e983d5bab1ae471802024edfd96a2cd51176261107c29f5050ab52ca7210db8668bb80
+  064744cb4236e3ac6df26477c8d80ac9a60ca8796f95c5acd960b2f541027c2378ac1570
+  8070acfa528a8473248458cb3cf23108949369009b523a945fc70cf3c3add61c4fbbdba9
+  1d74c954682182d30071e71648f1b266ea343ab97547c9a3462969ca911a67667e1cb884
+  67942eea1ae5d06ac215e64de876fda67c22f74ffe26ff8b56cf606ff799d4a89bb6cee3
+  f79506960abcda4e65d8197e0c992244dae91c21068915647f844f49
 eseed
-  badfd6dfaac359a5efbb7bcc4b59d538df9a04302e10c8bc1cbf1a0b3a5120ea17cda7cf
-  ad765f5623474d368ccca8af0007cd9f5e4c849f167a580b14aabdef
+  3cb1eea988004b93103cfb0aeefd2a686e01fa4a58e8a3639ca8a1e3f9ae57e235b8cc87
+  3c23dc62b8d260169afa2f75ab916a58d974918835d25e6a435085b2
 ct
-  718ad10318b367fc4390f63147fa5250ef61b65384a563f2c7951b2d45881fcf9f446ddd
-  4443417eed0c001e635a994cda366f118bdd1cf0be0417abd1b615cc669e1b949280e28f
-  52d3d5035c6420ff6c943421ee7589e681828c95942d4f9968f32b9ad30cccff0d98fa84
-  b187164530dc83f9cde75ab1958c22dbff8af921c9ebc678a658b69663f72e7c1632b6ac
-  8ddcbc6c8a06c3316b1aefdd07989ef944fc51406e12db6865344e03f447520d50c93fab
-  1513d80cbc836950e2b52f424bb46155ba4c2e21ec5dff762bf7e92e54e0fb7618e73072
-  607ba03b1de16f109e22dd5832a7eadfeb2ef00244bbaf930106cbcd2ab008f468de6d98
-  632e9e225091a010e361ce751d633e6c37ba2530bca6fbe9d2e5348e4e168e154922992a
-  ef45a265ec649ce21480504b609ad5f1b0b094b74d55aaea60b8f71398cd9340802e9141
-  5937ffaa482c6678f8421c63583e8acd8d00bf285b52a26fa577aed109acd94ef7559554
-  aa378f87283a7ee94af98e21a6fbac8802336ff980e15e498042a8148b69e1d8aab0b712
-  6d0b885f9a57c1ea83efcce8dccfee076dbc2f9c074525ed4e7472c3e09a9f1c50ff5111
-  50159c1be7730686c04e46368e37f2e8c82b8436463445b0edaefab876731497abcc563b
-  1978eac34cf73b5b213549d1f74271d48f6a085155acd8d7db739ce6e70ad25ee636231e
-  4151725d55ea781d483e54850e1ebda401276616e7a62b22efa2e3098a006dfacaa1fca5
-  4ade6a119f3a215b523210164a7f299d2c7b8ad8a637bc1fba56de28ffa800b522246dbe
-  c7148ced56ed292c7d92004065598bc573dd30259d84b6d923d2769ce260cdab0ad17673
-  ef7388c020b8e8bcd055232a7240fe2fa4fcbeadbc46366aa47729f5502dbfee8a623ab8
-  ec6f6020013aeff975f255b597a11eed1335457b9903da42a27a39fdb0edbb11742e4e52
-  1c833b7952d3fd28f428eecb6f78b99ff0a5eb097793f78f1a70612811766fcbe0f9aa3c
-  a4afd8a364f5584333d8a4cdc096a3762ea6cce70dfa42967f5a7c2dbef688b37885fa26
-  220dc800bcb1ae83d35ffca54a6dabba730764d60b1a4a506206efa380d7d1d89069778b
-  082bb92396af4547024797797e01c927c78c9f70750ef2002dfe1516baa4f165a3176942
-  d35d9527f4b33505484130cd573f9d4a1f1e6656aff881aab482fb3d6151ab02f7626703
-  3f3feb9718fbfed05a9b69a8d817a7e4a41efbe3ffeb355d1013778f14d4c30c92a38619
-  0fa23b388feddc635b22d8fa4998b65d483cd3b595553092123e144c49d91ddc2f7a88f3
-  ef1ad2b0b19636bc3f50f61ea5157c73a1a5b956349b6cdf3ff50ec9ef7cbc1137b27d78
-  39276a3ed4e778c505206669686ef038b5808117fedf60ef3598e8ed1db1e5ad64f04af3
-  8e60e82fe04bc75594fd9fcd8bb79237adb9c9ffd3dc2c907345f874aec7055576a32263
-  486120ff62ad690a988919e941d33ed93706f6984032e205084cc46585b5aef035c22ddb
-  b3b0ba04e83f80c1b06b4975f00207b357550d24405189412ea6a83ad56c4873f499fdbd
-  c761aa72
-ss     2fae7214767890c4703fad953f5e3f91303111498caa135d77cde634151e71b5
+  b45085dc0c2abecd811415924ade853ae88c8dcf8007e6d79bae036648290472989d6f21
+  87bc6d39d0f739d315fc03cd8a373ad8927b0db7d419385c9b867b351815a95e7f0f915e
+  7356eacce50d328a572565c538b282dc539e4d4b106ba5add0656efb8bd670a32e89fb64
+  2eae8235fdc181b2a3ae21d5f3374ce6955484c4fa9dd0a8e454f73e840fa5085070d107
+  89e3cc1f6b4274fad17c041c23a8c512e3be23962de5028f427273f5a53dcf43425e9183
+  d304abf22b306fb6add4c89a7b54fa93d50393882bad23e06c58c03cbb765a9d1324be9f
+  e7b399b7a0f7486b8b03fe186dc5e9ee9738f48e7ef3127a6db992097263dbc51fb227df
+  ab0aae2758d8cfd8573c227e19d245503518ee7f533976236075d50f95b5bd101c670714
+  209f264c01e31b80295fea54f42e1c62856042bafbe72e1ef8abe12f58b02e4eb6378bc0
+  e13339395b6faf95e2738c509975bc1806d1cbad3e586cfa2ba09b2bde20dfb0aaba2cdb
+  583ae33c812109a1095adc697befcbd0be0aafee1e41979be026747c918646d38874320a
+  af404f28cda6d6d7a7a5386f487983a69064b8bc1fc0a2998a55bb442cfa9b61581263b3
+  3f5ae25c4a1efdd890c3fae4481995eaabf1d4a27addc239b99bb8aefec73a9f9c158190
+  26d35d48e11de426f7f113e8fe843db011934c8052300cca9fc870f390648ab47ff54362
+  9949c5459fae763871e949a4d2f61caf9f6afcfbc00e5b71f85c791ae04d4db90ed09811
+  382a8a2a9707f76cbeaa371eb64d2a8d82e1f65b42e0928e5afa288062ca0b28317c9b36
+  b27f14161d84d71db377efc6f0f2d7b57594e8fc432c2dbcbc4f55fc3563894a5be4ad40
+  a2aa34ca48db0df5b6d8ae51777bf7c6925a40e651629351e86480594f438ee3a34daa7a
+  2581e0f573489e71b23bf76dcf8fd3d9c29ca6bcc699753d54b876adb0c0514ae887e102
+  9ef195fc3cddb51d03cb518f8dad5044e2299f601b961fa38da47d1e940b58e864cf5dbe
+  85a21dafc40b2355144307d09bd2bf8b1c762e7bd5e27308d903e165ecc6176b74564329
+  bf37e1ce9257d113897c0099aaa17937735dd13931c5742f5cceaec475c1886bfef42252
+  a7ad66f4d4b925faec8e1a9ce0623a895e9c00c57781e66404311720bb94ff0c019081f9
+  b846d72451179308f17d4c7ac324a5bbbb914411840364b9b65f6e189c60ef842c155df1
+  f96b84f03521803d3cb7016629b4c8159fb0ad3ce1da5e49ceba56f6881be8432200c86e
+  291a4cd3b5ea9001e99b418b9d44a3fa0cedb6acf3feef30df4307480967e765530d6183
+  add3a198d796a4535abbd8be92d8c2f9ec4217fd459326f0f090764b57207d4cb108af34
+  abf120c182011e66393edf2f446f606acb5b0ad5afb4ea5866e4d4158280885bd0ad4dec
+  ed058ced8035afc85d1e03c00b7c23b4e74abe8ba12b86a027064bf88443aadb38c82bc6
+  21b6880d3e88f6c3bcb03a015d1cc306f7d575ee778cd1b52902be555b4e02b74cfd310b
+  d83ab4c81f97fc12e56f17576740ce2a32fc5145030145cfb97e63e0e41d354274a079d3
+  e6fb2e15
+ss     555a071a8b7520ae95f8e635de8a5f87dbddcbef900576aad29ecdda5459c15a
 
-seed
-  aee7eef47cb0fca9767be1fda69419dfb927e9df07348b196691abaeb580b32def58538b
-  8d23f87732ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c922a96188d032675c
-  8ac850933c7aff1533b94c834adbb69c6115bad4692d8619
-sk
-  89722dd1c8829af93f6e5405ecd93a5aaabcb9264aafc363d731bb4f276021b0c0682636
-  3022ae1e85acc6679ccb583a37ba4d30e0564ae6421ab1b5c2374a058cb6bca4050ce15e
-  d5c51bcc90be82454b332aa21069623d8a8b393a2c2b6cb5bffc55ae369614a77d9bc982
-  d47496ab21239bb7691ac65494225889b7b45ba10b0aac10c3c41fa7a4a51fa14d3e92bb
-  d364be59ba7d9d4592944968e97a2d947868a0624a97a9c8ad226d81a12a17777eafaa6d
-  e30436a5c743003078d830734ec97e6a625f6d9c10f9da3f956b5583578478e6311f2778
-  9d6188ede84510442c9f556696378faa622b1e935be62c733da96b023c31b2ba6abfbc5c
-  748088251042d46559bf132d2a43b7690cb4666722ebc53849843125f9a900aa476af424
-  b7b410f18300f048ce26dc7f35b50f7eb5bccf23c95b7c0064e92662eb22927359df1b9a
-  ce43ce014384ae68822f4c3f64583643355c6746290d224a70c818158884e2aa8f15e187
-  09100848255c277144f051ab8b40775c297cafb238cdb70e8ce687c9e195d0823b390341
-  e245852ca99c079211161a79409247ae721a59b358ef097ed8dc386f982d36a9220c3511
-  eacb3674f671f171afb0d14f0890c0c7f77d06f7c61ca83a15974083e72678f180f35c1a
-  aa633166d429432599f9d9432fe791318ab14a3988496a14c2417e03990136e91aa3a817
-  085abbc4aa0c38a45e7e009f3577739172396f7b7e61734eaacc5b484971e9a9384b58aa
-  dff9307a98222a3813f9269fe793b7ef582ab8c36feaf447d3136285f76d5f4631413567
-  73650441e092dc73bcf483cb1f2944016936db2a34b743830cb890e85660acd077ea51c0
-  7e664df7ab803c9b0c96e143b4f5788311a841b76be728aea60270104564575bb723f51d
-  acaab5e379c3cdd97bdac84ad6738587bcbbdf1c66a0da65f87a673f840e1d7c5a722a26
-  5568429ae36cdde9cd54ac3d4a94c4c6508361984e1c211771998641816fa392a4ffb976
-  64381a84900eb52502f04816a3d70090b55ee2d3b7f3d459af4008ec8c1b19c08d1284b6
-  fdc81508647ecb9b45e65c084d456f9fa87a68f26bc05b4e8415887b602ff28b28e41263
-  7ff9019a90ac21c7c4ae9670a538a2bd2604616689b034c33cb1cc9d634eb37c8d4d46bc
-  40e335582b539d3215bf70960cc1c0b11011449c2a09265101f55366dc0213a641128851
-  76c3a223b19cf6951b5968452aa7b839370646db5eee1893346a58c116133dbc8fc1c5ac
-  34e04cda171b041c0133563a682855a9cb18896c6179ac2eac83c70547942e54b2e133a6
-  f68450f4f4b14bda3af5f129b3e292c6a676aa0b7a045c7251e315ca3707ff23bec349a9
-  50d49718560b2ff66cbd49c848b4036c2186a0315c4e6a32f3035207a48651891f50ec6c
-  0eb19d13e90457611e0c7ccdf012a3e19412d8c1563f1ab22b39859b27a7bcac72cbf2c8
-  3c666deb401e4239603645872b997673b6205d97cdd68b0a782742e62c24ad746261085d
-  e3c95f49dbb8172c05f3f2414e63652c3b358d603e867173e03203af06a26bb0bfc0b521
-  118b6fd99613a160829b04475374b8214859bcc316f4e06a84f264ec3cb513f66b71ac3a
-  3d135aa589198cb02113cc17e13a0f15fc1d3d734966c3751a74ac27c781323043e36389
-  dca9a2af6508bdba0260662691426d1d8899cd77736c21b17eb3a31fc118154264e2b10e
-  22c506b7803b1f4b25d178b688b641d0943185107eed18b228e8b68753a8d75a77f29b5b
-  5e97abd028354ce4cd6961797a757c4ff44aeea2c0a16cbfdcb07314fb3e64d7c26a4c9e
-  5782a2ee198d73e7bf05eb85bd420cee20ac24c36613d6bd0c53133443527c32bd0f8b3b
-  3be9918c7caea71748de6bacfa27710845ad0b528c087349e9faa3c83869e1d0ac926797
-  4dba1dc3434976f60b59d443bad51e87d974c9f747b76017bd17021c24246a9987db1b31
-  8562bf665b41fb153c0ba675cac593b990ce595a7851fa18ea345bf20c3524862532544e
-  05e5c69daa0dc4f2b24704338e29144d653657d47a20f39ed2b1174cb3120ed1590e4ac9
-  32579dc2da9f12f6c07ec7a31963208faa5c758615713965b9d5661860cfe5652d74231d
-  2ce9b696ea9e45305a28d84c082709d2238bbc849b6b3cac64b78b532995af6b4ce9880f
-  9149a5ae083320624e3b54851d48a6f24266258a0a14d342e4ca3133c33c5e16ad91b22d
-  521100076527cefc5f0417b332463c5c5c52dc4b00a2d29959109244d2810839a310cb1d
-  f282503d5cbf3f0cbe3e68873407b7e5e960ca214709919b65301da2b3a7e488205a3a9c
-  5f24cd61d18c757040b14a4e80e8c09e74a9a71265ed213a91da6d7a8655de3b4a83125e
-  e2e66cb673733e3717d99023a6683712767ab2da9b54a26dd3b695a80b54226a1a967b08
-  c3f76e679914470803bc6805a6b4b1b78261259acd8f703dd10ba6e8e1a00dd94e774113
-  d13103253cb70edab948c38072629b949261b7c439445bc498444e86b6a9a7da8b153038
-  0bf2939532a8e7ea84ea0b5c6db5335e826aa0325b536ccc21d943890b2c2a5c44f33768
-  2355867be87965175f2dbbb0aba89f9311b0873a15db6a4128682a8bca019a04a351a0ce
-  646868f9bbb6f8d0bea3db0865f1239b16c93ca09d19857d747abfc846b27dd77ee5d405
-  fab5ce949635e7d34ec1b9546aea75df571cfed74b7112218e4153e7f6a7a3a910ec4c11
-  1576b3bb27c29852746e645fa501b0642678aefa2209c745939a2ab000033862b88e7011
-  e7e25ec1e3cd379b54bc457a85d9af0680160c57b3a4e90308bc28b8da13ac0c563c55b3
-  9a88bd90b51f691525e50a260a0507a2174447ea93f5d5acec6c16a5d7909e275f612c9f
-  283310e8124d28f18000f811fb929e03f30d1472644851bcb73c4af6b095acd7328a072b
-  e9187a836a15307c6076210c9b410493505bc4814e3c327386796c5932c8cab7a695b97c
-  ac24561b2a9657c3157531ba3cba699b6424fda24cc6c72edac1a6bf091b87c3c594c917
-  d24a1126f998aee120ae372a27a268a0c76ab8f84957f461e7c04dd2d59f0f217d9e0700
-  8990533b16bbc125b2737a1a7e1cc1ed7c47e8f8464ba78c5d3298f2dc7d0be944ad2990
-  7ec774ad1b1f1485b114a9a9b93c488c89c0c7609f2bf9533c2929f667bca8b68999e340
-  54597cf83ba7450b237188c3364172c1351bd349a699672d31b9598bab79a18b3d8cb25f
-  5f53c0b22bfa065690a16184db4f9731cea1a08f5876ec187e7b1ae79c593415d068838e
-  5ce0bf2c28b1e389ae4a768f871b2761a29178a51845eb0b939f0ee9ef58538b8d23f877
-  32ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c922a96188d032675c8ac85093
-  3c7aff1533b94c834adbb69c6115bad4692d8619c7dd2bf4e3b5b93f77f4576d55d30073
-  9e75e14084b0bc85620499bf468ae161
+seed     badfd6dfaac359a5efbb7bcc4b59d538df9a04302e10c8bc1cbf1a0b3a5120ea
+sk     badfd6dfaac359a5efbb7bcc4b59d538df9a04302e10c8bc1cbf1a0b3a5120ea
 pk
-  3d135aa589198cb02113cc17e13a0f15fc1d3d734966c3751a74ac27c781323043e36389
-  dca9a2af6508bdba0260662691426d1d8899cd77736c21b17eb3a31fc118154264e2b10e
-  22c506b7803b1f4b25d178b688b641d0943185107eed18b228e8b68753a8d75a77f29b5b
-  5e97abd028354ce4cd6961797a757c4ff44aeea2c0a16cbfdcb07314fb3e64d7c26a4c9e
-  5782a2ee198d73e7bf05eb85bd420cee20ac24c36613d6bd0c53133443527c32bd0f8b3b
-  3be9918c7caea71748de6bacfa27710845ad0b528c087349e9faa3c83869e1d0ac926797
-  4dba1dc3434976f60b59d443bad51e87d974c9f747b76017bd17021c24246a9987db1b31
-  8562bf665b41fb153c0ba675cac593b990ce595a7851fa18ea345bf20c3524862532544e
-  05e5c69daa0dc4f2b24704338e29144d653657d47a20f39ed2b1174cb3120ed1590e4ac9
-  32579dc2da9f12f6c07ec7a31963208faa5c758615713965b9d5661860cfe5652d74231d
-  2ce9b696ea9e45305a28d84c082709d2238bbc849b6b3cac64b78b532995af6b4ce9880f
-  9149a5ae083320624e3b54851d48a6f24266258a0a14d342e4ca3133c33c5e16ad91b22d
-  521100076527cefc5f0417b332463c5c5c52dc4b00a2d29959109244d2810839a310cb1d
-  f282503d5cbf3f0cbe3e68873407b7e5e960ca214709919b65301da2b3a7e488205a3a9c
-  5f24cd61d18c757040b14a4e80e8c09e74a9a71265ed213a91da6d7a8655de3b4a83125e
-  e2e66cb673733e3717d99023a6683712767ab2da9b54a26dd3b695a80b54226a1a967b08
-  c3f76e679914470803bc6805a6b4b1b78261259acd8f703dd10ba6e8e1a00dd94e774113
-  d13103253cb70edab948c38072629b949261b7c439445bc498444e86b6a9a7da8b153038
-  0bf2939532a8e7ea84ea0b5c6db5335e826aa0325b536ccc21d943890b2c2a5c44f33768
-  2355867be87965175f2dbbb0aba89f9311b0873a15db6a4128682a8bca019a04a351a0ce
-  646868f9bbb6f8d0bea3db0865f1239b16c93ca09d19857d747abfc846b27dd77ee5d405
-  fab5ce949635e7d34ec1b9546aea75df571cfed74b7112218e4153e7f6a7a3a910ec4c11
-  1576b3bb27c29852746e645fa501b0642678aefa2209c745939a2ab000033862b88e7011
-  e7e25ec1e3cd379b54bc457a85d9af0680160c57b3a4e90308bc28b8da13ac0c563c55b3
-  9a88bd90b51f691525e50a260a0507a2174447ea93f5d5acec6c16a5d7909e275f612c9f
-  283310e8124d28f18000f811fb929e03f30d1472644851bcb73c4af6b095acd7328a072b
-  e9187a836a15307c6076210c9b410493505bc4814e3c327386796c5932c8cab7a695b97c
-  ac24561b2a9657c3157531ba3cba699b6424fda24cc6c72edac1a6bf091b87c3c594c917
-  d24a1126f998aee120ae372a27a268a0c76ab8f84957f461e7c04dd2d59f0f217d9e0700
-  8990533b16bbc125b2737a1a7e1cc1ed7c47e8f8464ba78c5d3298f2dc7d0be944ad2990
-  7ec774ad1b1f1485b114a9a9b93c488c89c0c7609f2bf9533c2929f667bca8b68999e340
-  54597cf83ba7450b237188c3364172c1351bd349a699672d31b9598bab79a18b3d8cb25f
-  5f53c0b22bfa065690a16184db4f9731cea1a08f5876ec187e7b1ae79c593415c7dd2bf4
-  e3b5b93f77f4576d55d300739e75e14084b0bc85620499bf468ae161
+  8b92541ff9b60f49baf1282229853e3249427656bda5440c6f258df3db3382c2b5674590
+  fd713397954b785694807938653603666b103ea8709b002a420a7bee64161015631c6c32
+  e7c6a53d525eb44940733667447439d830280e7ba75f501958a09ce8e3b7d0038a7bbc22
+  e7025700686662f128ce0771d92a8c8af4cf2a414c11b19c695b234bb447471c67aa5a94
+  bad89e192563bb33662fda91d24845f0e3b08eac79d03635fe81610e80bb8bcb92fc05cc
+  5a12c7d7a5340a81c031d55a6b81b7469ca14c72cf2634b686cac7060a759700d0188511
+  9a557a3a23487a5432dce5932f3a3b0c85972b5caf711c5f21066ff7011743d16a22da06
+  b7e8ba22d390746034617b2f47c0c392f926a9665ba89244f5b30a1e9388c2a4749c9b70
+  c7ba3a2c18c32481373a35acf8157a561613ddb693040b8f319876a7c165ab53aee1b407
+  1d782f84e6cb415565ed4c0c00222e1a5c41bd8485eb40a4053183f2753f1c5243a53662
+  4f940029307d5d984934d05ce623066bc29ea6b93a3da99c927218f366ae98e168b30c53
+  6dec49f108c9f353073e347137604597053f20a03abd71280d235022a03c9d0a43ee2934
+  0845ca51f848056ca98506b91f61b26b9582a0556748a56f36d115a0365da0390b22db09
+  d8c1029d3494ce811878e68e56295c38712c16f098f89b5a5953b568e7618af069a63c0f
+  39ca70f73a0f2cbb150a64884e2c3d491b5013689741715b02227176d767715060da0439
+  f39698283428e4b939f9fbbde627ce1be73c19fb54d082b7399383b5ac44e1205dfae12e
+  6672601a4cc89a3a80677447e4c53b127b05c528a0e95cb512eb9dc8799ec00c38e427bf
+  5ff94775877b87109c69b0bd367223bfe6a65f8b889eeb7a2ad80ea6001654d350cd6654
+  20d34f80d99fef72cb124089331585d6c5bd6d057f8e319352db71878196e6587d2d018f
+  1496043bac9fd9106d53c30510b6abefd80d3d6319f1cbb5937b3d808706f888c2c07840
+  d3a0c53565603909073660b83fc318c775b34909001054b82f9a0cc8155a3b002a12a414
+  bad1a69dc2aa1aa489af7965a16989148467539352dd1794356473a3aca6668b5cd006ab
+  972236d7484536ec1029d845fb386c9e4a539e593bfb225f558459e28274fccb0a05ac47
+  528b459171c76764a47ed8b461f3124c174aa0c51778299a0a299882a63e88510d9adb47
+  9c30b47950974b9556cef689bf5006354c4fe11684a9d057f09c213ea63c32228ce5657f
+  336a88bda34fff435d5a682a44312da5bc8d8a6b7bfc1a60fab9ce7a268c00dc040f04d0
+  b651adf4e31ad6b36981b7a1ccd666a80b0f89928b81b686ce3c6b18e4a921c0a4f4d26b
+  f0cb568db77908424b47d8031bb860c19a1f5eb131e838aa5e628bf29b2dfadc0c6e6c8d
+  cb8277b783b61b69a303007f3a49018f3592c505618f3c3aeaf775995c6097671ea0cab7
+  633c612a24a144dc81abc28fcc62b2b69a1e93d8b6e93ca81a2b9cd49bc1b5373af699aa
+  efac7ba66c110198ad91555b9a46ac19322870322e16ec8cfee384c241bc21e28d5a48af
+  52d68f37a8bb0669b7b1630889083f5e6bcd99007183014304553ed8d602a3b12df2b26e
+  846c4f1a04eed59a7f1855399a47636186d461695ee4ff1f2558e47c05824395bb484b68
+  6c33a4dbc1d068a4423693afc0154b88c241340fa9bf6623011dea34
 eseed
-  f90b0cdf8a7b9c264029ac185b70b83f2801f2f4b3f70c593ea3aeeb613a7f1b1de33fd7
-  5081f592305f2e4526edc09631b10958f464d889f31ba010250fda7f
+  17cda7cfad765f5623474d368ccca8af0007cd9f5e4c849f167a580b14aabdefaee7eef4
+  7cb0fca9767be1fda69419dfb927e9df07348b196691abaeb580b32d
 ct
-  f98f274dc74db1798915be81f089fbf792116ec03539b6c02cfbe649267f100df0ef51ec
-  6e51fd4a9b75cc2f1806d470b56984df3d368e4d09be4b4ffd59907e11b2d4497b7dd2b6
-  1afb3cc52a6ea661f2c6495a7f5fbef3dfac143f65bc9f6eb48d548df01d6a0bb52dab84
-  fda5e92f7a223289ec4e45cf76d47ab3a79086481f4bb4e95cd69bfdf388762e775bf63b
-  9694f72ca5a90883be5b8ac08c1737d5eced830466e9426fe5bec61bc63f1962358b66cb
-  3d8fdd5dfa887b0da5f15c8868bafce3d998b85ab34ced43ac9b9869c84c59fb2f094ddc
-  a1dee97db9a941c3cc319401d9db08569d8eb248ec2ff51e7e18c22d810bf512c28d5d71
-  9c4bf5237bac6d14ec33b673453cb0129f31a0b532240ac257d7813370c7addd3ec957a1
-  034b8e4c539506c7827a82e37f5b2405236c914783c35a8aaeaacdea194d699dcfd6d040
-  27cbfcac58e3157a16c20b11dfaf6256ae3037252baac3a25f3d1f7e3f14dd231fc50db2
-  f8788575799e6be241717e9634456be9eb04989cdf312dddd8a24939ebb90de0f5b006d5
-  9b2b19350dce76a415230f49374fa45ced3eed165cc92ed1d6e17c233f36030a61cb610b
-  93a55d939c9c7e964f9086ccdb41b8638f14f9202cdb9f1e3ffac235ccda32a92a71e851
-  88297cdba4a309e085c56826bb6121462ac6ee36beb9ee72c824294b6026c60d478f17dd
-  082cca6d6d7a3e86dbe5f7fc9bbc2a07873c686e53f9040aa60dce89b179643741457f5d
-  e371c8aaf41eceee8e1a1b324666572322499731242ee48134eb6dfb8961b06b5a04c586
-  c6a9113a9c161f36806a284e03b01940286b2de59689607b2b64b46d6fc2ba044c9a42c5
-  cb600cfd6ca0bdf4915a47fe02d71b8fcc27f0f17c78a300c6345ccc2f77a438772f4297
-  f7b2160aec93e4c8c72c0dbe67868753c18491861a1c1b96eaae07023436602fbb6f2bfb
-  161a5f778bb3086c2255423a8c51052833f6b63ed2cc732a7e2c4d36123471b451b64083
-  0421fd4edc83a9527d91203aa7e41867e3a7dfd5610aa20646738754883935af2b09cb24
-  d93a332c9671e6a00cc29a6346de406f5fb28fe84f0b0d3a43c98213bfc2eb2802f1ca07
-  1c560a705edceb262c44c2fd2e9e5caf0bf9eafc6be84c8a00d4bfd57e2468254e4560aa
-  6e8d62ff72c55c403ce5a8e8c87cb4d7f693344918138a8f1621107492d8c0a8c74ae773
-  23f7e1fa84220da14a9ae978b207aa692e2ba13ee5ed924c75e472e1b77cc496519704ab
-  87bde2ac15fdde0184d799288b60873b7f85a113b5b8d76a5237f26586ef2cb5cb940c9c
-  5a4789267575ed223fdb9d7ed57a390076857d3c0207360a3d039e4f7961dfe25d8e7c03
-  4df6ec0503b5589a89911e54d4831b5cc9ed0abc66143b5482d35dec97ed94e65ba7d013
-  126348960804ec2f19463b8daaa9927c05eecae3bb58b2575fcec762c14cd7d27f51e05a
-  ec3ddf00e90dafcf91d31ac09eaad73d675504798170b703667d2175a37b40e4b7809056
-  b1c1ca3062cdb98b0ba79b61c1c3f692b6e75940077ab7aea8649f38e34406282704f108
-  0208a15c
-ss     d482dd1a592f072109a0d8a86991ca6bd5bab25f13e788377fc34506f508ffdd
+  04f8b82b60ce1b47119f9b199c02a0be5b709394e6171c8b272509371681701c4d99bc4b
+  ee7f16772bb596271f8c80ed215cf777ce1507785a7506b3cc8a9ee516f0f3a90f4af6cf
+  f30115a944dc2856b6ec40ff9678dcfd81563ea5db1a4d269c8f1a7fdfbb9f6b44bdaee6
+  a7126a143097e758463ad827298990b34170f655591e640a3b9db75610918534b3741283
+  e2a0c50c716a8263e8dda9db348e7bab6d1a249f27fb899d05a3bc1cbb2ab0f7b1a378b1
+  803bb83af411cf434fba3cd28bcb19ebedb675111359a3aa8575d3868e945fbada53bc9e
+  555a0988820a39728b35930762b28509efc7bfd8d046cca32a9896c8071d56c8a508a26b
+  dcd58e64696e15813ab66dabbfedb0d6bfa2078cf98131142765c6f9f54a501da1518a9a
+  33206ee0fc7145c3cbca30e8b92354b21cecf6e5aced0ce9909a4204f3b007119dcdb303
+  f1ff5a3352b78dff6f42a4ffcabe220938665316044fe533f01000e54f8e03f912b7b526
+  3d329cfed70dfcf5059fb795426be342b6a849940469579d0f464aa9bba2dbe170c3532f
+  0d8ece7bd71b993ca07c09ad010f4966525bdc43a1e2db0bd1b05aad5f70ded58df621ee
+  73503f15037e42a130ab2962fcde2b1f10a518ed3c4cd37d1f1ba5e6f21231f4ff2f3925
+  b5536186c57ae4efcbaef6ff59c261f1b61cc759c44863efe438b2ca3ad150adfcd5b7cb
+  df15ea8d2d7213d362a6364e558c94454425f5705844b2e0fdaa4965aa082c6b2e0e8256
+  ce530752f79697af3fd5fd2c42a5bd64633106be2b26f370253c92e8212e9dfcad3ca10c
+  cb69e0c8ebe6607c98bf0c75329949601133e554bf86cfecbc6c2093062655b6be07311c
+  e7aaf48d24ea4448c45838af1fdf564c8af1a5948ff26d3e61ab3edf6c89570c78ceda20
+  42eeae695143b592313d2c010b0911c796a6c90bba167a3705c5f7ccaab2ff21ed8ca281
+  949b5b16f8a09be2ed7736903a85c20cf7f6bd48797a20f5225fe90c9ee10a81f8acfd6a
+  81747dbe63753b5e594507e14e0a228ea99d4ae51d8caac0dc2f769989c967ebc80dc44c
+  9e2f140ec29eab1d372f2370b0f66779337578b91354140c2998f19028c1e5f7634e94bf
+  d470f3fbd9ab3f853093262bd403fbb18c1d28d8ac1b90f7b3e99936868bc0ce192ac338
+  cf32baf87aeb9b71de977502c77230d4881ad30998c24b767790f16cc56c41e1781debb5
+  c6f9d37b27120a3f225bfdf64ed65807fe988ea2c3001f711070a8354ba92468b115445a
+  f1bd8a9942287f4ffccaacaa715c34bc24901687f257808e48d7a2b6c49f4dbe46fc6288
+  19f09f89ac553da58e06e03553b30cdd3b715d4367b768da472fc2e734a47ab79ea9e30a
+  d475a4de23321f8c6c9551e57629180cdde9923a90add52165195c7e670bd5989558307e
+  aa0e6513d0225ba1fa213b319c378649bba7a1ddc146b5528d9230f0bc13c2922565d01c
+  e23b57c6058dcc0a3153bdd6c2f0fa5394fb0a506cded4ab50a587a63cec6db3393790e0
+  de35c4c309d88a41c91bdf6e0e03200693c9651e469aee6f91c98bea4127ae66312f4ae3
+  ea155b67
+ss     d99c3cd6cde624a73b2f80d9be695c5ab804a42fcca392bc2fd8504b81b2bf6e
 
-seed
-  1368ec2967fc84ef2ae9aff268e0b1700affc6820b523a3d917135f2dff2ee06bfe72b31
-  24721d4a26c04e53a75e30e73a7a9c4a95d91c55d495e9f51dd0b5e9d83c6d5e8ce803aa
-  62b8d654db53d09b8dcff273cdfeb573fad8bcd45578bec2
-sk
-  f58497af7a5854c214be50bd9694011740619f4042d1a9b5e3d813bf419c9e70b6b6e339
-  17644378d7a097047c1be007b9973f3ec7c2c1c7af23726160db834503bc5381625ab08e
-  c831b60a04c54a360d2222ab0918358e84a038c41775456f7c6c1de0f27d5b538a9e8091
-  1484cb96d17b52825410661cc43a576669a92cb7b97b97aa0e7b55a0589bc1295000a09b
-  dfa5236a737a95a7029d2a5f4429494ee4b1299613fb76a573092915f6c37d472beea0b9
-  3b082eb546b4ad268fc0fa9eedc8a19faab8a857ad09e24b042374ce9566e3b3ba33bc06
-  441781f74421d00bcf0598103d9620fe0b35ab904c3676c3e970525c7507917850ff99ae
-  4eb57eeaf4b0615097a1e970de6aa9ba609fe8ac11fdfa4e7c4cb90a30c03cb8baeb5033
-  cb6ba6c755bdaca4c9448bcc24188991a659adfbc219b3ca16258f3c0b8791846cd9e8b1
-  7ed33f97b1bfebeaa93628421a348596a72ed8a248219779cedb38f9fb0f064a4bf89a0c
-  5dd485564c30ab16bc83d19fc9257467598ef713cff3a0470f4983db6540e52a7667fc27
-  85c031e989601972b2ca61c97218c6470498679523c5957ccd0b4f30836429287d47204d
-  8a32ad0c3c01c38611537a417e28284d58b1dc415f8cc6025ba1603073206e9372bcd125
-  d94311eb2966fa9ac48ea68fb889c292585901796118949545a77ad8129d3c989f0f0449
-  77d35ce9b715695b61e46aaf74fb9b753a489842592514c2c41b1e3a22621a5369ff4a19
-  6702b2805cba6f945209a22613ec254937bc65fb40371b26f808cac5fa66437603fe175f
-  4f039ebef88e2e3757692718229a7167780f032666e9f35a1f316c278270891057390a1b
-  552b9b53e92ce6325b12a8475768a5eaba388b5b4740a4b4867705c74caa54eb139d47b1
-  6b845fd6c97a01138509aa3cb34232504a4609850f464b27d3a6c792a2a326f78ea75083
-  7ffb36349405442bcb7914be2bd482f4686cebf96c38fa67db608953039eb5446a26968a
-  a0f023499261bc29356547612a472d9dd135e8744649656995178ad2b38d80850b180b6e
-  6c255a0aba7e8c656fe782a63f48bde8cc5899351e308a3d48e5322a7b8b48ec1c99395d
-  9cc39d381146846567ed0143c6c1682cd06faa64467a00919c53a374281b86e6744569c0
-  eb1b099bea5b5c8a9e8024498ad70fc2cab20bd67a72073901a3bae643619342aa01071c
-  3992428dea1755d870cbb86315b2bea4a6753359216e939f7d1aaaf0903b82fba7228a4a
-  15f0779de2a19056c4e0b066e98b2a99865df3825caca00a1313c2e8a66cb8165fbebbc7
-  fefb9e2e0916f4d753bb354b1cdb0ec61840ae14a0b0a6b89419cbcd4c2cc9fa8df8da7b
-  ef4a829e17b996461b499ca051b5989b17738b158057342454745051e7b01aa5a8971181
-  c4d44e20f3950873aa1a436cf7255328dc73f312119395213ec852dcbc9d0634c722b259
-  3e154746402a3d289b3abb14a8d70494b761c3f66242f06cc534a761c19cee82a41ea7a3
-  08fb580a19762ea34f2f931cc3fca3a7484b0c0023ea2285dc1b04a46489ea5a673a5a4d
-  5db5745b72704670487c1c1c61f06184d1be1fb8c770857cfb03c5c3575181cb7f54eb8b
-  8c8b6a200a0ef6b66eec364c0015ceb802081800ab5bd1150ba20e5d2c6012d70fe700a5
-  6c101752242397627c89156f667a28ffc32c56d20abe3834d2a05a0390c7f2a893d64127
-  fb772ae12468a1f6260af39066ab7ecf694db179436c54a707092a87aa22a274691ee008
-  3e7a98a6d2c633d6c0f13a1542b094e7505d8dd92063b3972dd036a2e68ca9d2af000da3
-  28b27fb55178b3794d41755a4dd32abde2cf2d93a5c59605e372114bfbbbc44304536533
-  d1aaad9d385f82278576840cb1f340c0d53db7b0c8cf3794d2f0ba99267ef5d01064c99f
-  3aca71aaa2cbb85011c6687472e20419680441cb0c7bc70aaf1361797b1c2f5a5c60c100
-  86d981299bbfc2c15d77f4077c40500938bbb2e52aef37c3d516148d5ac84e216e056861
-  6ea476fde89685578f8df91281b648d1359bbd53768f27596f3b3845293d698b3a1ae278
-  5e0190be513cf950234399a51487073671736a0c4479672595b2b07a7c3b1143a2fa46cf
-  383a183e0880e580793e5892349600cd6c3adb903e078c31d7d50a90c573453778426757
-  8d35a6982b61098190befc3185020d2c175df7b1acec91c3d5fc6f7cd298f878bd2ab814
-  e7ca340ae21377f79a2f73cf219c7f9e85649d089356cc082f655d72e8035128b910b44c
-  e7833abc11348305943b049a9d6b7df1f98af6c5bf9a6214f073ab28f1492748574881cd
-  f160139e60307d32086515bb93c502e6c20106801c095380d82467b9d56b72f566830a74
-  72aaaba8dbbd755c262704af12475febf3cb6268289bdaab09997b8c309dfb436927e734
-  7dcbba3f772b85e753493417cb134c3604410399238da584d1c495c0793fc5e9583f8797
-  e97c9d45e63c1fd42ee7c5aaf9cc901748c87438c91d6964fcab436c6c0b74b34c6a35aa
-  f688ace32a869411ca57cc3bb0455d981a16b655984ad90bf7c3add506b6821248cc5221
-  5da27310fb57738254c8730241e2281c3b18728a12c458b8af8c2c3b500bed5c749e9979
-  b4c44f116aa971b043a8b77b62f7a2fc9621ae71763fb0a43758b40e09aae6f574f93266
-  1372a7bc120331c34800ed2113203eeb180905d89a88a4cc48d8c3acf19f44ba00b8466e
-  1ddc0fe1e3554ac059a9fa2b11807173f1190dea271119c087c605dc8b945fb069bfb159
-  c464a28758c1822b2c1e5a8ba0779833c6937c9c02ca61285c67557dd958e00840fd1c59
-  9095409dc6caf13360a8d5a1d864a903c429b3054ee83448a1f71beb70a93dccae8e69a0
-  485b47df44202d931e2c99316a23a4e396b7c704b832a0b855106f29c20c3c447ad39176
-  b77186cfb94b3e973d415636a0950284f50efa9248bb1643e793cc7a6c343395a8a245b6
-  69b32821f2b80214481ca4416d9009dd3174c4cbb29da7386a7404b21a72ce5a295deb62
-  712a3fb01c927b9b2e73d95aa65c3e92169c72662d7ccab10c8a369d50b90a74c41d590d
-  bc4ac104a147855131b1da730116bc17e430599a8d64999d9450b237002fa1021237dbbf
-  a096a95ea0542ca7937b7c1971b53ce82087d7e114e446b81265cfd540176cd069deb988
-  6fa45bd2f3464e7cc908cac220e642fd3610f18aac2b594192bb7a72a64ffe156e77ac8f
-  576a0511b9768798c79590d8d37f58628ef69837335bfa984cde027d87d45cf83e597b70
-  5d3130d6210e9d974bab5643cdf4d1cc7c8282ffe68f827e0cac9926bfe72b3124721d4a
-  26c04e53a75e30e73a7a9c4a95d91c55d495e9f51dd0b5e9d83c6d5e8ce803aa62b8d654
-  db53d09b8dcff273cdfeb573fad8bcd45578bec241c2f9459a0447d7f7ae5f1e8dc1cf4e
-  76cdd9add2eba7768b4ac7abb269b07e
+seed     ef58538b8d23f87732ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c9
+sk     ef58538b8d23f87732ea63b02b4fa0f4873360e2841928cd60dd4cee8cc0d4c9
 pk
-  8c8b6a200a0ef6b66eec364c0015ceb802081800ab5bd1150ba20e5d2c6012d70fe700a5
-  6c101752242397627c89156f667a28ffc32c56d20abe3834d2a05a0390c7f2a893d64127
-  fb772ae12468a1f6260af39066ab7ecf694db179436c54a707092a87aa22a274691ee008
-  3e7a98a6d2c633d6c0f13a1542b094e7505d8dd92063b3972dd036a2e68ca9d2af000da3
-  28b27fb55178b3794d41755a4dd32abde2cf2d93a5c59605e372114bfbbbc44304536533
-  d1aaad9d385f82278576840cb1f340c0d53db7b0c8cf3794d2f0ba99267ef5d01064c99f
-  3aca71aaa2cbb85011c6687472e20419680441cb0c7bc70aaf1361797b1c2f5a5c60c100
-  86d981299bbfc2c15d77f4077c40500938bbb2e52aef37c3d516148d5ac84e216e056861
-  6ea476fde89685578f8df91281b648d1359bbd53768f27596f3b3845293d698b3a1ae278
-  5e0190be513cf950234399a51487073671736a0c4479672595b2b07a7c3b1143a2fa46cf
-  383a183e0880e580793e5892349600cd6c3adb903e078c31d7d50a90c573453778426757
-  8d35a6982b61098190befc3185020d2c175df7b1acec91c3d5fc6f7cd298f878bd2ab814
-  e7ca340ae21377f79a2f73cf219c7f9e85649d089356cc082f655d72e8035128b910b44c
-  e7833abc11348305943b049a9d6b7df1f98af6c5bf9a6214f073ab28f1492748574881cd
-  f160139e60307d32086515bb93c502e6c20106801c095380d82467b9d56b72f566830a74
-  72aaaba8dbbd755c262704af12475febf3cb6268289bdaab09997b8c309dfb436927e734
-  7dcbba3f772b85e753493417cb134c3604410399238da584d1c495c0793fc5e9583f8797
-  e97c9d45e63c1fd42ee7c5aaf9cc901748c87438c91d6964fcab436c6c0b74b34c6a35aa
-  f688ace32a869411ca57cc3bb0455d981a16b655984ad90bf7c3add506b6821248cc5221
-  5da27310fb57738254c8730241e2281c3b18728a12c458b8af8c2c3b500bed5c749e9979
-  b4c44f116aa971b043a8b77b62f7a2fc9621ae71763fb0a43758b40e09aae6f574f93266
-  1372a7bc120331c34800ed2113203eeb180905d89a88a4cc48d8c3acf19f44ba00b8466e
-  1ddc0fe1e3554ac059a9fa2b11807173f1190dea271119c087c605dc8b945fb069bfb159
-  c464a28758c1822b2c1e5a8ba0779833c6937c9c02ca61285c67557dd958e00840fd1c59
-  9095409dc6caf13360a8d5a1d864a903c429b3054ee83448a1f71beb70a93dccae8e69a0
-  485b47df44202d931e2c99316a23a4e396b7c704b832a0b855106f29c20c3c447ad39176
-  b77186cfb94b3e973d415636a0950284f50efa9248bb1643e793cc7a6c343395a8a245b6
-  69b32821f2b80214481ca4416d9009dd3174c4cbb29da7386a7404b21a72ce5a295deb62
-  712a3fb01c927b9b2e73d95aa65c3e92169c72662d7ccab10c8a369d50b90a74c41d590d
-  bc4ac104a147855131b1da730116bc17e430599a8d64999d9450b237002fa1021237dbbf
-  a096a95ea0542ca7937b7c1971b53ce82087d7e114e446b81265cfd540176cd069deb988
-  6fa45bd2f3464e7cc908cac220e642fd3610f18aac2b594192bb7a72a64ffe156e77ac8f
-  576a0511b9768798c79590d8d37f58628ef69837335bfa984cde027d87d45cf841c2f945
-  9a0447d7f7ae5f1e8dc1cf4e76cdd9add2eba7768b4ac7abb269b07e
+  9512abd457939c591d51687e8bc2ac7beace759bccb208b113729902d98543479384ac62
+  7ca21424304ad9281119f3460c975b6c3612812c5bd1f2422e3773a5c21c6d3862d6c377
+  7ee31822a5718402543cf06476171cbf5895332a444e06c35a4c217d57768574a89dc0a5
+  8c8160efd847d0861579c278648b92a863b65c688eb41c1adf453d9494cf14f60c339c0b
+  3e51a937d16cc1491314e013d8cacde2bcbf05d5994658579c834be29b5f6a1a601e2455
+  2a46822cf99838a57154916415dc54ea3363d751ced5b01160677417c81be3ba67c9b190
+  bf29c85567b3051b17d6d75b97b883b043c442da3994910296a44f17a187bb51367fc887
+  56baab782a45550b3e1c733bbac4b8a668b0ab586f64450d6a05219047785c1956a08620
+  7ac0a636d4bb398abf1649adf0e2069bb7ad063273575ac7947cc25beb768312464874c4
+  f2091a3c434d93867943b0a3ebc22962aa2b6d5b284e0133f3309fde0c848c5436dd4772
+  b1bcb81793affee19ab76c598d76b851282ac13ccfc7d4c6a56b2c336c70bc87221dc163
+  c5518ebb3a5807e918033aacc2a3ad5e555131bb6d61c6b1446882a19c36bf142b7e7375
+  a6893799b835a1a755383184c0027dbbfc193e546c9389cc53216280ab9c39323d11d468
+  ca255e0af805712932656bba50f92528d435cca903d6981a1c2b4c9cb30cbdb4bd5f1a5e
+  d84855ad076a18477f202bc699a412c4471a98d9b5974935a5151ef3167c7f8baccfd943
+  2504bc7c6081491887d872c25fa7a6dd80cb3946832e828cf3406a1a0522ab3b63bdfb10
+  2d13ac2f193e7e7c82f6ec3804e2220c83bd83eb1bd0d65e175c81e7e176b3f6116d6140
+  ac409ba4a30d1ef61e7fa0bb88ac209588c75bfa01aab803f55a8f77dc6eee6c0bf34c2c
+  99e9aa846a2a590a757182ca8fd7536c0920e39a4fa3f763ea307f67172bacd6c2bc8937
+  856b0eb56959bcfac111f964620081b7d380d3000f27f88a26da2db8f12493f641b09c9f
+  65a563ebb913e267b1132ba46734cb111cb230d39f1bface22666b42529a01041bccd132
+  bb0852995ccd273c384748a78848c284f5447eecaf9fa6c244977b676a1d2c26a8dc65c7
+  974c89482189f4d545fd57348c6b670853cc6b383773925eaf336103aa5da5609b4da3c9
+  1ce54d2832974f3c445b5424a6182ca792b76de08e96518abaa94afc51646169301ce497
+  22c13b5a1bc2ecac1a2408589531cc371a6064268db2bb8be783790efb00e38037cbc294
+  e8820c4a9694785b3a8653320dfa296741b9658c6c7c41c91b0875d205191238b28ca860
+  a48231f0733d87254ad5572d11e2955645589f0b19651a943ee20c1c7387b706083e0937
+  11eb099f4c32e4f26f4ee9ad3e74aeb4624c42c030cd66ad4087cb0cfa5f33323a286379
+  c2090df78b1b04f1cc0cf931f6d6a49bcc6540e4c59373c6ebe64ca38886d75451e2192b
+  fd20a7aeb528dcf1437665294099c09b2560d66ca900d33dea091d1c9a346c66731941cf
+  57522b6fe33f0a27085e23b72e689990f14622111506dc14e2427db9285fbc82a90f9a23
+  510746fd6caaf8418b59d622e16ca1edd1c1a452b48b0ab62a7369bd1722d3413a868b1c
+  6ccdf2e301ec1f272ba68a1b5e02d743257be8ba94e9eb0f3ec27ce36306ca7b11ab3568
+  86212ddf193c9915762936f787a3bf665fc381c954c3bb0297da7836
 eseed
-  e770d01efde86e721a3f7c6cce275dabe6e2143f1af18da7efddc4c7b70b5e345db93cc9
-  36bea323491ccb38a388f546a9ff00dd4e1300b9b2153d2041d205b4
+  22a96188d032675c8ac850933c7aff1533b94c834adbb69c6115bad4692d8619f90b0cdf
+  8a7b9c264029ac185b70b83f2801f2f4b3f70c593ea3aeeb613a7f1b
 ct
-  137d93a41362f50229305c688633ded3c474cf399858d60e668ca77d04fd869168a235d5
-  e177eed970cd8c4b8a8bcad3ba1bdf3cef0d697b2c1a1e9a4259cce54248d5f47b59e93f
-  ca20799888ec7ee44efd7414bfc71a543648bea1edd9da0234a3af27dcfe4854792caae4
-  6a3dcce1eb31cf4d5d8b85855fe1ba7dd94b188ffec719354d43c445960766e26f17561a
-  5ec3872bfa9cfa370a00ac6bb9e196bb57a9f1fd0577d664077b81558565e50b0f2964c8
-  e0093353618de2f2f6d5999c1d27279032f788cb3cf59c127e7c7e029787111226454355
-  d06c81b2affbd099493c34704bb8f0759c4ce568cf721239014b1f00e808b5dc76ea4fe1
-  20408c7e510e27832921b022000f9dabdac2e5bcb47060efd1a169e4eefa80ed6fbd1f94
-  473c2038d742df4e286bbcb854281aa28c283f81d8d8c0324b5d354e8b6e2c5e28d5b39a
-  88a790f926c7b5270630c5087990f7ce5afe2fc9e327ed33f760c8d3ea520d9c01960dd3
-  60566647820c98c859052ea770c5efbed12b0e7536a409562e2fbb0cd6ce67011f6233c6
-  23239f1ed44035963ca9470c439a7e588226307be4cf7a6e27766a28730843a6865c9a8d
-  53f66e8ab121ff234fa3dd0cfc9736b40fb8bb3e64919ec4a5de20282928f60260c63a81
-  439e0658339437b3f1735f38c9481d7edc344ef6dd34d93e0ee013a93cdc8a7207b9d796
-  65bee8a768934c2b386f47d85891fd316aaa378af13c8892099075b75cc8d9ce0419ce57
-  f0f55ea0aeea03fcce14e3a4c766ed09fe4577c6cb9372d00e95c86b41989d6e6ff2359a
-  579b66f76a5a1bf41b2c1f53db1e8b49d822455ea4afe8198b5e7f039263e10885d38d3b
-  fa0ee727cc4ff2769f9ed0abc08a3e77f8bc65a7a75b7b0fc74c2a9027e94f1757acaff4
-  ee5e6e28c0b0238a5435712ea1c055d79e0558a2d149ecfb8d129e19c2d9aef804b3e49e
-  6f60ab43c5254f81a9cccbb3bed13a67f436159b0cf5c7134d6d5a577bcea4f8648eb07b
-  728b0864ec8751576c6fc302a76831d1672daaa2e17c5991efca743cf55d64ca59e8feed
-  a59ec52099d7bfb00a3ccde4084825145f022d89a126519f7904eb7ec4db0b08e70d7d67
-  bf18e537476b4ce97b2ad1c84c0630ba053a13affff42ecea695c080942df74369a23f93
-  a1f397f14dce28acbedb6a90e7a0a6423c277254b71be2d887386915e5924e85f1c65218
-  2f8c0db076364a97d7acaf0f238c912fd56403593a8b2526884737790a887d9a8382fab3
-  d2967803d0a1e62b610289af4ea26c66ef29c4832a4b48ffa225d5be2401656753a9ed00
-  c45a057efc666abaecfaeef972643de281f5d6a6ef43ed2fbba963a95c8d36461323d51d
-  18f92e58e4de1b4edd1d93ba14ea6adc3b8b63e71d0edc92555f3f962e68fbf42a0fc04c
-  b7da107203468589655f1b3b979ccc2efee6f10f0ec631c040e4436b8acaa4716708bf96
-  d2db8108a36117d10664cb2a3e3af672a10b0de5c2a284e6b9de37533bd181bc14fa0490
-  35d5050b5526ba59f893a1778103b6e2d946090c0eba049e5c1ad843a3121d539564866a
-  f5647437
-ss     1e037823ddbf1875756d86a3374b2d2347d5b7f3c84d229ecc5960523cdaa8b4
+  5dae4188bb92ba700d830d8dc6aaf6ef699dcd48ac93c3f5b1e4b0ffc22cf21dfcb51be2
+  2532844f061bf3b9393c96dad49050bc9244584675c6919232893288f7218ba84d77f21b
+  84cdccc514c147b54372b60bd8ee81c3dc96f0bee2eeadddca79e3d483f7d9e71fed01f5
+  d6399ad9d7ede107b859b0f4031ea1376691ce6bfe36d1a211ceee3361035117e12ec81e
+  3ab6362cfb7b87a0262279a2efd632a704dcea32fa1036a49e631d6d253ef49be6b46b78
+  44b963bc05e7ca76b203594a2fa5f2812659a5e7aa74531128343f086c80cc69f3cd90ef
+  4fecf1336f796b0c1c3d15cc54b4b7ee653f4c3b1e3cf97a4c1b223da34e90d6905974ab
+  4e544ce2af8fdbefe8d5a3e8479ee07afb4ef546dc86d22e62081a27c14613ec1d284f85
+  0e96c4b4a8283f5b307d4f43776f86d9e5a7dbcf3073d468ed6f8cb82f8a0b13947703fd
+  15c6911c31379e1d1ccc11560044554a4403cad162a4d86ef22be6a794a240af90e8367a
+  ffbe4f84c8a4cd76934c1aea726efbf156108de461a276ac34baabc8bdb33085ce5dd9b6
+  d89ef66f06c0590ae7a0cb8fd79a16ee4bdf48aa9788093e6e2f6fa63e837aa80072c2fb
+  e5503a22b9cfff87d67b4f7508885966e8b5332299fe95f6e023d813e8e44f79d271eb72
+  5687d2dd5e06c0fd34cf5ce9108709960a4d23ef8e8f3d3ba65f5ff8bb57d07c6398ba46
+  f7a81eba115fa2132066c96fbd1f7bce0749d1f961516c2d86b6f98f3b6f5d4a0dbb530c
+  d7c59f4cad1554dd434bf44be5559614aa1b72ef41b179d667827c458b4196675dd538e2
+  88bdaebfbe57f13d65ed6cfcf38b5017dcd38c60a8dec0685944c86535b6a3c8a206bace
+  a9d26b4d34cf1d28b4e6aead08f5ba668c0e8bd032ace996f112f7ae5d176ac0bccc2ff8
+  b25e15ff7b7350e045d41b499179c1a754184fffaff17fa97025437bf590eb142e472d17
+  a331e0a54045928a73ed641ac57f1b88b1392198949e625d0b2c5e7e9d721d02d609eca5
+  8a3fd830e6daa97ed59cd5466e356203fbe33e5947bf8ece898ecd2740ded4bb9e563355
+  4fbe4a72b5564207099e13937bac1e7d7abfa843e95f6293282db0cd1dcd5cf1f3333d98
+  2343bcd6de04e9f6ded75b7f395b97790c564fc6be98ef5e18d9ab26c193d6ea2afb4a57
+  71255745b727b8734bc06111b4a1d589d56a176cc5f5ea84d36f0402a9830aa5d7029bc6
+  5e3042dc85c66bc8a5c848690f8a847ad4ee837fd8eb01d5b5e29c5781afbd321351073f
+  73b2fc7517f87e4a72e0206212ae393a7ce82a8144d4ab3b7eadd2efed21a6913ea298a0
+  813d1b26c61a0f93623fa587b12bbacd163a76365023b2fc2b09aeea255dedca9d94b17a
+  c0577435cc627d53992fafe73b956443b2ac1b8f9572c8b3f648f4e1b6427f90b45709f6
+  c18d87e9e8f4d85e747abd90d7889ba92a27620f2ef6e674ec2f289da1b4e1c9ade96235
+  82ff69aaad4f7131382fc15b0f2132ab0df74d769421d1d1677619cff13f1c2097bc6b09
+  8a7bbca0111658f0fa64de6b6e1c3c8e03db5971a445992227c825590688d203523f5271
+  61137334
+ss     3c111a7476821d18c4c05192298a881c46de82a25035e1fbc1ec399cd5a29924
 
 </pre><a href="#appendix-C-1" class="pilcrow">¶</a>
 </div>
@@ -2939,37 +2844,55 @@ ss     1e037823ddbf1875756d86a3374b2d2347d5b7f3c84d229ecc5960523cdaa8b4
 final version of this document.<a href="#appendix-E-1.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<div id="since-draft-connolly-cfrg-xwing-kem-01">
+<div id="since-draft-connolly-cfrg-xwing-kem-02">
 <section id="appendix-E.1">
         <h3 id="name-since-draft-connolly-cfrg-x">
-<a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-since-draft-connolly-cfrg-x" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-01</a>
+<a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-since-draft-connolly-cfrg-x" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-02</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-E.1-1.1">
-            <p id="appendix-E.1-1.1.1">Add list of implementations.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.1.1">Use seed as private key.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.2">
-            <p id="appendix-E.1-1.2.1">Miscellaneous editorial improvements.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.2.1">Expand on caching decapsulation key values.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.3">
-            <p id="appendix-E.1-1.3.1">Add Python reference specification.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.3.1">Expand on binding properties.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.4">
-            <p id="appendix-E.1-1.4.1">Correct definition of <code>ML-KEM-768.KeyGenDerand(seed)</code>.<a href="#appendix-E.1-1.4.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="since-draft-connolly-cfrg-xwing-kem-01">
+<section id="appendix-E.2">
+        <h3 id="name-since-draft-connolly-cfrg-xw">
+<a href="#appendix-E.2" class="section-number selfRef">E.2. </a><a href="#name-since-draft-connolly-cfrg-xw" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-01</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-E.2-1.1">
+            <p id="appendix-E.2-1.1.1">Add list of implementations.<a href="#appendix-E.2-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.2-1.2">
+            <p id="appendix-E.2-1.2.1">Miscellaneous editorial improvements.<a href="#appendix-E.2-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.2-1.3">
+            <p id="appendix-E.2-1.3.1">Add Python reference specification.<a href="#appendix-E.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.2-1.4">
+            <p id="appendix-E.2-1.4.1">Correct definition of <code>ML-KEM-768.KeyGenDerand(seed)</code>.<a href="#appendix-E.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="since-draft-connolly-cfrg-xwing-kem-00">
-<section id="appendix-E.2">
-        <h3 id="name-since-draft-connolly-cfrg-xw">
-<a href="#appendix-E.2" class="section-number selfRef">E.2. </a><a href="#name-since-draft-connolly-cfrg-xw" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-00</a>
+<section id="appendix-E.3">
+        <h3 id="name-since-draft-connolly-cfrg-xwi">
+<a href="#appendix-E.3" class="section-number selfRef">E.3. </a><a href="#name-since-draft-connolly-cfrg-xwi" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-00</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-E.2-1.1">
-            <p id="appendix-E.2-1.1.1">A copy of the X25519 public key is now included in the X-Wing
+<li class="normal" id="appendix-E.3-1.1">
+            <p id="appendix-E.3-1.1.1">A copy of the X25519 public key is now included in the X-Wing
 decapsulation (private) key, so that decapsulation does not
-require separate access to the X-Wing public key. See #2.<a href="#appendix-E.2-1.1.1" class="pilcrow">¶</a></p>
+require separate access to the X-Wing public key. See #2.<a href="#appendix-E.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
