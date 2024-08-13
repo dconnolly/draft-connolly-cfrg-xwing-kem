@@ -6,7 +6,7 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2024-03-26
+date: 2024-08-13
 consensus: true
 v: 3
 area: "IRTF"
@@ -54,8 +54,8 @@ Extendable-Output Functions'
       -
         ins: National Institute of Standards and Technology
   MLKEM:
-    target: https://csrc.nist.gov/pubs/fips/203/ipd
-    title: 'FIPS 203 (Initial Draft): Module-Lattice-Based Key-Encapsulation Mechanism Standard'
+    target: https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.203.pdf
+    title: 'FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard'
     author:
       -
         ins: National Institute of Standards and Technology
@@ -65,6 +65,22 @@ Extendable-Output Functions'
   XYBERHPKE: I-D.westerbaan-cfrg-hpke-xyber768d00
   XYBERTLS: I-D.tls-westerbaan-xyber768d00
   TLSIANA: I-D.ietf-tls-rfc8447bis
+  SCHMIEG:
+    target: https://eprint.iacr.org/2024/523
+    title: "Unbindable Kemmy Schmidt: ML-KEM is neither MAL-BIND-K-CT nor MAL-BIND-K-PK"
+    author:
+      -
+        ins: S. Schmieg
+  KSMW:
+    target: https://eprint.iacr.org/2024/1233
+    title: "Binding Security of Implicitly-Rejecting KEMs and Application to BIKE and HQC"
+    author:
+      -
+        ins: J. Kraemer
+      -
+        ins: P. Struck
+      -
+        ins: M. Weishaupl
   PROOF:
     target: https://eprint.iacr.org/2024/039
     title: "X-Wing: The Hybrid KEM You’ve Been Looking For"
@@ -224,14 +240,16 @@ X-Wing relies on the following primitives:
 
   To generate deterministic test vectors, we also use
 
-  - `ML-KEM-768.KeyGenDerand(seed)`: Same as `ML-KEM-768.KeyGen()`,
-    but derandomized as follows.
-    `seed[0:32]` is used for `d` in line 1 of algorithm 12 from {{MLKEM}}
-    and `seed` is 64 bytes. `seed[32:64]` is used for `z` in line 1 of
-    algorithm 15.
-  - `ML-KEM-768.EncapsDerand(pk_M, seed)`: Same as `ML-KEM-768.Encaps()`
-    but derandomized as follows.
-    `seed` is 32 bytes and used for `m` in line of 1 algorithm 16.
+  - `ML-KEM-768.KeyGen_internal(d, z)`: Algorith to generate an
+    ML-KEM-768 key pair `(pk_M, sk_M)` of an encapsulation key `pk_M`
+    and decapsulation key `sk_M`.
+    Note that `ML-KEM-768.KeyGen()` returns the keys in reverse
+    order of `GenerateKeyPair()` defined below.
+    `d` and `z` are both 32 byte strings.
+  - `ML-KEM-768.Encaps_internal(pk_M, m)`: Algorithm to generate `(ss_M, ct_M)`,
+    an ephemeral 32 byte shared key `ss_M`, and a fixed-length
+    encapsulation (ciphertext) of that key `ct_M` for encapsulation key
+    `pk_M`. `m` is a 32 byte string.
 
 * X25519 elliptic curve Diffie-Hellman key-exchange defined in {{Section 5 of RFC7748}}:
 
@@ -260,7 +278,7 @@ X-Wing encapsulation key, decapsulation key, ciphertexts and shared secrets are 
 fixed length byte strings.
 
  Decapsulation key (private):
- : 2464 bytes
+ : 32 bytes
 
  Encapsulation key (public):
  : 1216 bytes
@@ -277,14 +295,20 @@ An X-Wing keypair (decapsulation key, encapsulation key) is generated as
 follows.
 
 ~~~
-def GenerateKeyPair():
-  (pk_M, sk_M) = ML-KEM-768.KeyGen()
-  sk_X = random(32)
+def expandDecapsulationKey(sk):
+  expanded = SHAKE128(sk, 96)
+  (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
+  sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+  return (sk_M, sk_X, pk_M, pk_X)
+
+def GenerateKeyPair():
+  sk = random(32)
+  (sk_M, sk_X, pk_M, pk_X) = expandDecapsulationKey(sk)
+  return sk, concat(pk_M, pk_X)
 ~~~
 
-`GenerateKeyPair()` returns the 2464 byte secret decapsulation key `sk`
+`GenerateKeyPair()` returns the 32 byte secret decapsulation key `sk`
 and the 1216 byte encapsulation key `pk`.
 
 Here and in the balance of the document for clarity we use
@@ -297,17 +321,15 @@ of key generation. An X-Wing implementation MAY provide the following
 derandomized variant of key generation.
 
 ~~~
-def GenerateKeyPairDerand(seed):
-  (pk_M, sk_M) = ML-KEM-768.KeyGenDerand(seed[0:64])
-  sk_X = seed[64:96]
-  pk_X = X25519(sk_X, X25519_BASE)
-  return concat(sk_M, sk_X, pk_X), concat(pk_M, pk_X)
+def GenerateKeyPairDerand(sk):
+  sk_M, sk_X, pk_M, pk_X = expandDecapsulationKey(sk)
+  return sk, concat(pk_M, pk_X)
 ~~~
 
-`seed` must be 96 bytes.
+`seed` must be 32 bytes.
 
-`GenerateKeyPairDerand()` returns the 2464 byte secret encapsulation key
-`sk` and the 1216 byte decapsulation key `pk`.
+`GenerateKeyPairDerand()` returns the 32 byte secret encapsulation key
+`sk` and the 32 byte decapsulation key `pk`.
 
 ## Combiner {#combiner}
 
@@ -390,20 +412,51 @@ ciphertext `ct`.
 
 ~~~
 def Decapsulate(ct, sk):
+  (sk_M, sk_X, pk_M, pk_X) = expandDecapsulationKey(sk)
   ct_M = ct[0:1088]
   ct_X = ct[1088:1120]
-  sk_M = sk[0:2400]
-  sk_X = sk[2400:2432]
-  pk_X = sk[2432:2464]
   ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
   ss_X = X25519(sk_X, ct_X)
   return Combiner(ss_M, ss_X, ct_X, pk_X)
 ~~~
 
 `ct` is the 1120 byte ciphertext resulting from `Encapsulate()`
-`sk` is a 2464 byte X-Wing decapsulation key resulting from `GenerateKeyPair()`
+`sk` is a 32 byte X-Wing decapsulation key resulting from `GenerateKeyPair()`
 
 `Decapsulate()` returns the 32 byte shared secret.
+
+### Keeping expanded decapsulation key around
+
+For efficiency, an implementation MAY cache the result of `expandDecapsulationKey`.
+This is useful in two cases:
+
+1. If multiple ciphertexts for the same key are decapsulated.
+2. If a ciphertext is decapsulated for a key that has just been generated.
+   This happen on the client-side for TLS.
+
+A typical API pattern to achieve this optimisation is to have an
+opaque decapsulation key object that hides the cached values.
+For instance, such an API could have the following functions.
+
+1. `UnpackDecapsulationKey(sk)` takes a decapsulation key, and returns
+    an opaque object that contains the expanded decapsulation key.
+
+2. `Decapsulate(ct, esk)` takes a ciphertext and an expanded decapsulation key.
+
+3. `GenerateKeyPair()` returns an encapsulation key and an expanded
+    decapsulation key.
+
+4. `PackDecapsulationKey(sk)` takes an expanded decapsulation key,
+    and returns the packed decapsulation key.
+
+The expanded decapsulation key could cache more computation,
+such as the expanded matrix A in ML-KEM.
+
+Any such expanded decapsulation key MUST NOT be transmitted between
+implementations, as this could break the security analysis of X-Wing.
+In particular, the MAL-BIND-K-PK and MAL-BIND-K-CT binding
+properties of X-Wing do not hold when transmitting the regular ML-KEM
+decapsulation key.
 
 ## Use in HPKE
 
@@ -460,6 +513,26 @@ combiner cannot be assumed to be secure, when used with different
 KEMs. In particular it is not known to be safe to leave
 out the post-quantum ciphertext from the combiner in the general case.
 
+## Binding properties
+Some protocols rely on further properties of the KEM.
+X-Wing satisfies the binding properties MAL-BIND-K-PK and MAL-BIND-K-CT
+(TODO: reference to proof).
+This implies {{KSMW}} X-Wing also satisfies
+
+- MAL-BIND-K,CT-PK
+- MAL-BIND-K,PK-CT
+- LEAK-BIND-K-PK
+- LEAK-BIND-K-CT
+- LEAK-BIND-K,CT-PK
+- LEAK-BIND-K,PK-CT
+- HON-BIND-K-PK
+- HON-BIND-K-CT
+- HON-BIND-K,CT-PK
+- HON-BIND-K,PK-CT
+
+In contrast, ML-KEM on its own does not achieve
+MAL-BIND-K-PK, MAL-BIND-K-CT, nor MAL-BIND-K,PK-CT. {{SCHMIEG}}
+
 # IANA Considerations {#iana}
 
 This document requests/registers a new entry to the "HPKE KEM Identifiers"
@@ -481,7 +554,7 @@ registry.
  : 1216
 
  Nsk:
- : 2464
+ : 32
 
  Auth:
  : no
@@ -573,6 +646,14 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-02
+
+- Use seed as private key.
+
+- Expand on caching decapsulation key values.
+
+- Expand on binding properties.
 
 ## Since draft-connolly-cfrg-xwing-kem-01
 

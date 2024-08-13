@@ -22,7 +22,7 @@ def test_vectors(setVectors):
     ret = []
 
     for i in range(3):
-        seed = h.read(96)
+        seed = h.read(32)
         eseed = h.read(64)
         sk, pk = GenerateKeyPairDerand(seed)
         ss, ct = EncapsulateDerand(pk, eseed)
