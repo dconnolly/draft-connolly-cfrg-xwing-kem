@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-13T00:08:41.053804+00:00",
+  "timestamp": "2024-08-15T00:08:21.399028+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -193,7 +193,7 @@
       "labels": [],
       "body": "KeyGen() outputs a private key that is the concatenation of ML-KEM private key, X25519 private key, and X25519 public key. Since the private key never has to go over the wire, I wonder (a) why the spec is prescriptive about how the private key is encoded and (b) why the X25519 public key is redundantly included in the X-Wing private key. (One can recompute it as needed.) \r\n\r\nCan we relax the spec to only specify that the actual ML-KEM and X25519 secrets are output from KeyGen, and then perhaps recommend that implementations also precompute and store the X25519 public key if desired?",
       "createdAt": "2024-03-26T13:53:18Z",
-      "updatedAt": "2024-03-26T18:34:19Z",
+      "updatedAt": "2024-08-13T17:17:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -202,6 +202,13 @@
           "body": "See #8.\r\n\r\n`KeyGen()` is very fast, so if you want to save storage and don't care about a little extra computation, you can go all the way and store the seed instead of the private key.",
           "createdAt": "2024-03-26T18:34:18Z",
           "updatedAt": "2024-03-26T18:34:18Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/19",
+          "createdAt": "2024-08-13T17:17:00Z",
+          "updatedAt": "2024-08-13T17:17:00Z"
         }
       ]
     },
@@ -1223,6 +1230,102 @@
           "createdAt": "2024-03-08T19:59:52Z",
           "updatedAt": "2024-03-08T19:59:52Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "PR_kwDOKq5sns54Qm8o",
+      "title": "Update to final version of ML-KEM, and use seed as decapsulation key.",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/19",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-08-13T17:13:14Z",
+      "updatedAt": "2024-08-13T20:42:41Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "58b617c3b2467e486a1d9ffb69ffe89e32b3de21",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "fips",
+      "headRefOid": "e5a1bd596faed6a8c9900ea3e7afa9c16f6bbc8d",
+      "closedAt": "2024-08-13T20:42:40Z",
+      "mergedAt": "2024-08-13T20:42:40Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "edf3d40f12c437d9c62359c8a01a13f712d0daf3"
+      },
+      "comments": [
+        {
+          "author": "sophieschmieg",
+          "authorAssociation": "NONE",
+          "body": "LGTM.\r\n\r\nWe do need a separate proof for the combined KEM, using the fact that we include the X25519 public key and ephemeral public key, otherwise we do not get HON-BIND-K-PK/HON-BIND-K-CT.\r\nWe could also shorten the list of misbinding properties to only list the MAL-BIND properties, since the others are true a fortiori.",
+          "createdAt": "2024-08-13T18:05:06Z",
+          "updatedAt": "2024-08-13T18:05:06Z"
+        },
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "> LGTM.\r\n> \r\n> We do need a separate proof for the combined KEM, using the fact that we include the X25519 public key and ephemeral public key, otherwise we do not get HON-BIND-K-PK/HON-BIND-K-CT. We could also shorten the list of misbinding properties to only list the MAL-BIND properties, since the others are true a fortiori.\r\n\r\n@bwesterb we should update the eprint with the MAL-BIND proof(s) ",
+          "createdAt": "2024-08-13T20:23:05Z",
+          "updatedAt": "2024-08-13T20:23:05Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns6FSNrg",
+          "commit": {
+            "abbreviatedOid": "58dc2bb"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-08-13T17:20:27Z",
+          "updatedAt": "2024-08-13T17:20:32Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "```suggestion\n  - `ML-KEM-768.KeyGen_internal(d, z)`: Algorithm to generate an\n```\n",
+              "createdAt": "2024-08-13T17:20:27Z",
+              "updatedAt": "2024-08-13T17:20:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6FTmjt",
+          "commit": {
+            "abbreviatedOid": "603e4a9"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-08-13T20:23:54Z",
+          "updatedAt": "2024-08-13T20:42:16Z",
+          "comments": [
+            {
+              "originalPosition": 159,
+              "body": "Yes this is an opinion but:\r\n\r\n```suggestion\r\nA typical API pattern to achieve this optimization is to have an\r\nopaque decapsulation key object that hides the cached values.\r\nFor instance, such an API could have the following functions.\r\n```",
+              "createdAt": "2024-08-13T20:23:55Z",
+              "updatedAt": "2024-08-13T20:42:16Z"
+            },
+            {
+              "originalPosition": 179,
+              "body": "<3",
+              "createdAt": "2024-08-13T20:24:55Z",
+              "updatedAt": "2024-08-13T20:42:16Z"
+            },
+            {
+              "originalPosition": 206,
+              "body": "Yeah it looks like they didn't change the algorithms or keygen sufficiently to affect this",
+              "createdAt": "2024-08-13T20:42:13Z",
+              "updatedAt": "2024-08-13T20:42:16Z"
+            }
+          ]
         }
       ]
     }
