@@ -93,10 +93,9 @@ Table of Contents
    6.  Security Considerations
      6.1.  Binding properties
    7.  IANA Considerations
-   8.  TODO
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Appendix A.  Implementations
    Appendix B.  Machine-readable specification
      B.1.  xwing.py
@@ -106,9 +105,10 @@ Table of Contents
            re-use ML-KEM, X25519 values
    Appendix D.  Acknowledgments
    Appendix E.  Change log
-     E.1.  Since draft-connolly-cfrg-xwing-kem-02
-     E.2.  Since draft-connolly-cfrg-xwing-kem-01
-     E.3.  Since draft-connolly-cfrg-xwing-kem-00
+     E.1.  Since draft-connolly-cfrg-xwing-kem-03
+     E.2.  Since draft-connolly-cfrg-xwing-kem-02
+     E.3.  Since draft-connolly-cfrg-xwing-kem-01
+     E.4.  Since draft-connolly-cfrg-xwing-kem-00
    Authors' Addresses
 
 1.  Introduction
@@ -242,6 +242,9 @@ Table of Contents
          fixed-length encapsulation (ciphertext) of that key ct_M for
          encapsulation key pk_M.
 
+         ML-KEM-768.Encaps(pk_M) MUST perform the encapsulation key
+         check of [MLKEM] §7.2 and raise an error if it fails.
+
       -  ML-KEM-768.Decap(ct_M, sk_M): Deterministic algorithm using the
          decapsulation key sk_M to recover the shared key from ct_M.
 
@@ -257,6 +260,9 @@ Table of Contents
          (ss_M, ct_M), an ephemeral 32 byte shared key ss_M, and a
          fixed-length encapsulation (ciphertext) of that key ct_M for
          encapsulation key pk_M. m is a 32 byte string.
+
+         ML-KEM-768.Encaps_internal(pk_M) MUST perform the encapsulation
+         key check of [MLKEM] §7.2 and raise an error if it fails.
 
    *  X25519 elliptic curve Diffie-Hellman key-exchange defined in
       Section 5 of [RFC7748]:
@@ -380,6 +386,9 @@ def GenerateKeyPair():
    Encapsulate() returns the 32 byte shared secret ss and the 1120 byte
    ciphertext ct.
 
+   Note that Encapsulate() may raise an error if the ML-KEM
+   encapsulation does not pass the check of [MLKEM] §7.2.
+
 5.4.1.  Derandomized
 
    For testing, it is convenient to have a deterministic version of
@@ -457,7 +466,7 @@ def GenerateKeyPair():
 
    X-Wing satisfies the HPKE KEM interface as follows.
 
-   The SerializePublicKey, DeserializePublicKey, SerializePrivateKey and
+   The SerializePublicKey, SerializePrivateKey, and
    DeserializePrivateKey are the identity functions, as X-Wing keys are
    fixed-length byte strings, see Section 5.1.
 
@@ -469,11 +478,8 @@ def GenerateKeyPair():
    where the HPKE private key and public key are the X-Wing
    decapsulation key and encapsulation key respectively.
 
-   The argument ikm to DeriveKeyPair() SHOULD be at least 32 octets in
-   length.  (This is contrary to [RFC9180] which stipulates it should be
-   at least Nsk=2432 octets in length.)
-
-   Encap() is Encapsulate() from Section 5.4.
+   Encap() is Encapsulate() from Section 5.4, where an ML-KEM
+   encapsulation key check failure causes an HPKE EncapError.
 
    Decap() is Decapsulate() from Section 5.5.
 
@@ -489,6 +495,9 @@ def GenerateKeyPair():
 
    For the server's share, the key_exchange value contains the X-Wing
    ciphertext.
+
+   On ML-KEM encapsulation key check failure, the server MUST abort with
+   an illegal_parameter alert.
 
 6.  Security Considerations
 
@@ -561,7 +570,7 @@ def GenerateKeyPair():
    Named Group (or Supported Group) registry, according to the
    procedures in Section 6 of [TLSIANA].
 
-   Value:  TBD (please)
+   Value:  26287 (please)
 
    Description:  X-Wing
 
@@ -573,13 +582,9 @@ def GenerateKeyPair():
 
    Comment:  PQ/T hybrid of X25519 and ML-KEM-768
 
-8.  TODO
+8.  References
 
-   *  Which validation do we want to require?
-
-9.  References
-
-9.1.  Normative References
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -590,7 +595,7 @@ def GenerateKeyPair():
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-9.2.  Informative References
+8.2.  Informative References
 
    [FIPS202]  National Institute of Standards and Technology, "FIPS 202:
               SHA-3 Standard: Permutation-Based Hash and Extendable-
@@ -1380,7 +1385,14 @@ Appendix E.  Change log
       *RFC Editor's Note:* Please remove this section prior to
       publication of a final version of this document.
 
-E.1.  Since draft-connolly-cfrg-xwing-kem-02
+E.1.  Since draft-connolly-cfrg-xwing-kem-03
+
+   *  Mandate ML-KEM encapsulation key check, and stipulate effect on
+      TLS and HPKE integration.
+
+   *  Add provisional TLS codepoint.
+
+E.2.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Use seed as private key.
 
@@ -1388,7 +1400,7 @@ E.1.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Expand on binding properties.
 
-E.2.  Since draft-connolly-cfrg-xwing-kem-01
+E.3.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Add list of implementations.
 
@@ -1398,7 +1410,7 @@ E.2.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Correct definition of ML-KEM-768.KeyGenDerand(seed).
 
-E.3.  Since draft-connolly-cfrg-xwing-kem-00
+E.4.  Since draft-connolly-cfrg-xwing-kem-00
 
    *  A copy of the X25519 public key is now included in the X-Wing
       decapsulation (private) key, so that decapsulation does not
