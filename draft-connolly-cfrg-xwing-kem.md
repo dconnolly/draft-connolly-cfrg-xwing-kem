@@ -110,11 +110,6 @@ ML-KEM-768.
 
 # Introduction {#intro}
 
-## Warning: ML-KEM-768 has not been standardised
-
-X-Wing uses ML-KEM-768, which has not been standardised yet. Thus X-Wing
-is not finished, yet, and should not be used, yet.
-
 ## Motivation {#motivation}
 
 There are many choices that can be made when specifying a hybrid KEM:
