@@ -1142,28 +1142,25 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
-                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-warning-ml-kem-768-has-not-" class="internal xref">Warning: ML-KEM-768 has not been standardised</a></p>
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-design-goals" class="internal xref">Design goals</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
-                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-design-goals" class="internal xref">Design goals</a></p>
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-not-an-interactive-key-agre" class="internal xref">Not an interactive key-agreement</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.4">
-                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-not-an-interactive-key-agre" class="internal xref">Not an interactive key-agreement</a></p>
+                <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="auto internal xref">1.4</a>.  <a href="#name-not-an-authenticated-kem" class="internal xref">Not an authenticated KEM</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5">
-                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-not-an-authenticated-kem" class="internal xref">Not an authenticated KEM</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6">
-                <p id="section-toc.1-1.1.2.6.1"><a href="#section-1.6" class="auto internal xref">1.6</a>.  <a href="#name-comparisons" class="internal xref">Comparisons</a></p>
+                <p id="section-toc.1-1.1.2.5.1"><a href="#section-1.5" class="auto internal xref">1.5</a>.  <a href="#name-comparisons" class="internal xref">Comparisons</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6.2.1">
-                    <p id="section-toc.1-1.1.2.6.2.1.1"><a href="#section-1.6.1" class="auto internal xref">1.6.1</a>.  <a href="#name-with-hpke-x25519kyber768dra" class="internal xref">With HPKE X25519Kyber768Draft00</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5.2.1">
+                    <p id="section-toc.1-1.1.2.5.2.1.1"><a href="#section-1.5.1" class="auto internal xref">1.5.1</a>.  <a href="#name-with-hpke-x25519kyber768dra" class="internal xref">With HPKE X25519Kyber768Draft00</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.6.2.2">
-                    <p id="section-toc.1-1.1.2.6.2.2.1"><a href="#section-1.6.2" class="auto internal xref">1.6.2</a>.  <a href="#name-with-generic-combiner" class="internal xref">With generic combiner</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.5.2.2">
+                    <p id="section-toc.1-1.1.2.5.2.2.1"><a href="#section-1.5.2" class="auto internal xref">1.5.2</a>.  <a href="#name-with-generic-combiner" class="internal xref">With generic combiner</a></p>
 </li>
                 </ul>
 </li>
@@ -1293,137 +1290,128 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<div id="warning-ml-kem-768-has-not-been-standardised">
-<section id="section-1.1">
-        <h3 id="name-warning-ml-kem-768-has-not-">
-<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-warning-ml-kem-768-has-not-" class="section-name selfRef">Warning: ML-KEM-768 has not been standardised</a>
-        </h3>
-<p id="section-1.1-1">X-Wing uses ML-KEM-768, which has not been standardised yet. Thus X-Wing
-is not finished, yet, and should not be used, yet.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="motivation">
-<section id="section-1.2">
+<section id="section-1.1">
         <h3 id="name-motivation">
-<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
         </h3>
-<p id="section-1.2-1">There are many choices that can be made when specifying a hybrid KEM:
+<p id="section-1.1-1">There are many choices that can be made when specifying a hybrid KEM:
 the constituent KEMs; their security levels; the combiner; and the hash
 within, to name but a few. Having too many similar options are a burden
-to the ecosystem.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">The aim of X-Wing is to provide a concrete, simple choice for
+to the ecosystem.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">The aim of X-Wing is to provide a concrete, simple choice for
 post-quantum hybrid KEM, that should be suitable for the vast majority
-of use cases.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+of use cases.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="goals">
-<section id="section-1.3">
+<section id="section-1.2">
         <h3 id="name-design-goals">
-<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-design-goals" class="section-name selfRef">Design goals</a>
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-design-goals" class="section-name selfRef">Design goals</a>
         </h3>
-<p id="section-1.3-1">By making concrete choices, we can simplify and improve many aspects of
-X-Wing.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-1">By making concrete choices, we can simplify and improve many aspects of
+X-Wing.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.3-2.1">
-            <p id="section-1.3-2.1.1">Simplicity of definition. Because all shared secrets and cipher texts
+<li class="normal" id="section-1.2-2.1">
+            <p id="section-1.2-2.1.1">Simplicity of definition. Because all shared secrets and cipher texts
 are fixed length, we do not need to encode the length. Using SHA3-256,
 we do not need HMAC-based construction. For the concrete choice of
-ML-KEM-768, we do not need to mix in its ciphertext, see <a href="#secc" class="auto internal xref">Section 6</a>.<a href="#section-1.3-2.1.1" class="pilcrow">¶</a></p>
+ML-KEM-768, we do not need to mix in its ciphertext, see <a href="#secc" class="auto internal xref">Section 6</a>.<a href="#section-1.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.2">
-            <p id="section-1.3-2.2.1">Security analysis. Because ML-KEM-768 already assumes the Quantum Random
+          <li class="normal" id="section-1.2-2.2">
+            <p id="section-1.2-2.2.1">Security analysis. Because ML-KEM-768 already assumes the Quantum Random
 Oracle Model (QROM), we do not need to complicate the analysis
-of X-Wing by considering stronger models.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+of X-Wing by considering stronger models.<a href="#section-1.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.3-2.3">
-            <p id="section-1.3-2.3.1">Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice
+          <li class="normal" id="section-1.2-2.3">
+            <p id="section-1.2-2.3.1">Performance. Not having to mix in the ML-KEM-768 ciphertext is a nice
 performance benefit. Furthermore, by using SHA3-256 in the combiner,
 which matches the hashing in ML-KEM-768, this hash can be computed in
-one go on platforms where two-way Keccak is available.<a href="#section-1.3-2.3.1" class="pilcrow">¶</a></p>
+one go on platforms where two-way Keccak is available.<a href="#section-1.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-1.3-3">We aim for "128 bits" security (NIST PQC level 1). Although at the
+<p id="section-1.2-3">We aim for "128 bits" security (NIST PQC level 1). Although at the
 moment there is no peer-reviewed evidence that ML-KEM-512 does not reach
 this level, we would like to hedge against future cryptanalytic
-improvements, and feel ML-KEM-768 provides a comfortable margin.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
-<p id="section-1.3-4">We aim for X-Wing to be usable for most applications, including
-specifically HPKE <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-1.3-4" class="pilcrow">¶</a></p>
+improvements, and feel ML-KEM-768 provides a comfortable margin.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-4">We aim for X-Wing to be usable for most applications, including
+specifically HPKE <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="not-an-interactive-key-agreement">
-<section id="section-1.4">
+<section id="section-1.3">
         <h3 id="name-not-an-interactive-key-agre">
-<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-not-an-interactive-key-agre" class="section-name selfRef">Not an interactive key-agreement</a>
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-not-an-interactive-key-agre" class="section-name selfRef">Not an interactive key-agreement</a>
         </h3>
-<p id="section-1.4-1">Traditionally most protocols use a Diffie-Hellman (DH) style
+<p id="section-1.3-1">Traditionally most protocols use a Diffie-Hellman (DH) style
 non-interactive key-agreement.  In many cases, a DH key agreement can be
 replaced by the interactive key-agreement afforded by a KEM without
 change in the protocol flow.  One notable example is TLS <span>[<a href="#HYBRID" class="cite xref">HYBRID</a>]</span>
           <span>[<a href="#XYBERTLS" class="cite xref">XYBERTLS</a>]</span>.  However, not all uses of DH can be replaced in a
-straight-forward manner by a plain KEM.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
+straight-forward manner by a plain KEM.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="auth">
-<section id="section-1.5">
+<section id="section-1.4">
         <h3 id="name-not-an-authenticated-kem">
-<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-not-an-authenticated-kem" class="section-name selfRef">Not an authenticated KEM</a>
+<a href="#section-1.4" class="section-number selfRef">1.4. </a><a href="#name-not-an-authenticated-kem" class="section-name selfRef">Not an authenticated KEM</a>
         </h3>
-<p id="section-1.5-1">In particular, X-Wing is not, borrowing the language of <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>, an
-<em>authenticated</em> KEM.<a href="#section-1.5-1" class="pilcrow">¶</a></p>
+<p id="section-1.4-1">In particular, X-Wing is not, borrowing the language of <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>, an
+<em>authenticated</em> KEM.<a href="#section-1.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="comparisons">
-<section id="section-1.6">
+<section id="section-1.5">
         <h3 id="name-comparisons">
-<a href="#section-1.6" class="section-number selfRef">1.6. </a><a href="#name-comparisons" class="section-name selfRef">Comparisons</a>
+<a href="#section-1.5" class="section-number selfRef">1.5. </a><a href="#name-comparisons" class="section-name selfRef">Comparisons</a>
         </h3>
 <div id="with-hpke-x25519kyber768draft00">
-<section id="section-1.6.1">
+<section id="section-1.5.1">
           <h4 id="name-with-hpke-x25519kyber768dra">
-<a href="#section-1.6.1" class="section-number selfRef">1.6.1. </a><a href="#name-with-hpke-x25519kyber768dra" class="section-name selfRef">With HPKE X25519Kyber768Draft00</a>
+<a href="#section-1.5.1" class="section-number selfRef">1.5.1. </a><a href="#name-with-hpke-x25519kyber768dra" class="section-name selfRef">With HPKE X25519Kyber768Draft00</a>
           </h4>
-<p id="section-1.6.1-1">X-Wing is most similar to HPKE's X25519Kyber768Draft00
-<span>[<a href="#XYBERHPKE" class="cite xref">XYBERHPKE</a>]</span>. The key differences are:<a href="#section-1.6.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.5.1-1">X-Wing is most similar to HPKE's X25519Kyber768Draft00
+<span>[<a href="#XYBERHPKE" class="cite xref">XYBERHPKE</a>]</span>. The key differences are:<a href="#section-1.5.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.6.1-2.1">
-              <p id="section-1.6.1-2.1.1">X-Wing uses the final version of ML-KEM-768.<a href="#section-1.6.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1.5.1-2.1">
+              <p id="section-1.5.1-2.1.1">X-Wing uses the final version of ML-KEM-768.<a href="#section-1.5.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.6.1-2.2">
-              <p id="section-1.6.1-2.2.1">X-Wing hashes the shared secrets, to be usable outside of HPKE.<a href="#section-1.6.1-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.5.1-2.2">
+              <p id="section-1.5.1-2.2.1">X-Wing hashes the shared secrets, to be usable outside of HPKE.<a href="#section-1.5.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.6.1-2.3">
-              <p id="section-1.6.1-2.3.1">X-Wing has a simpler combiner by flattening DHKEM(X25519) into the
-final hash.<a href="#section-1.6.1-2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.5.1-2.3">
+              <p id="section-1.5.1-2.3.1">X-Wing has a simpler combiner by flattening DHKEM(X25519) into the
+final hash.<a href="#section-1.5.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.6.1-2.4">
-              <p id="section-1.6.1-2.4.1">X-Wing does not hash in the ML-KEM-768 ciphertext.<a href="#section-1.6.1-2.4.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.5.1-2.4">
+              <p id="section-1.5.1-2.4.1">X-Wing does not hash in the ML-KEM-768 ciphertext.<a href="#section-1.5.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-1.6.1-3">There is also a different KEM called X25519Kyber768Draft00 <span>[<a href="#XYBERTLS" class="cite xref">XYBERTLS</a>]</span>
+<p id="section-1.5.1-3">There is also a different KEM called X25519Kyber768Draft00 <span>[<a href="#XYBERTLS" class="cite xref">XYBERTLS</a>]</span>
 which is used in TLS. This one should not be used outside of TLS, as it
-assumes the presence of the TLS transcript to ensure non malleability.<a href="#section-1.6.1-3" class="pilcrow">¶</a></p>
+assumes the presence of the TLS transcript to ensure non malleability.<a href="#section-1.5.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="with-generic-combiner">
-<section id="section-1.6.2">
+<section id="section-1.5.2">
           <h4 id="name-with-generic-combiner">
-<a href="#section-1.6.2" class="section-number selfRef">1.6.2. </a><a href="#name-with-generic-combiner" class="section-name selfRef">With generic combiner</a>
+<a href="#section-1.5.2" class="section-number selfRef">1.5.2. </a><a href="#name-with-generic-combiner" class="section-name selfRef">With generic combiner</a>
           </h4>
-<p id="section-1.6.2-1">The generic combiner of <span>[<a href="#I-D.ounsworth-cfrg-kem-combiners" class="cite xref">I-D.ounsworth-cfrg-kem-combiners</a>]</span> can be
+<p id="section-1.5.2-1">The generic combiner of <span>[<a href="#I-D.ounsworth-cfrg-kem-combiners" class="cite xref">I-D.ounsworth-cfrg-kem-combiners</a>]</span> can be
 instantiated with ML-KEM-768 and DHKEM(X25519). That achieves similar
-security, but:<a href="#section-1.6.2-1" class="pilcrow">¶</a></p>
+security, but:<a href="#section-1.5.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.6.2-2.1">
-              <p id="section-1.6.2-2.1.1">X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,
+<li class="normal" id="section-1.5.2-2.1">
+              <p id="section-1.5.2-2.1.1">X-Wing is more performant, not hashing in the ML-KEM-768 ciphertext,
 and flattening the DHKEM construction, with the same level of
-security.<a href="#section-1.6.2-2.1.1" class="pilcrow">¶</a></p>
+security.<a href="#section-1.5.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.6.2-2.2">
-              <p id="section-1.6.2-2.2.1">X-Wing has a fixed 32 byte shared secret, instead of a variable shared
-secret.<a href="#section-1.6.2-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.5.2-2.2">
+              <p id="section-1.5.2-2.2.1">X-Wing has a fixed 32 byte shared secret, instead of a variable shared
+secret.<a href="#section-1.5.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.6.2-2.3">
-              <p id="section-1.6.2-2.3.1">X-Wing does not accept the optional counter and fixedInfo arguments.<a href="#section-1.6.2-2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.5.2-2.3">
+              <p id="section-1.5.2-2.3.1">X-Wing does not accept the optional counter and fixedInfo arguments.<a href="#section-1.5.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -1804,7 +1792,7 @@ at least Nsk=2432 octets in length.)<a href="#section-5.6-6" class="pilcrow">¶<
 <p id="section-5.6-7"><code>Encap()</code> is <code>Encapsulate()</code> from <a href="#encaps" class="auto internal xref">Section 5.4</a>.<a href="#section-5.6-7" class="pilcrow">¶</a></p>
 <p id="section-5.6-8"><code>Decap()</code> is <code>Decapsulate()</code> from <a href="#decaps" class="auto internal xref">Section 5.5</a>.<a href="#section-5.6-8" class="pilcrow">¶</a></p>
 <p id="section-5.6-9">X-Wing is not an authenticated KEM: it does not support <code>AuthEncap()</code>
-and <code>AuthDecap()</code>, see <a href="#auth" class="auto internal xref">Section 1.5</a>.<a href="#section-5.6-9" class="pilcrow">¶</a></p>
+and <code>AuthDecap()</code>, see <a href="#auth" class="auto internal xref">Section 1.4</a>.<a href="#section-5.6-9" class="pilcrow">¶</a></p>
 <p id="section-5.6-10">Nsecret, Nenc, Npk, and Nsk are defined in <a href="#iana" class="auto internal xref">Section 7</a>.<a href="#section-5.6-10" class="pilcrow">¶</a></p>
 </section>
 </div>
