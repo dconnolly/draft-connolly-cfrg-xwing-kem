@@ -228,8 +228,10 @@ X-Wing relies on the following primitives:
     order of `GenerateKeyPair()` defined below.
   - `ML-KEM-768.Encaps(pk_M)`: Randomized algorithm to generate `(ss_M,
     ct_M)`, an ephemeral 32 byte shared key `ss_M`, and a fixed-length
-    encapsulation (ciphertext) of that key `ct_M` for encapsulation key
-    `pk_M`.
+    encapsulation (ciphertext) of that key `ct_M` for encapsulation key `pk_M`.
+
+    `ML-KEM-768.Encaps(pk_M)` MUST perform the encapsulation key check
+    of {{MLKEM}} §7.2 and raise an error if it fails.
   - `ML-KEM-768.Decap(ct_M, sk_M)`: Deterministic algorithm using the
     decapsulation key `sk_M` to recover the shared key from `ct_M`.
 
@@ -245,6 +247,9 @@ X-Wing relies on the following primitives:
     an ephemeral 32 byte shared key `ss_M`, and a fixed-length
     encapsulation (ciphertext) of that key `ct_M` for encapsulation key
     `pk_M`. `m` is a 32 byte string.
+
+    `ML-KEM-768.Encaps_internal(pk_M)` MUST perform the encapsulation key check
+    of {{MLKEM}} §7.2 and raise an error if it fails.
 
 * X25519 elliptic curve Diffie-Hellman key-exchange defined in {{Section 5 of RFC7748}}:
 
@@ -377,6 +382,9 @@ def Encapsulate(pk):
 `Encapsulate()` returns the 32 byte shared secret `ss` and the 1120 byte
 ciphertext `ct`.
 
+Note that `Encapsulate()` may raise an error if the ML-KEM encapsulation
+does not pass the check of {{MLKEM}} §7.2.
+
 ### Derandomized
 
 For testing, it is convenient to have a deterministic version
@@ -457,8 +465,8 @@ decapsulation key.
 
 X-Wing satisfies the HPKE KEM interface as follows.
 
-The `SerializePublicKey`, `DeserializePublicKey`,
-`SerializePrivateKey` and `DeserializePrivateKey` are the identity functions,
+The `SerializePublicKey`, `SerializePrivateKey`,
+and `DeserializePrivateKey` are the identity functions,
 as X-Wing keys are fixed-length byte strings, see {{encoding}}.
 
 `DeriveKeyPair()` is given by
@@ -471,11 +479,8 @@ def DeriveKeyPair(ikm):
 where the HPKE private key and public key are the X-Wing decapsulation
 key and encapsulation key respectively.
 
-The argument `ikm` to `DeriveKeyPair()` SHOULD be at least 32 octets in
-length.  (This is contrary to {{RFC9180}} which stipulates it should be
-at least Nsk=2432 octets in length.)
-
-`Encap()` is `Encapsulate()` from {{encaps}}.
+`Encap()` is `Encapsulate()` from {{encaps}}, where an
+ML-KEM encapsulation key check failure causes an HPKE `EncapError`.
 
 `Decap()` is `Decapsulate()` from {{decaps}}.
 
@@ -491,6 +496,9 @@ the X-Wing encapsulation key.
 
 For the server's share, the key_exchange value contains
 the X-Wing ciphertext.
+
+On ML-KEM encapsulation key check failure, the server MUST
+abort with an illegal_parameter alert.
 
 # Security Considerations {#secc}
 
@@ -562,7 +570,7 @@ Named Group (or Supported Group) registry, according to the procedures
 in {{Section 6 of TLSIANA}}.
 
  Value:
- : TBD (please)
+ : 26287 (please)
 
  Description:
  : X-Wing
@@ -578,12 +586,6 @@ in {{Section 6 of TLSIANA}}.
 
  Comment:
  : PQ/T hybrid of X25519 and ML-KEM-768
-
-
-# TODO
-
-- Which validation do we want to require?
-
 
 --- back
 
@@ -641,6 +643,13 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-03
+
+- Mandate ML-KEM encapsulation key check, and stipulate effect
+  on TLS and HPKE integration.
+
+- Add provisional TLS codepoint.
 
 ## Since draft-connolly-cfrg-xwing-kem-02
 
