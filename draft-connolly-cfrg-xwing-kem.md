@@ -6,7 +6,7 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2024-08-13
+date: 2024-08-19
 consensus: true
 v: 3
 area: "IRTF"
@@ -234,6 +234,9 @@ X-Wing relies on the following primitives:
     of {{MLKEM}} §7.2 and raise an error if it fails.
   - `ML-KEM-768.Decap(ct_M, sk_M)`: Deterministic algorithm using the
     decapsulation key `sk_M` to recover the shared key from `ct_M`.
+
+    `ML-KEM-768.Decap(ct_M, sk_M)` is NOT required  to perform the
+    decapsulation key check of {{MLKEM}} §7.3.
 
   To generate deterministic test vectors, we also use
 
@@ -643,6 +646,10 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-04
+
+- Note that ML-KEM decapsulation key check is not required.
 
 ## Since draft-connolly-cfrg-xwing-kem-03
 
