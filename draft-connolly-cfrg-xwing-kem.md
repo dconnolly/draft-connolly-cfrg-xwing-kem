@@ -221,11 +221,13 @@ X-Wing relies on the following primitives:
 
 * ML-KEM-768 post-quantum key-encapsulation mechanism (KEM) {{MLKEM}}:
 
-  - `ML-KEM-768.KeyGen()`: Randomized algorithm to generate an
+  - `ML-KEM-768.KeyGen_internal(d, z)`: Deterministic algorithm to generate an
     ML-KEM-768 key pair `(pk_M, sk_M)` of an encapsulation key `pk_M`
     and decapsulation key `sk_M`.
-    Note that `ML-KEM-768.KeyGen()` returns the keys in reverse
+    It is the derandomized version of `ML-KEM-768.KeyGen`.
+    Note that `ML-KEM-768.KeyGen_internal()` returns the keys in reverse
     order of `GenerateKeyPair()` defined below.
+    `d` and `z` are both 32 byte strings.
   - `ML-KEM-768.Encaps(pk_M)`: Randomized algorithm to generate `(ss_M,
     ct_M)`, an ephemeral 32 byte shared key `ss_M`, and a fixed-length
     encapsulation (ciphertext) of that key `ct_M` for encapsulation key `pk_M`.
@@ -240,12 +242,6 @@ X-Wing relies on the following primitives:
 
   To generate deterministic test vectors, we also use
 
-  - `ML-KEM-768.KeyGen_internal(d, z)`: Algorithm to generate an
-    ML-KEM-768 key pair `(pk_M, sk_M)` of an encapsulation key `pk_M`
-    and decapsulation key `sk_M`.
-    Note that `ML-KEM-768.KeyGen()` returns the keys in reverse
-    order of `GenerateKeyPair()` defined below.
-    `d` and `z` are both 32 byte strings.
   - `ML-KEM-768.Encaps_internal(pk_M, m)`: Algorithm to generate `(ss_M, ct_M)`,
     an ephemeral 32 byte shared key `ss_M`, and a fixed-length
     encapsulation (ciphertext) of that key `ct_M` for encapsulation key
@@ -650,6 +646,8 @@ TODO acknowledge.
 ## Since draft-connolly-cfrg-xwing-kem-04
 
 - Note that ML-KEM decapsulation key check is not required.
+
+- Properly refer to FIPS 203 dependencies. #20
 
 ## Since draft-connolly-cfrg-xwing-kem-03
 
