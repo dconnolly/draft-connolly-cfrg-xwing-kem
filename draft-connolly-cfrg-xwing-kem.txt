@@ -442,20 +442,21 @@ def GenerateKeyPair():
    opaque decapsulation key object that hides the cached values.  For
    instance, such an API could have the following functions.
 
-   1.  UnpackDecapsulationKey(sk) takes a decapsulation key, and returns
-       an opaque object that contains the expanded decapsulation key.
+   1.  GenerateKeyPair() returns an encapsulation key and an opaque
+       object that contains the expanded decapsulation key.
 
    2.  Decapsulate(ct, esk) takes a ciphertext and an expanded
        decapsulation key.
 
-   3.  GenerateKeyPair() returns an encapsulation key and an expanded
-       decapsulation key.
-
-   4.  PackDecapsulationKey(sk) takes an expanded decapsulation key, and
+   3.  PackDecapsulationKey(sk) takes an expanded decapsulation key, and
        returns the packed decapsulation key.
 
-   The expanded decapsulation key could cache more computation, such as
-   the expanded matrix A in ML-KEM.
+   4.  UnpackDecapsulationKey(sk) takes a packed decapsulation key, and
+       returns the expanded decapsulation key.  In the case of X-Wing
+       this would be the same as a derandomized GenerateKeyPair().
+
+   The expanded decapsulation key could cache even more computation,
+   such as the expanded matrix A in ML-KEM.
 
    Any such expanded decapsulation key MUST NOT be transmitted between
    implementations, as this could break the security analysis of X-Wing.
