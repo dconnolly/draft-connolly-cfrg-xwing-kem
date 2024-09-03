@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-01T00:10:17.804225+00:00",
+  "timestamp": "2024-09-03T00:08:25.128361+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -233,6 +233,30 @@
           "body": "Thanks for reaching out and offering assistance. The test vectors are current, but of course, not final, as ML-KEM might change. What we would like to have, is a test suite that exercises corner-cases in X25519 and ML-KEM. For the ML-KEM draft, an example are those prepared by Filippo and by Sophie, see [this thread](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/aCAX-2QrUFw/m/hy5gwcESAAAJ). ML-KEM might change and for that matter X-Wing itself, so I feel it might be wasteful to spend a lot of time preparing exhaustive test vectors if we have to redo it. There are similar such test vectors for X25519 (but not in RFC 9180.)",
           "createdAt": "2024-05-06T17:10:05Z",
           "updatedAt": "2024-05-06T17:10:05Z"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOKq5sns6VFXzT",
+      "title": "KeyGen and KeyGen_internal mixed up in Section 4",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/20",
+      "state": "OPEN",
+      "author": "FiloSottile",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4 says X-Wing relies on `ML-KEM-768.KeyGen` and that to generate deterministic test vectors, we also use ML-`KEM-768.KeyGen_internal`. In the latest version, the former is not used and the latter is used in \"production\". (Which is good!)",
+      "createdAt": "2024-09-02T15:23:56Z",
+      "updatedAt": "2024-09-02T15:39:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "FiloSottile",
+          "authorAssociation": "NONE",
+          "body": "Also, aren't `UnpackDecapsulationKey` and `GenerateKeyPairDerand` the same function?",
+          "createdAt": "2024-09-02T15:39:37Z",
+          "updatedAt": "2024-09-02T15:39:37Z"
         }
       ]
     }
