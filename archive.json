@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-03T00:08:25.128361+00:00",
+  "timestamp": "2024-09-05T00:08:23.390832+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -241,15 +241,15 @@
       "id": "I_kwDOKq5sns6VFXzT",
       "title": "KeyGen and KeyGen_internal mixed up in Section 4",
       "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "FiloSottile",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Section 4 says X-Wing relies on `ML-KEM-768.KeyGen` and that to generate deterministic test vectors, we also use ML-`KEM-768.KeyGen_internal`. In the latest version, the former is not used and the latter is used in \"production\". (Which is good!)",
       "createdAt": "2024-09-02T15:23:56Z",
-      "updatedAt": "2024-09-02T15:39:38Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-03T10:26:26Z",
+      "closedAt": "2024-09-03T09:14:37Z",
       "comments": [
         {
           "author": "FiloSottile",
@@ -257,6 +257,27 @@
           "body": "Also, aren't `UnpackDecapsulationKey` and `GenerateKeyPairDerand` the same function?",
           "createdAt": "2024-09-02T15:39:37Z",
           "updatedAt": "2024-09-02T15:39:37Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Section 4 says X-Wing relies on `ML-KEM-768.KeyGen` and that to generate deterministic test vectors, we also use ML-`KEM-768.KeyGen_internal`. In the latest version, the former is not used and the latter is used in \"production\". (Which is good!)\r\n\r\nWhoops, [corrected](https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/commit/496d38bc1d4c7f1c7d9bf8ecb358d37720e6c5e9), thanks.\r\n\r\n> Also, aren't UnpackDecapsulationKey and GenerateKeyPairDerand the same function?\r\n\r\nIn a typical X-Wing implementation they'd be very close, but for RSA you have a reasonable implementation where they wouldn't. There GenerateKeyPairDerand would take a seed, and then increment two nonces until they find the primes. The decapsulation key would be the seed and the two nonces.",
+          "createdAt": "2024-09-03T09:21:07Z",
+          "updatedAt": "2024-09-03T09:21:07Z"
+        },
+        {
+          "author": "FiloSottile",
+          "authorAssociation": "NONE",
+          "body": "\r\n> In a typical X-Wing implementation they'd be very close, but for RSA you have a reasonable implementation where they wouldn't. There GenerateKeyPairDerand would take a seed, and then increment two nonces until they find the primes. The decapsulation key would be the seed and the two nonces.\r\n\r\nOh yeah for sure not all KEMs use seeds as decapsulation keys, but XWing does, so reading only this spec it\u2019s weird to see an undefined function be referenced which just happens to be the same as a differently named function.\r\n",
+          "createdAt": "2024-09-03T10:06:52Z",
+          "updatedAt": "2024-09-03T10:06:52Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, I was speaking about such an API in general, but I see now it's confusing. Rephrased.",
+          "createdAt": "2024-09-03T10:26:25Z",
+          "updatedAt": "2024-09-03T10:26:25Z"
         }
       ]
     }
