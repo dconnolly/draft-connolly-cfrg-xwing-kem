@@ -1265,19 +1265,22 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.13.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-change-log" class="internal xref">Change log</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-E.1" class="auto internal xref">E.1</a>.  <a href="#name-since-draft-connolly-cfrg-x" class="internal xref">Since draft-connolly-cfrg-xwing-kem-04</a></p>
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-E.1" class="auto internal xref">E.1</a>.  <a href="#name-since-draft-connolly-cfrg-x" class="internal xref">Since draft-connolly-cfrg-xwing-kem-05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-E.2" class="auto internal xref">E.2</a>.  <a href="#name-since-draft-connolly-cfrg-xw" class="internal xref">Since draft-connolly-cfrg-xwing-kem-03</a></p>
+                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-E.2" class="auto internal xref">E.2</a>.  <a href="#name-since-draft-connolly-cfrg-xw" class="internal xref">Since draft-connolly-cfrg-xwing-kem-04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
-                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-E.3" class="auto internal xref">E.3</a>.  <a href="#name-since-draft-connolly-cfrg-xwi" class="internal xref">Since draft-connolly-cfrg-xwing-kem-02</a></p>
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-E.3" class="auto internal xref">E.3</a>.  <a href="#name-since-draft-connolly-cfrg-xwi" class="internal xref">Since draft-connolly-cfrg-xwing-kem-03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.4">
-                <p id="section-toc.1-1.13.2.4.1"><a href="#appendix-E.4" class="auto internal xref">E.4</a>.  <a href="#name-since-draft-connolly-cfrg-xwin" class="internal xref">Since draft-connolly-cfrg-xwing-kem-01</a></p>
+                <p id="section-toc.1-1.13.2.4.1"><a href="#appendix-E.4" class="auto internal xref">E.4</a>.  <a href="#name-since-draft-connolly-cfrg-xwin" class="internal xref">Since draft-connolly-cfrg-xwing-kem-02</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.5">
-                <p id="section-toc.1-1.13.2.5.1"><a href="#appendix-E.5" class="auto internal xref">E.5</a>.  <a href="#name-since-draft-connolly-cfrg-xwing" class="internal xref">Since draft-connolly-cfrg-xwing-kem-00</a></p>
+                <p id="section-toc.1-1.13.2.5.1"><a href="#appendix-E.5" class="auto internal xref">E.5</a>.  <a href="#name-since-draft-connolly-cfrg-xwing" class="internal xref">Since draft-connolly-cfrg-xwing-kem-01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.6">
+                <p id="section-toc.1-1.13.2.6.1"><a href="#appendix-E.6" class="auto internal xref">E.6</a>.  <a href="#name-since-draft-connolly-cfrg-xwing-" class="internal xref">Since draft-connolly-cfrg-xwing-kem-00</a></p>
 </li>
             </ul>
 </li>
@@ -1612,9 +1615,9 @@ def GenerateKeyPairDerand(sk):
   return sk, concat(pk_M, pk_X)
 </pre><a href="#section-5.2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2.1-3"><code>seed</code> must be 32 bytes.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-3"><code>sk</code> must be 32 bytes.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-5.2.1-4"><code>GenerateKeyPairDerand()</code> returns the 32 byte secret encapsulation key
-<code>sk</code> and the 32 byte decapsulation key <code>pk</code>.<a href="#section-5.2.1-4" class="pilcrow">¶</a></p>
+<code>sk</code> and the 1216 byte decapsulation key <code>pk</code>.<a href="#section-5.2.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1787,7 +1790,7 @@ as X-Wing keys are fixed-length byte strings, see <a href="#encoding" class="aut
 <div class="alignLeft art-text artwork" id="section-5.6-4">
 <pre>
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE256(ikm, 96))
+  return GenerateKeyPairDerand(SHAKE256(ikm, 32))
 </pre><a href="#section-5.6-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5.6-5">where the HPKE private key and public key are the X-Wing decapsulation
@@ -2829,104 +2832,116 @@ ss     953f7f4e8c5b5049bdc771d1dffada0dd961477d1a2ae0988baa7ea6898d893f
 final version of this document.<a href="#appendix-E-1.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<div id="since-draft-connolly-cfrg-xwing-kem-04">
+<div id="since-draft-connolly-cfrg-xwing-kem-05">
 <section id="appendix-E.1">
         <h3 id="name-since-draft-connolly-cfrg-x">
-<a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-since-draft-connolly-cfrg-x" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-04</a>
+<a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-since-draft-connolly-cfrg-x" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-05</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-E.1-1.1">
-            <p id="appendix-E.1-1.1.1">Note that ML-KEM decapsulation key check is not required.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.1.1">Fix several typos.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.2">
-            <p id="appendix-E.1-1.2.1">Properly refer to FIPS 203 dependencies. #20<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="since-draft-connolly-cfrg-xwing-kem-04">
+<section id="appendix-E.2">
+        <h3 id="name-since-draft-connolly-cfrg-xw">
+<a href="#appendix-E.2" class="section-number selfRef">E.2. </a><a href="#name-since-draft-connolly-cfrg-xw" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-04</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-E.2-1.1">
+            <p id="appendix-E.2-1.1.1">Note that ML-KEM decapsulation key check is not required.<a href="#appendix-E.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.3">
-            <p id="appendix-E.1-1.3.1">Move label at the end. As everything fits within a single block of SHA3-256,
-this does not make any difference.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.2-1.2">
+            <p id="appendix-E.2-1.2.1">Properly refer to FIPS 203 dependencies. #20<a href="#appendix-E.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.4">
-            <p id="appendix-E.1-1.4.1">Use SHAKE-256 to stretch seed. This does not have any security or performance
+          <li class="normal" id="appendix-E.2-1.3">
+            <p id="appendix-E.2-1.3.1">Move label at the end. As everything fits within a single block of SHA3-256,
+this does not make any difference.<a href="#appendix-E.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.2-1.4">
+            <p id="appendix-E.2-1.4.1">Use SHAKE-256 to stretch seed. This does not have any security or performance
 effects: as we only squeeze 96 bytes, we perform a single Keccak permutation
 whether SHAKE-128 or SHAKE-256 is used. The effective capacity of the sponge
 in both cases is 832, which gives a security of 416 bits. It does require
-less thought from anyone analysing X-Wing in a rush.<a href="#appendix-E.1-1.4.1" class="pilcrow">¶</a></p>
+less thought from anyone analysing X-Wing in a rush.<a href="#appendix-E.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.5">
-            <p id="appendix-E.1-1.5.1">Add HPKE codepoint.<a href="#appendix-E.1-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.2-1.5">
+            <p id="appendix-E.2-1.5.1">Add HPKE codepoint.<a href="#appendix-E.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.1-1.6">
-            <p id="appendix-E.1-1.6.1">Don't mark TLS entry as recommended before it has been through the
-IETF consensus process. (Obviously the authors recommend X-Wing.)<a href="#appendix-E.1-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.2-1.6">
+            <p id="appendix-E.2-1.6.1">Don't mark TLS entry as recommended before it has been through the
+IETF consensus process. (Obviously the authors recommend X-Wing.)<a href="#appendix-E.2-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="since-draft-connolly-cfrg-xwing-kem-03">
-<section id="appendix-E.2">
-        <h3 id="name-since-draft-connolly-cfrg-xw">
-<a href="#appendix-E.2" class="section-number selfRef">E.2. </a><a href="#name-since-draft-connolly-cfrg-xw" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-03</a>
+<section id="appendix-E.3">
+        <h3 id="name-since-draft-connolly-cfrg-xwi">
+<a href="#appendix-E.3" class="section-number selfRef">E.3. </a><a href="#name-since-draft-connolly-cfrg-xwi" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-E.2-1.1">
-            <p id="appendix-E.2-1.1.1">Mandate ML-KEM encapsulation key check, and stipulate effect
-on TLS and HPKE integration.<a href="#appendix-E.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-E.3-1.1">
+            <p id="appendix-E.3-1.1.1">Mandate ML-KEM encapsulation key check, and stipulate effect
+on TLS and HPKE integration.<a href="#appendix-E.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.2-1.2">
-            <p id="appendix-E.2-1.2.1">Add provisional TLS codepoint. (Not assigned, yet.)<a href="#appendix-E.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.3-1.2">
+            <p id="appendix-E.3-1.2.1">Add provisional TLS codepoint. (Not assigned, yet.)<a href="#appendix-E.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="since-draft-connolly-cfrg-xwing-kem-02">
-<section id="appendix-E.3">
-        <h3 id="name-since-draft-connolly-cfrg-xwi">
-<a href="#appendix-E.3" class="section-number selfRef">E.3. </a><a href="#name-since-draft-connolly-cfrg-xwi" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-02</a>
+<section id="appendix-E.4">
+        <h3 id="name-since-draft-connolly-cfrg-xwin">
+<a href="#appendix-E.4" class="section-number selfRef">E.4. </a><a href="#name-since-draft-connolly-cfrg-xwin" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-E.3-1.1">
-            <p id="appendix-E.3-1.1.1">Use seed as private key.<a href="#appendix-E.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-E.4-1.1">
+            <p id="appendix-E.4-1.1.1">Use seed as private key.<a href="#appendix-E.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.3-1.2">
-            <p id="appendix-E.3-1.2.1">Expand on caching decapsulation key values.<a href="#appendix-E.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.4-1.2">
+            <p id="appendix-E.4-1.2.1">Expand on caching decapsulation key values.<a href="#appendix-E.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.3-1.3">
-            <p id="appendix-E.3-1.3.1">Expand on binding properties.<a href="#appendix-E.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.4-1.3">
+            <p id="appendix-E.4-1.3.1">Expand on binding properties.<a href="#appendix-E.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="since-draft-connolly-cfrg-xwing-kem-01">
-<section id="appendix-E.4">
-        <h3 id="name-since-draft-connolly-cfrg-xwin">
-<a href="#appendix-E.4" class="section-number selfRef">E.4. </a><a href="#name-since-draft-connolly-cfrg-xwin" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-01</a>
+<section id="appendix-E.5">
+        <h3 id="name-since-draft-connolly-cfrg-xwing">
+<a href="#appendix-E.5" class="section-number selfRef">E.5. </a><a href="#name-since-draft-connolly-cfrg-xwing" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-E.4-1.1">
-            <p id="appendix-E.4-1.1.1">Add list of implementations.<a href="#appendix-E.4-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-E.5-1.1">
+            <p id="appendix-E.5-1.1.1">Add list of implementations.<a href="#appendix-E.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.4-1.2">
-            <p id="appendix-E.4-1.2.1">Miscellaneous editorial improvements.<a href="#appendix-E.4-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.5-1.2">
+            <p id="appendix-E.5-1.2.1">Miscellaneous editorial improvements.<a href="#appendix-E.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.4-1.3">
-            <p id="appendix-E.4-1.3.1">Add Python reference specification.<a href="#appendix-E.4-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.5-1.3">
+            <p id="appendix-E.5-1.3.1">Add Python reference specification.<a href="#appendix-E.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-E.4-1.4">
-            <p id="appendix-E.4-1.4.1">Correct definition of <code>ML-KEM-768.KeyGenDerand(seed)</code>.<a href="#appendix-E.4-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-E.5-1.4">
+            <p id="appendix-E.5-1.4.1">Correct definition of <code>ML-KEM-768.KeyGenDerand(seed)</code>.<a href="#appendix-E.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="since-draft-connolly-cfrg-xwing-kem-00">
-<section id="appendix-E.5">
-        <h3 id="name-since-draft-connolly-cfrg-xwing">
-<a href="#appendix-E.5" class="section-number selfRef">E.5. </a><a href="#name-since-draft-connolly-cfrg-xwing" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-00</a>
+<section id="appendix-E.6">
+        <h3 id="name-since-draft-connolly-cfrg-xwing-">
+<a href="#appendix-E.6" class="section-number selfRef">E.6. </a><a href="#name-since-draft-connolly-cfrg-xwing-" class="section-name selfRef">Since draft-connolly-cfrg-xwing-kem-00</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-E.5-1.1">
-            <p id="appendix-E.5-1.1.1">A copy of the X25519 public key is now included in the X-Wing
+<li class="normal" id="appendix-E.6-1.1">
+            <p id="appendix-E.6-1.1.1">A copy of the X25519 public key is now included in the X-Wing
 decapsulation (private) key, so that decapsulation does not
-require separate access to the X-Wing public key. See #2.<a href="#appendix-E.5-1.1.1" class="pilcrow">¶</a></p>
+require separate access to the X-Wing public key. See #2.<a href="#appendix-E.6-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

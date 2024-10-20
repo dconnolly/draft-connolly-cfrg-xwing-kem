@@ -105,11 +105,12 @@ Table of Contents
            re-use ML-KEM, X25519 values
    Appendix D.  Acknowledgments
    Appendix E.  Change log
-     E.1.  Since draft-connolly-cfrg-xwing-kem-04
-     E.2.  Since draft-connolly-cfrg-xwing-kem-03
-     E.3.  Since draft-connolly-cfrg-xwing-kem-02
-     E.4.  Since draft-connolly-cfrg-xwing-kem-01
-     E.5.  Since draft-connolly-cfrg-xwing-kem-00
+     E.1.  Since draft-connolly-cfrg-xwing-kem-05
+     E.2.  Since draft-connolly-cfrg-xwing-kem-04
+     E.3.  Since draft-connolly-cfrg-xwing-kem-03
+     E.4.  Since draft-connolly-cfrg-xwing-kem-02
+     E.5.  Since draft-connolly-cfrg-xwing-kem-01
+     E.6.  Since draft-connolly-cfrg-xwing-kem-00
    Authors' Addresses
 
 1.  Introduction
@@ -335,10 +336,10 @@ def GenerateKeyPair():
      sk_M, sk_X, pk_M, pk_X = expandDecapsulationKey(sk)
      return sk, concat(pk_M, pk_X)
 
-   seed must be 32 bytes.
+   sk must be 32 bytes.
 
    GenerateKeyPairDerand() returns the 32 byte secret encapsulation key
-   sk and the 32 byte decapsulation key pk.
+   sk and the 1216 byte decapsulation key pk.
 
 5.3.  Combiner
 
@@ -475,7 +476,7 @@ def GenerateKeyPair():
    DeriveKeyPair() is given by
 
    def DeriveKeyPair(ikm):
-     return GenerateKeyPairDerand(SHAKE256(ikm, 96))
+     return GenerateKeyPairDerand(SHAKE256(ikm, 32))
 
    where the HPKE private key and public key are the X-Wing
    decapsulation key and encapsulation key respectively.
@@ -1390,7 +1391,11 @@ Appendix E.  Change log
       *RFC Editor's Note:* Please remove this section prior to
       publication of a final version of this document.
 
-E.1.  Since draft-connolly-cfrg-xwing-kem-04
+E.1.  Since draft-connolly-cfrg-xwing-kem-05
+
+   *  Fix several typos.
+
+E.2.  Since draft-connolly-cfrg-xwing-kem-04
 
    *  Note that ML-KEM decapsulation key check is not required.
 
@@ -1411,14 +1416,14 @@ E.1.  Since draft-connolly-cfrg-xwing-kem-04
    *  Don't mark TLS entry as recommended before it has been through the
       IETF consensus process.  (Obviously the authors recommend X-Wing.)
 
-E.2.  Since draft-connolly-cfrg-xwing-kem-03
+E.3.  Since draft-connolly-cfrg-xwing-kem-03
 
    *  Mandate ML-KEM encapsulation key check, and stipulate effect on
       TLS and HPKE integration.
 
    *  Add provisional TLS codepoint.  (Not assigned, yet.)
 
-E.3.  Since draft-connolly-cfrg-xwing-kem-02
+E.4.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Use seed as private key.
 
@@ -1426,7 +1431,7 @@ E.3.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Expand on binding properties.
 
-E.4.  Since draft-connolly-cfrg-xwing-kem-01
+E.5.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Add list of implementations.
 
@@ -1436,7 +1441,7 @@ E.4.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Correct definition of ML-KEM-768.KeyGenDerand(seed).
 
-E.5.  Since draft-connolly-cfrg-xwing-kem-00
+E.6.  Since draft-connolly-cfrg-xwing-kem-00
 
    *  A copy of the X25519 public key is now included in the X-Wing
       decapsulation (private) key, so that decapsulation does not
