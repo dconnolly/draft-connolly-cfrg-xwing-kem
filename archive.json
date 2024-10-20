@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-17T00:09:14.132091+00:00",
+  "timestamp": "2024-10-20T00:10:14.181476+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -280,6 +280,22 @@
           "updatedAt": "2024-09-03T10:26:25Z"
         }
       ]
+    },
+    {
+      "number": 21,
+      "id": "I_kwDOKq5sns6a6jyC",
+      "title": "Add an algorithm OID for X-Wing",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/21",
+      "state": "OPEN",
+      "author": "codespree",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi folks,\r\n\r\nAfter doing some reading, I found X-Wing is exactly what I was looking for.\r\nhttps://datatracker.ietf.org/doc/html/draft-connolly-cfrg-xwing-kem-04\r\n\r\nI have implemented it here:\r\nhttps://github.com/codespree/quantcrypt/blob/main/src/kem/xwing.rs\r\n\r\nIts use in HPKE is also clearly evident from the draft as are the fixed sized outputs.\r\n\r\nHowever, in my use-case, I also need to have the public key signed (i.e. have a certificate) containing the X-Wing public key.\r\n\r\nThe draft doesn't define use in Internet X.509 Public Key Infrastructure, however, I think this could be a good addition to the draft.\r\n\r\nAt the very least, all that is required is a top level Algorithm identifier OID for X-Wing.\r\n\r\nThat would allow putting the public key in an ASN.1 structure:\r\nPublicKeyInfo ::= SEQUENCE {\r\n     algorithm   AlgorithmIdentifier,\r\n     PublicKey   BIT STRING\r\n}\r\nwhich could go inside a certificate\r\n\r\nFor the private key, we could use the OneAsymmetricKey (OAK) structure as per normal.\r\n\r\nThis would provide a means of having a signed encapsulation key for the X-Wing KEM which is included in a certificate.\r\n\r\nThen, the KEM could be used in HPKE as per normal, but with a certificate available for the encapsulating key to ascertain its authenticity.\r\n\r\nDo you think the assignment of the OID and a brief note on X-Wing's use in Internet X.509 Public Key Infrastructure would be something the authors would consider?\r\n\r\n@dconnolly @bwesterb @raphaelrobert ",
+      "createdAt": "2024-10-19T11:01:14Z",
+      "updatedAt": "2024-10-19T11:04:14Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
