@@ -326,10 +326,10 @@ def GenerateKeyPairDerand(sk):
   return sk, concat(pk_M, pk_X)
 ~~~
 
-`seed` must be 32 bytes.
+`sk` must be 32 bytes.
 
 `GenerateKeyPairDerand()` returns the 32 byte secret encapsulation key
-`sk` and the 32 byte decapsulation key `pk`.
+`sk` and the 1216 byte decapsulation key `pk`.
 
 ## Combiner {#combiner}
 
@@ -474,7 +474,7 @@ as X-Wing keys are fixed-length byte strings, see {{encoding}}.
 
 ~~~
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE256(ikm, 96))
+  return GenerateKeyPairDerand(SHAKE256(ikm, 32))
 ~~~
 
 where the HPKE private key and public key are the X-Wing decapsulation
@@ -647,6 +647,10 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-05
+
+- Fix several typos.
 
 ## Since draft-connolly-cfrg-xwing-kem-04
 
