@@ -598,9 +598,12 @@ in {{Section 6 of TLSIANA}}.
 
   - [Filippo](https://github.com/FiloSottile/mlkem768)
 
+    Note: implements the older `-04` version of this memo at the time of
+    writing.
+
 - Rust
 
-  - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs])
+  - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs)
 
     Note: implements the older `-00` version of this memo at the time of
     writing.
