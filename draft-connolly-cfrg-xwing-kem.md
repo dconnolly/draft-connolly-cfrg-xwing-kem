@@ -543,7 +543,7 @@ This document requests/registers a new entry to the "HPKE KEM Identifiers"
 registry.
 
  Value:
- : TBD (please)
+ : 26287 (0x66af, please)
 
  KEM:
  : X-Wing
@@ -571,7 +571,7 @@ Named Group (or Supported Group) registry, according to the procedures
 in {{Section 6 of TLSIANA}}.
 
  Value:
- : 26287 (please)
+ : 26287 (0x66af, please)
 
  Description:
  : X-Wing
@@ -580,7 +580,7 @@ in {{Section 6 of TLSIANA}}.
  : Y
 
  Recommended:
- : Y
+ : N
 
  Reference:
  : This document
@@ -662,6 +662,11 @@ TODO acknowledge.
   whether SHAKE-128 or SHAKE-256 is used. The effective capacity of the sponge
   in both cases is 832, which gives a security of 416 bits. It does require
   less thought from anyone analysing X-Wing in a rush.
+
+- Add HPKE codepoint.
+
+- Don't mark TLS entry as recommended before it has been through the
+  IETF consensus process. (Obviously the authors recommend X-Wing.)
 
 ## Since draft-connolly-cfrg-xwing-kem-03
 
