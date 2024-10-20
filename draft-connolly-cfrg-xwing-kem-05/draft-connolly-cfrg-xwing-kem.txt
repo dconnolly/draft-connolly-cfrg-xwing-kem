@@ -552,7 +552,7 @@ def GenerateKeyPair():
    This document requests/registers a new entry to the "HPKE KEM
    Identifiers" registry.
 
-   Value:  TBD (please)
+   Value:  26287 (0x66af, please)
 
    KEM:  X-Wing
 
@@ -572,13 +572,13 @@ def GenerateKeyPair():
    Named Group (or Supported Group) registry, according to the
    procedures in Section 6 of [TLSIANA].
 
-   Value:  26287 (please)
+   Value:  26287 (0x66af, please)
 
    Description:  X-Wing
 
    DTLS-OK:  Y
 
-   Recommended:  Y
+   Recommended:  N
 
    Reference:  This document
 
@@ -1405,6 +1405,11 @@ E.1.  Since draft-connolly-cfrg-xwing-kem-04
       The effective capacity of the sponge in both cases is 832, which
       gives a security of 416 bits.  It does require less thought from
       anyone analysing X-Wing in a rush.
+
+   *  Add HPKE codepoint.
+
+   *  Don't mark TLS entry as recommended before it has been through the
+      IETF consensus process.  (Obviously the authors recommend X-Wing.)
 
 E.2.  Since draft-connolly-cfrg-xwing-kem-03
 
