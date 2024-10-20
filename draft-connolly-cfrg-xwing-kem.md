@@ -264,9 +264,10 @@ Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 
 * Symmetric cryptography.
 
-  - `SHAKE128(message, outlen)`: The extendable-output function (XOF)
-    defined in Section 6.2 of {{FIPS202}}.
-  - `SHA3-256(message)`: The hash defined in Section 6.1 of {{FIPS202}}.
+  - `SHAKE256(message, outlen)`: The extendable-output function (XOF)
+    with that name defined in Section 6.2 of {{FIPS202}}.
+  - `SHA3-256(message)`: The hash with that name
+    defined in Section 6.1 of {{FIPS202}}.
 
 
 # X-Wing Construction
@@ -295,7 +296,7 @@ follows.
 
 ~~~
 def expandDecapsulationKey(sk):
-  expanded = SHAKE128(sk, 96)
+  expanded = SHAKE256(sk, 96)
   (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
   sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
@@ -340,11 +341,11 @@ combined shared secret is given by:
 ~~~
 def Combiner(ss_M, ss_X, ct_X, pk_X):
   return SHA3-256(concat(
-    XWingLabel,
     ss_M,
     ss_X,
     ct_X,
-    pk_X
+    pk_X,
+    XWingLabel
   ))
 ~~~
 
@@ -473,7 +474,7 @@ as X-Wing keys are fixed-length byte strings, see {{encoding}}.
 
 ~~~
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE128(ikm, 96))
+  return GenerateKeyPairDerand(SHAKE256(ikm, 96))
 ~~~
 
 where the HPKE private key and public key are the X-Wing decapsulation
@@ -505,7 +506,7 @@ abort with an illegal_parameter alert.
 Informally, X-Wing is secure if SHA3 is secure, and either X25519 is
 secure, or ML-KEM-768 is secure.
 
-More precisely, if SHA3-256, SHA3-512, SHAKE-128, and SHAKE-256 may be
+More precisely, if SHA3-256, SHA3-512, and SHAKE-256 may be
 modelled as a random oracle, then the IND-CCA security of X-Wing is
 bounded by the IND-CCA security of ML-KEM-768, and the gap-CDH security
 of Curve25519, see {{PROOF}}.
@@ -650,12 +651,21 @@ TODO acknowledge.
 
 - Properly refer to FIPS 203 dependencies. #20
 
+- Move label at the end. As everything fits within a single block of SHA3-256,
+  this does not make any difference.
+
+- Use SHAKE-256 to stretch seed. This does not have any security or performance
+  effects: as we only squeeze 96 bytes, we perform a single Keccak permutation
+  whether SHAKE-128 or SHAKE-256 is used. The effective capacity of the sponge
+  in both cases is 832, which gives a security of 416 bits. It does require
+  less thought from anyone analysing X-Wing in a rush.
+
 ## Since draft-connolly-cfrg-xwing-kem-03
 
 - Mandate ML-KEM encapsulation key check, and stipulate effect
   on TLS and HPKE integration.
 
-- Add provisional TLS codepoint.
+- Add provisional TLS codepoint. (Not assigned, yet.)
 
 ## Since draft-connolly-cfrg-xwing-kem-02
 

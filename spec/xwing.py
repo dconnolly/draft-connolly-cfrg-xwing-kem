@@ -20,7 +20,7 @@ assert len(XWingLabel) == 6
 assert binascii.hexlify(XWingLabel) == b'5c2e2f2f5e5c'
 
 def expandDecapsulationKey(seed):
-    expanded = hashlib.shake_128(seed).digest(length=96)
+    expanded = hashlib.shake_256(seed).digest(length=96)
     pkM, skM = mlkem.KeyGen(expanded[0:64], mlkem.params768)
     skX = expanded[64:96]
     pkX = x25519.X(skX, x25519.BASE)
@@ -33,11 +33,11 @@ def GenerateKeyPairDerand(seed):
 
 def Combiner(ssM, ssX, ctX, pkX):
     return hashlib.sha3_256(
-        XWingLabel +
         ssM +
         ssX +
         ctX +
-        pkX
+        pkX +
+        XWingLabel
     ).digest()
 
 def EncapsulateDerand(pk, eseed):
