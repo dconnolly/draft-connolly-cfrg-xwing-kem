@@ -501,6 +501,88 @@ the X-Wing ciphertext.
 On ML-KEM encapsulation key check failure, the server MUST
 abort with an illegal_parameter alert.
 
+## Use in X.509 Public Key Infrastructure
+
+We use the OID 1.3.6.1.4.1.62253.25722 to identify X-Wing keys
+as described below. In ASN.1 notation:
+
+~~~
+id-XWing OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)
+        dod(6) internet(1) private(4) enterprise(1) 62253 25722 }
+~~~
+
+### Certificate
+
+In a X.509 certificate, the subjectPublicKeyInfo field
+has the SubjectPublicKeyInfo type, which has the following ASN.1 syntax.
+
+~~~
+SubjectPublicKeyInfo  ::=  SEQUENCE  {
+      algorithm         AlgorithmIdentifier,
+      subjectPublicKey  BIT STRING
+  }
+
+AlgorithmIdentifier{ALGORITHM-TYPE, ALGORITHM-TYPE:AlgorithmSet} ::=
+  SEQUENCE {
+    algorithm   ALGORITHM-TYPE."&"id({AlgorithmSet}),
+    parameters  ALGORITHM-TYPE.
+                  "&"Params({AlgorithmSet}{@algorithm}) OPTIONAL
+  }
+~~~
+
+An X-Wing encapsulation key MUST be encoded directly
+using the ASN.1 type XWingPublicKey.
+
+~~~
+XWingPublicKey ::= OCTET STRING
+~~~
+
+The X-Wing encapsulation key is mapped to a subjectPublicKey (a
+value of type BIT STRING) as follows: the most significant bit of
+the OCTET STRING value becomes the most significant bit of the BIT
+STRING value, and so on; the least significant bit of the OCTET
+STRING becomes the least significant bit of the BIT STRING.
+
+The id-XWing identifier MUST be used as the algorithm field in
+the SubjectPublicKeyInfo to identify an X-Wing encapsulation key.
+
+The contents of the parameters component MUST be absent.
+
+### Private key
+
+Below we replicate part of the definition of OneAsymmetricKey
+from {{!RFC5958}}.
+
+~~~
+OneAsymmetricKey ::= SEQUENCE {
+  version                  Version,
+  privateKeyAlgorithm      SEQUENCE {
+  algorithm                PUBLIC-KEY.&id({PublicKeySet}),
+  parameters               PUBLIC-KEY.&Params({PublicKeySet}
+                             {@privateKeyAlgorithm.algorithm})
+                                OPTIONAL}
+  privateKey               OCTET STRING (CONTAINING
+                             PUBLIC-KEY.&PrivateKey({PublicKeySet}
+                               {@privateKeyAlgorithm.algorithm})),
+  attributes           [0] Attributes OPTIONAL,
+  ...,
+  [[2: publicKey       [1] BIT STRING (CONTAINING
+                             PUBLIC-KEY.&Params({PublicKeySet}
+                               {@privateKeyAlgorithm.algorithm})
+                               OPTIONAL,
+  ...
+}
+~~~
+
+When storing an X-Wing decapsulation key in a OneAsymmetricKey,
+the privateKey OCTET STRING contains the raw octet string encoding
+the X-Wing decapsulation key.
+
+The id-XWing identifier MUST be used as the algorithm field in
+the OneAsymmetricKey to identify an X-Wing decapsulation key.
+
+The publicKey component MUST be absent.
+
 # Security Considerations {#secc}
 
 Informally, X-Wing is secure if SHA3 is secure, and either X25519 is
@@ -653,6 +735,8 @@ TODO acknowledge.
 - Fix several typos.
 
 - Change HPKE/TLS codepoint requests to the memorable 25519 + 203.
+
+- Add instruction for use in X.509. #21
 
 ## Since draft-connolly-cfrg-xwing-kem-04
 
