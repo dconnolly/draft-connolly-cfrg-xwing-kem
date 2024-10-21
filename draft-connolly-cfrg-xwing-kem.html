@@ -1214,6 +1214,17 @@ ML-KEM-768.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
                 <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-use-in-tls-13" class="internal xref">Use in TLS 1.3</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-use-in-x509-public-key-infr" class="internal xref">Use in X.509 Public Key Infrastructure</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8.2.1">
+                    <p id="section-toc.1-1.5.2.8.2.1.1"><a href="#section-5.8.1" class="auto internal xref">5.8.1</a>.  <a href="#name-certificate" class="internal xref">Certificate</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8.2.2">
+                    <p id="section-toc.1-1.5.2.8.2.2.1"><a href="#section-5.8.2" class="auto internal xref">5.8.2</a>.  <a href="#name-private-key" class="internal xref">Private key</a></p>
+</li>
+                </ul>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
@@ -1816,6 +1827,97 @@ the X-Wing ciphertext.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
 abort with an illegal_parameter alert.<a href="#section-5.7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="use-in-x509-public-key-infrastructure">
+<section id="section-5.8">
+        <h3 id="name-use-in-x509-public-key-infr">
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-use-in-x509-public-key-infr" class="section-name selfRef">Use in X.509 Public Key Infrastructure</a>
+        </h3>
+<p id="section-5.8-1">We use the OID 1.3.6.1.4.1.62253.25722 to identify X-Wing keys
+as described below. In ASN.1 notation:<a href="#section-5.8-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8-2">
+<pre>
+id-XWing OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)
+        dod(6) internet(1) private(4) enterprise(1) 62253 25722 }
+</pre><a href="#section-5.8-2" class="pilcrow">¶</a>
+</div>
+<div id="certificate">
+<section id="section-5.8.1">
+          <h4 id="name-certificate">
+<a href="#section-5.8.1" class="section-number selfRef">5.8.1. </a><a href="#name-certificate" class="section-name selfRef">Certificate</a>
+          </h4>
+<p id="section-5.8.1-1">In a X.509 certificate, the subjectPublicKeyInfo field
+has the SubjectPublicKeyInfo type, which has the following ASN.1 syntax.<a href="#section-5.8.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8.1-2">
+<pre>
+SubjectPublicKeyInfo  ::=  SEQUENCE  {
+      algorithm         AlgorithmIdentifier,
+      subjectPublicKey  BIT STRING
+  }
+
+AlgorithmIdentifier{ALGORITHM-TYPE, ALGORITHM-TYPE:AlgorithmSet} ::=
+  SEQUENCE {
+    algorithm   ALGORITHM-TYPE."&amp;"id({AlgorithmSet}),
+    parameters  ALGORITHM-TYPE.
+                  "&amp;"Params({AlgorithmSet}{@algorithm}) OPTIONAL
+  }
+</pre><a href="#section-5.8.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.8.1-3">An X-Wing encapsulation key <span class="bcp14">MUST</span> be encoded directly
+using the ASN.1 type XWingPublicKey.<a href="#section-5.8.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8.1-4">
+<pre>
+XWingPublicKey ::= OCTET STRING
+</pre><a href="#section-5.8.1-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.8.1-5">The X-Wing encapsulation key is mapped to a subjectPublicKey (a
+value of type BIT STRING) as follows: the most significant bit of
+the OCTET STRING value becomes the most significant bit of the BIT
+STRING value, and so on; the least significant bit of the OCTET
+STRING becomes the least significant bit of the BIT STRING.<a href="#section-5.8.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.8.1-6">The id-XWing identifier <span class="bcp14">MUST</span> be used as the algorithm field in
+the SubjectPublicKeyInfo to identify an X-Wing encapsulation key.<a href="#section-5.8.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.8.1-7">The contents of the parameters component <span class="bcp14">MUST</span> be absent.<a href="#section-5.8.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="private-key">
+<section id="section-5.8.2">
+          <h4 id="name-private-key">
+<a href="#section-5.8.2" class="section-number selfRef">5.8.2. </a><a href="#name-private-key" class="section-name selfRef">Private key</a>
+          </h4>
+<p id="section-5.8.2-1">Below we replicate part of the definition of OneAsymmetricKey
+from <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>.<a href="#section-5.8.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8.2-2">
+<pre>
+OneAsymmetricKey ::= SEQUENCE {
+  version                  Version,
+  privateKeyAlgorithm      SEQUENCE {
+  algorithm                PUBLIC-KEY.&amp;id({PublicKeySet}),
+  parameters               PUBLIC-KEY.&amp;Params({PublicKeySet}
+                             {@privateKeyAlgorithm.algorithm})
+                                OPTIONAL}
+  privateKey               OCTET STRING (CONTAINING
+                             PUBLIC-KEY.&amp;PrivateKey({PublicKeySet}
+                               {@privateKeyAlgorithm.algorithm})),
+  attributes           [0] Attributes OPTIONAL,
+  ...,
+  [[2: publicKey       [1] BIT STRING (CONTAINING
+                             PUBLIC-KEY.&amp;Params({PublicKeySet}
+                               {@privateKeyAlgorithm.algorithm})
+                               OPTIONAL,
+  ...
+}
+</pre><a href="#section-5.8.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.8.2-3">When storing an X-Wing decapsulation key in a OneAsymmetricKey,
+the privateKey OCTET STRING contains the raw octet string encoding
+the X-Wing decapsulation key.<a href="#section-5.8.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.8.2-4">The id-XWing identifier <span class="bcp14">MUST</span> be used as the algorithm field in
+the OneAsymmetricKey to identify an X-Wing decapsulation key.<a href="#section-5.8.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.8.2-5">The publicKey component <span class="bcp14">MUST</span> be absent.<a href="#section-5.8.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="secc">
@@ -1981,6 +2083,10 @@ in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8447bi
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5958">[RFC5958]</dt>
+        <dd>
+<span class="refAuthor">Turner, S.</span>, <span class="refTitle">"Asymmetric Key Packages"</span>, <span class="seriesInfo">RFC 5958</span>, <span class="seriesInfo">DOI 10.17487/RFC5958</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5958">https://www.rfc-editor.org/rfc/rfc5958</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
       <dd>
@@ -2843,6 +2949,9 @@ final version of this document.<a href="#appendix-E-1.1.1" class="pilcrow">¶</a
 </li>
           <li class="normal" id="appendix-E.1-1.2">
             <p id="appendix-E.1-1.2.1">Change HPKE/TLS codepoint requests to the memorable 25519 + 203.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.3">
+            <p id="appendix-E.1-1.3.1">Add instruction for use in X.509. #21<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
