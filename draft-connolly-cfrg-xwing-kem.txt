@@ -106,14 +106,15 @@ Table of Contents
      B.3.  mlkem.py
    Appendix C.  Test vectors # TODO: replace with test vectors that
            re-use ML-KEM, X25519 values
-   Appendix D.  Acknowledgments
-   Appendix E.  Change log
-     E.1.  Since draft-connolly-cfrg-xwing-kem-05
-     E.2.  Since draft-connolly-cfrg-xwing-kem-04
-     E.3.  Since draft-connolly-cfrg-xwing-kem-03
-     E.4.  Since draft-connolly-cfrg-xwing-kem-02
-     E.5.  Since draft-connolly-cfrg-xwing-kem-01
-     E.6.  Since draft-connolly-cfrg-xwing-kem-00
+   Appendix D.  Example of use in X.509
+   Appendix E.  Acknowledgments
+   Appendix F.  Change log
+     F.1.  Since draft-connolly-cfrg-xwing-kem-05
+     F.2.  Since draft-connolly-cfrg-xwing-kem-04
+     F.3.  Since draft-connolly-cfrg-xwing-kem-03
+     F.4.  Since draft-connolly-cfrg-xwing-kem-02
+     F.5.  Since draft-connolly-cfrg-xwing-kem-01
+     F.6.  Since draft-connolly-cfrg-xwing-kem-00
    Authors' Addresses
 
 1.  Introduction
@@ -1463,16 +1464,55 @@ ct
   61137334
 ss     953f7f4e8c5b5049bdc771d1dffada0dd961477d1a2ae0988baa7ea6898d893f
 
-Appendix D.  Acknowledgments
+Appendix D.  Example of use in X.509
+
+   The following are the encodings of the X-Wing keypair with private
+   key 0001…1f.
+
+   -----BEGIN X-WING PRIVATE KEY-----
+   MDQCAQAwDQYLKwYBBAGD5i2ByHoEIAABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZ
+   GhscHR4f
+   -----END X-WING PRIVATE KEY-----
+
+   -----BEGIN PUBLIC KEY-----
+   MIIE1DANBgsrBgEEAYPmLYHIegOCBMEAb1QJigoOZBFGYUtpYLpg2GA9YvRH+atJ
+   m0e9aQbMQLBh2GNKPoiQbyhJWOdEHKbHJcu5cJW3ZxpGK2aByeZYC7yNYLFJ+mAm
+   EEOvu6UvIFpgKDhIUVlq3zcavqmNM0c4PSu2c0OPZ4NhK/hwFPe5Gol0AmU0XfZ5
+   NARz0cTBdohuXim48Fi7fHNTFmhs/1w764wmHLAJcKacGvzFS5TLhuHOY7pjbjlc
+   pFEB4hx70EwxPqGa8kFB79KtREFqJbpPZZEO99iAnDCT8EqvAOPNluNcSqPIAsGK
+   1vOdpLS42YyL15Atg6B7pFOWZ0pgJDyrk+gP2bHId3N2qcwNb6EV4mOTgLnGvnhI
+   vRNYjGRwOgU10ZoPgWM6l2oKEFtm7ihdD9JV6CwDMZJfQ4O278dh72CZI1oLmHJj
+   WKqdAbi4llGfkhR0u3wUuyIlK1wvENQSRsmyPnZEhJNn9UGhX2O8koo5u3vHPwe2
+   ZcSWu2VYyPRUiacuxLrNNOnFlMM4cbcj8DSV6ItDkasm5DBD3rYRezkZ5FxMGxar
+   KOR93XI2Y4VHZhkvwYBspwq7eGy9swky5oyKNwvPsHmDoBLDJmuT76YmV/S4ODdM
+   sLuV4OwGVBsHZdmc8VO8a5YTXKeApVs2R3ieMZFeRig8+ce7boRT+2aCEFFB8dwN
+   ANhe7XA7bGyWH3nIRSdrQkiUnAZ4LlE+spkbldlgQuOMvto1JEmytQhOvaUiamIG
+   QAeJEwowlkSYSLYp/upKLCp0PEoN3Jyz89Z2/FY3MbJsShpm3IRZFwBW1XaX8UQ7
+   gamjRBK7e/BfMydXWlkR3TAdYFOGfzwwgHEfG/EVh7C7KYQnayaF53ViEOSz+JVT
+   hCMeVYxvUQyR4PxWtdGIX/KUnpWka8G+4fpx9QJ+EMRDsOkdD9dED0Z6JyISEuiP
+   XGumQpbK4NIHv8YPiMfPtcRaoYOdGMs3xFhD5UJqSpDIArZCj5U8NZxKwGA0UvrA
+   tzYeL9NdzIhakhRdT8oBWPG31wtLzRGOSipBVEON8xDESpobmepBWQcmeoiwYkJB
+   V5wXIvRu1hwuPspUXJlwUXF1OZuADbJdo5WT0GSQ1xQsAOiNLbBH6YmL23rLftkH
+   9uMEFswN5UokLAohJjAvXVTIW8Zqwvg8eXlFtQZ8qkK9LgwZypdQblB6sKXJ9WM3
+   CEmcGfJK7FE705A6XXO27EmR98cuuZHBw3iJgFyx6jigzAIXayfFjWOM5aMmaEV8
+   +bm+AnygIUBXlxcl1UEC6JlnFusq2CNFO2BbhVNwsbIbOTLN7UFgqplzx+uuWsR2
+   TZTPfMlQbwd7rXMBLbtKyBQKOHRkEuszyVFFliBfcHY1hiIX2bYJGMYmjZNEkVuE
+   eiR2waJw8VSlyEI0FlrPyGk5hwLOqemgfnsOmeqb3LeEH+nA+iXIM4CSVho+3dxw
+   AfR4rWV4GmAkqtFl2baXmtrESKRGL1ZGhVJ/diQ0/ppCWoRDe0VzkuyoDJE1BhUe
+   OhMjnzQvynZVtuquhFoiHOs+Z/VjnGGT9v3u9X45m4CLfzqitXQKre2QFj3F13XJ
+   +vfx+9B12rNE6dfRRmRygfu6ezxWyv1YM7epMOxCBufDptd2T+gdeg==
+   -----END PUBLIC KEY-----
+
+Appendix E.  Acknowledgments
 
    TODO acknowledge.
 
-Appendix E.  Change log
+Appendix F.  Change log
 
       *RFC Editor's Note:* Please remove this section prior to
       publication of a final version of this document.
 
-E.1.  Since draft-connolly-cfrg-xwing-kem-05
+F.1.  Since draft-connolly-cfrg-xwing-kem-05
 
    *  Fix several typos.
 
@@ -1480,7 +1520,7 @@ E.1.  Since draft-connolly-cfrg-xwing-kem-05
 
    *  Add instruction for use in X.509. #21
 
-E.2.  Since draft-connolly-cfrg-xwing-kem-04
+F.2.  Since draft-connolly-cfrg-xwing-kem-04
 
    *  Note that ML-KEM decapsulation key check is not required.
 
@@ -1501,14 +1541,14 @@ E.2.  Since draft-connolly-cfrg-xwing-kem-04
    *  Don't mark TLS entry as recommended before it has been through the
       IETF consensus process.  (Obviously the authors recommend X-Wing.)
 
-E.3.  Since draft-connolly-cfrg-xwing-kem-03
+F.3.  Since draft-connolly-cfrg-xwing-kem-03
 
    *  Mandate ML-KEM encapsulation key check, and stipulate effect on
       TLS and HPKE integration.
 
    *  Add provisional TLS codepoint.  (Not assigned, yet.)
 
-E.4.  Since draft-connolly-cfrg-xwing-kem-02
+F.4.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Use seed as private key.
 
@@ -1516,7 +1556,7 @@ E.4.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Expand on binding properties.
 
-E.5.  Since draft-connolly-cfrg-xwing-kem-01
+F.5.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Add list of implementations.
 
@@ -1526,7 +1566,7 @@ E.5.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Correct definition of ML-KEM-768.KeyGenDerand(seed).
 
-E.6.  Since draft-connolly-cfrg-xwing-kem-00
+F.6.  Since draft-connolly-cfrg-xwing-kem-00
 
    *  A copy of the X25519 public key is now included in the X-Wing
       decapsulation (private) key, so that decapsulation does not
