@@ -721,6 +721,17 @@ it should not be deployed as-is, as it leaks the private key by its runtime.
 {::include ./spec/test-vectors.txt}
 ~~~~
 
+# Example of use in X.509
+
+The following are the encodings of the X-Wing keypair with private key  `0001…1f`.
+
+~~~~
+{::include ./x509/xwing.priv}
+~~~~
+~~~~
+{::include ./x509/xwing.pub}
+~~~~
+
 # Acknowledgments
 
 TODO acknowledge.
