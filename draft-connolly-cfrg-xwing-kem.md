@@ -543,7 +543,7 @@ This document requests/registers a new entry to the "HPKE KEM Identifiers"
 registry.
 
  Value:
- : 26287 (0x66af, please)
+ : 25722 = 25519 + 203 = 0x647a (please)
 
  KEM:
  : X-Wing
@@ -571,7 +571,7 @@ Named Group (or Supported Group) registry, according to the procedures
 in {{Section 6 of TLSIANA}}.
 
  Value:
- : 26287 (0x66af, please)
+ : 25722 = 25519 + 203 = 0x647a (please)
 
  Description:
  : X-Wing
@@ -651,6 +651,8 @@ TODO acknowledge.
 ## Since draft-connolly-cfrg-xwing-kem-05
 
 - Fix several typos.
+
+- Change HPKE/TLS codepoint requests to the memorable 25519 + 203.
 
 ## Since draft-connolly-cfrg-xwing-kem-04
 
