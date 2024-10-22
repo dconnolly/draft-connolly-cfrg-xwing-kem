@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-20T00:10:14.181476+00:00",
+  "timestamp": "2024-10-22T00:09:14.280355+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -124,15 +124,15 @@
       "id": "I_kwDOKq5sns5_6MbS",
       "title": "ML-KEM-768.KeyGenDerand definition disagrees with Appendix B and C",
       "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "FiloSottile",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Section 4 defines `ML-KEM-768.KeyGenDerand` as\r\n\r\n> seed[0:32] is used for z in line 1 of algorithm 15 from [[MLKEM](https://dconnolly.github.io/draft-connolly-cfrg-xwing-kem/draft-connolly-cfrg-xwing-kem.html#MLKEM)] and seed[32:64] is used for d in line 1 of algorithm 12.\r\n\r\nHowever, the implementation in Appendix B.3 does the opposite\r\n\r\n```\r\nz = seed[32:]\r\npk, sk2 = InnerKeyGen(seed[:32], params)\r\n```\r\n\r\nand the test vector in Appendix C passes when using seed[0:32] for d and seed[32:64] for z.",
       "createdAt": "2024-02-21T06:49:57Z",
-      "updatedAt": "2024-03-26T19:01:23Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-20T21:45:00Z",
+      "closedAt": "2024-10-20T21:45:00Z",
       "comments": [
         {
           "author": "bwesterb",
@@ -193,7 +193,7 @@
       "labels": [],
       "body": "KeyGen() outputs a private key that is the concatenation of ML-KEM private key, X25519 private key, and X25519 public key. Since the private key never has to go over the wire, I wonder (a) why the spec is prescriptive about how the private key is encoded and (b) why the X25519 public key is redundantly included in the X-Wing private key. (One can recompute it as needed.) \r\n\r\nCan we relax the spec to only specify that the actual ML-KEM and X25519 secrets are output from KeyGen, and then perhaps recommend that implementations also precompute and store the X25519 public key if desired?",
       "createdAt": "2024-03-26T13:53:18Z",
-      "updatedAt": "2024-08-13T17:17:01Z",
+      "updatedAt": "2024-10-20T21:45:16Z",
       "closedAt": null,
       "comments": [
         {
@@ -209,6 +209,13 @@
           "body": "See https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/19",
           "createdAt": "2024-08-13T17:17:00Z",
           "updatedAt": "2024-08-13T17:17:00Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we can close this out?",
+          "createdAt": "2024-10-20T21:45:15Z",
+          "updatedAt": "2024-10-20T21:45:15Z"
         }
       ]
     },
@@ -293,9 +300,17 @@
       "labels": [],
       "body": "Hi folks,\r\n\r\nAfter doing some reading, I found X-Wing is exactly what I was looking for.\r\nhttps://datatracker.ietf.org/doc/html/draft-connolly-cfrg-xwing-kem-04\r\n\r\nI have implemented it here:\r\nhttps://github.com/codespree/quantcrypt/blob/main/src/kem/xwing.rs\r\n\r\nIts use in HPKE is also clearly evident from the draft as are the fixed sized outputs.\r\n\r\nHowever, in my use-case, I also need to have the public key signed (i.e. have a certificate) containing the X-Wing public key.\r\n\r\nThe draft doesn't define use in Internet X.509 Public Key Infrastructure, however, I think this could be a good addition to the draft.\r\n\r\nAt the very least, all that is required is a top level Algorithm identifier OID for X-Wing.\r\n\r\nThat would allow putting the public key in an ASN.1 structure:\r\nPublicKeyInfo ::= SEQUENCE {\r\n     algorithm   AlgorithmIdentifier,\r\n     PublicKey   BIT STRING\r\n}\r\nwhich could go inside a certificate\r\n\r\nFor the private key, we could use the OneAsymmetricKey (OAK) structure as per normal.\r\n\r\nThis would provide a means of having a signed encapsulation key for the X-Wing KEM which is included in a certificate.\r\n\r\nThen, the KEM could be used in HPKE as per normal, but with a certificate available for the encapsulating key to ascertain its authenticity.\r\n\r\nDo you think the assignment of the OID and a brief note on X-Wing's use in Internet X.509 Public Key Infrastructure would be something the authors would consider?\r\n\r\n@dconnolly @bwesterb @raphaelrobert ",
       "createdAt": "2024-10-19T11:01:14Z",
-      "updatedAt": "2024-10-19T11:04:14Z",
+      "updatedAt": "2024-10-20T18:23:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the suggestion. We'll assign an OID and add guidance on how to use in X509 certificates (similar [to for ML-KEM](https://datatracker.ietf.org/doc/draft-ietf-lamps-kyber-certificates/)), when we've frozen X-Wing. I hope that won't be long anymore. By the way, we just made two [backwards incompatible changes](https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/commit/5cb311dc7c7761c2b82d2f4a0037da2c2c7af8f3) to the X-Wing specification.",
+          "createdAt": "2024-10-20T18:23:23Z",
+          "updatedAt": "2024-10-20T18:23:23Z"
+        }
+      ]
     }
   ],
   "pulls": [
