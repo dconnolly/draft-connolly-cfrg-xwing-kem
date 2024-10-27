@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-24T00:09:14.359919+00:00",
+  "timestamp": "2024-10-27T00:09:57.043498+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -309,6 +309,51 @@
           "body": "Thanks for the suggestion. We'll assign an OID and add guidance on how to use in X509 certificates (similar [to for ML-KEM](https://datatracker.ietf.org/doc/draft-ietf-lamps-kyber-certificates/)), when we've frozen X-Wing. I hope that won't be long anymore. By the way, we just made two [backwards incompatible changes](https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/commit/5cb311dc7c7761c2b82d2f4a0037da2c2c7af8f3) to the X-Wing specification.",
           "createdAt": "2024-10-20T18:23:23Z",
           "updatedAt": "2024-10-20T18:23:23Z"
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "I_kwDOKq5sns6b2S9B",
+      "title": "Consider a standardized domain separator string ",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/22",
+      "state": "CLOSED",
+      "author": "codespree",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I know the X-Wing ASCII art label is very cute (I like it too!)\r\n\r\nBut the composite KEM drafts use the hex of DER encoding of the OID as the dom-sep:\r\nhttps://github.com/codespree/quantcrypt/blob/cef13f4c40b6da1bf2f2633e6e2bf28bca29994a/src/asn1/asn_util.rs#L25\r\n\r\nPerhaps, in the interest of compatibility, this might be a good approach?\r\n\r\nhttps://www.ietf.org/archive/id/draft-ietf-lamps-pq-composite-kem-05.html#name-domain-separators\r\n\r\nFor you to decide upon.",
+      "createdAt": "2024-10-25T17:22:12Z",
+      "updatedAt": "2024-10-26T09:36:07Z",
+      "closedAt": "2024-10-25T20:51:05Z",
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It\u2019s not good for performance: it would overflow the blocksize and thus add another keccak call. Also we can\u2019t change xwing now that we have assigned codepoints.",
+          "createdAt": "2024-10-25T20:32:48Z",
+          "updatedAt": "2024-10-25T20:33:14Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "Ok.",
+          "createdAt": "2024-10-25T20:51:05Z",
+          "updatedAt": "2024-10-25T20:51:16Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "By the way, I updated my lib based on your last commit and comments:\r\nhttps://github.com/codespree/quantcrypt/commit/ab05443b8964f72729e12ab1da466ca95cdc0a75\r\nand moved to `Shake256` and updated the vectors in tests.",
+          "createdAt": "2024-10-25T21:48:14Z",
+          "updatedAt": "2024-10-25T21:48:14Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Great!Met een vriendelijke groet,\u00a0 \u00a0 \u00a0 \u00a0 BasOn 25 Oct 2024, at 23:48, Varun Chatterji ***@***.***> wrote:\ufeff\r\nBy the way, I updated my lib based on your last commit and comments:\r\n***@***.***\r\nand moved to Shake256 and updated the vectors in tests.\r\n\r\n\u2014Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you commented.Message ID: ***@***.***>",
+          "createdAt": "2024-10-26T09:36:07Z",
+          "updatedAt": "2024-10-26T09:36:07Z"
         }
       ]
     }
