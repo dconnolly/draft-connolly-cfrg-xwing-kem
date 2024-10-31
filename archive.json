@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-29T00:09:23.365528+00:00",
+  "timestamp": "2024-10-31T00:09:21.944351+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -354,6 +354,51 @@
           "body": "Great!Met een vriendelijke groet,\u00a0 \u00a0 \u00a0 \u00a0 BasOn 25 Oct 2024, at 23:48, Varun Chatterji ***@***.***> wrote:\ufeff\r\nBy the way, I updated my lib based on your last commit and comments:\r\n***@***.***\r\nand moved to Shake256 and updated the vectors in tests.\r\n\r\n\u2014Reply to this email directly, view it on GitHub, or unsubscribe.You are receiving this because you commented.Message ID: ***@***.***>",
           "createdAt": "2024-10-26T09:36:07Z",
           "updatedAt": "2024-10-26T09:36:07Z"
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOKq5sns6cOmay",
+      "title": "Discussion: Use in symmetric encryption (section in draft)",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/23",
+      "state": "OPEN",
+      "author": "codespree",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Encap results in a 1120 byte `ct` and a 32 byte `ss`\r\n\r\nWhy not use `ss` as a key for AES 256?\r\n```\r\n+-------------------------------+----------+----------+-----------------+\r\n| 1120 Bytes                    | 16 Bytes | 16 Bytes | == data size    |\r\n+-------------------------------+----------+----------+-----------------+\r\n| Encap ct                      | Nonce/IV | Tag/MAC  | Encrypted data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n| ct                            | nonce    | tag      | encrypted_data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n|           X-Wing KEM          |              AES-256-GCM              |\r\n+-------------------------------+---------------------------------------+\r\n```\r\n\r\nThe following example Python code demonstrates the above:\r\n```\r\nfrom cryptography.hazmat.primitives.ciphers.algorithms import AES256\r\nfrom cryptography.hazmat.primitives.ciphers import Cipher, modes\r\nimport os\r\n\r\ndef encrypt_aes256_gcm(key, plaintext):\r\n    alg = AES256(key)\r\n    # 16 byte random nonce\r\n    nonce = os.urandom(16)\r\n    mode = modes.GCM(nonce)\r\n    cipher = Cipher(alg, mode)\r\n    encryptor = cipher.encryptor()\r\n\r\n    ciphertext = encryptor.update(plaintext) + encryptor.finalize()\r\n    return nonce + encryptor.tag + ciphertext\r\n\r\ndef decrypt_aes256_gcm(key, ciphertext):\r\n    # First 16 bytes are the nonce\r\n    nonce = ciphertext[:16]\r\n    # Next 16 bytes are the tag\r\n    tag = ciphertext[16:32]\r\n    # The rest is the ciphertext\r\n    ciphertext = ciphertext[32:]\r\n    alg = AES256(key)\r\n    mode = modes.GCM(nonce, tag)\r\n    cipher = Cipher(alg, mode)\r\n    decryptor = cipher.decryptor()\r\n    return decryptor.update(ciphertext) + decryptor.finalize()\r\n\r\ndef encrypt(pk, plaintext):\r\n    (ss, ct) = kem.encap(pk)\r\n    enc = encrypt_aes256_gcm(ss, plaintext)\r\n    payload = ct + enc\r\n    return payload\r\n\r\ndef decrypt(sk, payload):\r\n    # First 1120 are KEM ct\r\n    ct = payload[:1120]\r\n    enc = payload[1120:]\r\n    ss = kem.decap(sk, ct)\r\n    return decrypt_aes256_gcm(ss, enc)\r\n```\r\n\r\nThis closely resembles ECIES:\r\nhttps://github.com/ecies/py/blob/master/DETAILS.md\r\n\r\n      ",
+      "createdAt": "2024-10-29T12:16:07Z",
+      "updatedAt": "2024-10-29T13:39:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "We could also (optionally) accept AAD bytes which could be passed through to the AES encrypt/decrypt functions.",
+          "createdAt": "2024-10-29T12:51:46Z",
+          "updatedAt": "2024-10-29T12:51:46Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You're redesigning [HPKE](https://datatracker.ietf.org/doc/rfc9180/).",
+          "createdAt": "2024-10-29T13:00:40Z",
+          "updatedAt": "2024-10-29T13:00:40Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "I want to avoid the `context` in HPKE.\r\n\r\nFurthermore, since the KEM (X-Wing) is already a fixed part of the triple, and `ss` is 32 bytes, what is the need for the variability of the (KEM, KDF, AAED) triple for simple encryption use-cases?\r\n\r\nLike you made a choice of moving to `Shake256` as a sensible default, why not make choices on sensible defaults for a simple encryption scheme like [ECIES](https://cryptobook.nakov.com/asymmetric-key-ciphers/ecies-public-key-encryption)?\r\n\r\nI would argue that I am not redesigning HPKE but supporting a more ECIES like scheme.",
+          "createdAt": "2024-10-29T13:07:55Z",
+          "updatedAt": "2024-10-29T13:18:33Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "Do you think there is anything we would lose from security considerations?\r\n\r\n`ss` is already random and the probability of the `iv` / `nonce` being the same (independently) is 1/256^16",
+          "createdAt": "2024-10-29T13:39:32Z",
+          "updatedAt": "2024-10-29T13:39:32Z"
         }
       ]
     }
