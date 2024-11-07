@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-05T00:08:55.277067+00:00",
+  "timestamp": "2024-11-07T00:09:05.957300+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -369,7 +369,7 @@
       "labels": [],
       "body": "Encap results in a 1120 byte `ct` and a 32 byte `ss`\r\n\r\nWhy not use `ss` as a key for AES 256?\r\n```\r\n+-------------------------------+----------+----------+-----------------+\r\n| 1120 Bytes                    | 16 Bytes | 16 Bytes | == data size    |\r\n+-------------------------------+----------+----------+-----------------+\r\n| Encap ct                      | Nonce/IV | Tag/MAC  | Encrypted data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n| ct                            | nonce    | tag      | encrypted_data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n|           X-Wing KEM          |              AES-256-GCM              |\r\n+-------------------------------+---------------------------------------+\r\n```\r\n\r\nThe following example Python code demonstrates the above:\r\n```\r\nfrom cryptography.hazmat.primitives.ciphers.algorithms import AES256\r\nfrom cryptography.hazmat.primitives.ciphers import Cipher, modes\r\nimport os\r\n\r\ndef encrypt_aes256_gcm(key, plaintext):\r\n    alg = AES256(key)\r\n    # 16 byte random nonce\r\n    nonce = os.urandom(16)\r\n    mode = modes.GCM(nonce)\r\n    cipher = Cipher(alg, mode)\r\n    encryptor = cipher.encryptor()\r\n\r\n    ciphertext = encryptor.update(plaintext) + encryptor.finalize()\r\n    return nonce + encryptor.tag + ciphertext\r\n\r\ndef decrypt_aes256_gcm(key, ciphertext):\r\n    # First 16 bytes are the nonce\r\n    nonce = ciphertext[:16]\r\n    # Next 16 bytes are the tag\r\n    tag = ciphertext[16:32]\r\n    # The rest is the ciphertext\r\n    ciphertext = ciphertext[32:]\r\n    alg = AES256(key)\r\n    mode = modes.GCM(nonce, tag)\r\n    cipher = Cipher(alg, mode)\r\n    decryptor = cipher.decryptor()\r\n    return decryptor.update(ciphertext) + decryptor.finalize()\r\n\r\ndef encrypt(pk, plaintext):\r\n    (ss, ct) = kem.encap(pk)\r\n    enc = encrypt_aes256_gcm(ss, plaintext)\r\n    payload = ct + enc\r\n    return payload\r\n\r\ndef decrypt(sk, payload):\r\n    # First 1120 are KEM ct\r\n    ct = payload[:1120]\r\n    enc = payload[1120:]\r\n    ss = kem.decap(sk, ct)\r\n    return decrypt_aes256_gcm(ss, enc)\r\n```\r\n\r\nThis closely resembles ECIES:\r\nhttps://github.com/ecies/py/blob/master/DETAILS.md\r\n\r\n      ",
       "createdAt": "2024-10-29T12:16:07Z",
-      "updatedAt": "2024-10-29T13:39:33Z",
+      "updatedAt": "2024-11-06T18:45:16Z",
       "closedAt": null,
       "comments": [
         {
@@ -399,6 +399,27 @@
           "body": "Do you think there is anything we would lose from security considerations?\r\n\r\n`ss` is already random and the probability of the `iv` / `nonce` being the same (independently) is 1/256^16",
           "createdAt": "2024-10-29T13:39:32Z",
           "updatedAt": "2024-10-29T13:39:32Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "Even if you would not like to include it in your draft, I would like to have your informed, cryptographic, opinion on whether a simple, stateless scheme such as what I described is Ok or not? From a practical perspective, could we have a stateless scheme that is *reasonably* secure?\r\n\r\n```\r\nIn order to avoid nonce reuse, however, this encryption must be stateful. Each of the setup procedures above produces a role-specific context object that stores the AEAD and secret export parameters. The AEAD parameters consist of:\r\n\r\nThe AEAD algorithm in use\r\nA secret key\r\nA base nonce base_nonce\r\nA sequence number (initially 0)\r\nThe secret export parameters consist of:\r\n\r\nThe HPKE ciphersuite in use and\r\nAn exporter_secret used for the secret export interface (see [Section 5.3](https://datatracker.ietf.org/doc/html/rfc9180#hpke-export))\r\nAll these parameters except the AEAD sequence number are constant. The sequence number provides nonce uniqueness: The nonce used for each encryption or decryption operation is the result of XORing base_nonce with the current sequence number, encoded as a big-endian integer of the same length as base_nonce. Implementations MAY use a sequence number that is shorter than the nonce length (padding on the left with zero), but MUST raise an error if the sequence number overflows. The AEAD algorithm produces ciphertext that is Nt bytes longer than the plaintext. Nt = 16 for AEAD algorithms defined in this document.\r\n```\r\n\r\nFrom RFC 9180.",
+          "createdAt": "2024-11-06T16:48:10Z",
+          "updatedAt": "2024-11-06T16:48:10Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "This is what ChatGPT says:\r\n```\r\nA quantum computer, using Grover's algorithm (and I'm reading up), would still need:\r\n1 / (2^(16 * 8)) ^ 1/2 operations, which is significantly faster but still infeasible with current or near-future quantum technology, given the enormous number of operations required and the current limitations in maintaining quantum coherence over that many operations.\r\n```\r\n\r\nHow hard would it be to find a nonce if the algorithm was stateless and the nonce was random?\r\n\r\nThe `ss` in the schemes is also random though `encap`.",
+          "createdAt": "2024-11-06T17:52:00Z",
+          "updatedAt": "2024-11-06T18:43:47Z"
+        },
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "What I'm looking for is a stateless and *reasonably* secure scheme.",
+          "createdAt": "2024-11-06T18:45:14Z",
+          "updatedAt": "2024-11-06T18:45:14Z"
         }
       ]
     }
