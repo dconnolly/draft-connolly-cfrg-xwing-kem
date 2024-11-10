@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-07T00:09:05.957300+00:00",
+  "timestamp": "2024-11-10T00:09:37.599130+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1511,6 +1511,93 @@
               "body": "Yeah it looks like they didn't change the algorithms or keygen sufficiently to affect this",
               "createdAt": "2024-08-13T20:42:13Z",
               "updatedAt": "2024-08-13T20:42:16Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "id": "PR_kwDOKq5sns6BZ7DY",
+      "title": "Add ASN.1 module",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/24",
+      "state": "OPEN",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Thanks-to: Russ Housley <housley@vigilsec.com>",
+      "createdAt": "2024-11-09T15:51:22Z",
+      "updatedAt": "2024-11-09T15:55:54Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "c35e8ec0c015bda2ff7716fbd34234ce94a6c18c",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "asn1",
+      "headRefOid": "14259ee95f324f6d715f096590671e89a028a2ef",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns6QkbRA",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-09T15:53:35Z",
+          "updatedAt": "2024-11-09T15:53:36Z",
+          "comments": [
+            {
+              "originalPosition": 3,
+              "body": "This is a different registry from where it's allocated for [ML-KEM](https://github.com/lamps-wg/kyber-certificates/blob/8871c86af729f39c0c098cfad408a6c849264f7f/X509-ML-KEM-2024.asn#L2). Why the difference?",
+              "createdAt": "2024-11-09T15:53:35Z",
+              "updatedAt": "2024-11-09T15:53:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6QkbTV",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-09T15:53:57Z",
+          "updatedAt": "2024-11-09T15:53:58Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Why is this commented out?",
+              "createdAt": "2024-11-09T15:53:57Z",
+              "updatedAt": "2024-11-09T15:53:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6QkbYd",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-09T15:55:54Z",
+          "updatedAt": "2024-11-09T15:55:54Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "Why is private-key mentioned here?",
+              "createdAt": "2024-11-09T15:55:54Z",
+              "updatedAt": "2024-11-09T15:55:54Z"
             }
           ]
         }
