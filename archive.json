@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-10T00:09:37.599130+00:00",
+  "timestamp": "2024-11-12T00:08:58.856092+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -369,7 +369,7 @@
       "labels": [],
       "body": "Encap results in a 1120 byte `ct` and a 32 byte `ss`\r\n\r\nWhy not use `ss` as a key for AES 256?\r\n```\r\n+-------------------------------+----------+----------+-----------------+\r\n| 1120 Bytes                    | 16 Bytes | 16 Bytes | == data size    |\r\n+-------------------------------+----------+----------+-----------------+\r\n| Encap ct                      | Nonce/IV | Tag/MAC  | Encrypted data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n| ct                            | nonce    | tag      | encrypted_data  |\r\n+-------------------------------+----------+----------+-----------------+\r\n|           X-Wing KEM          |              AES-256-GCM              |\r\n+-------------------------------+---------------------------------------+\r\n```\r\n\r\nThe following example Python code demonstrates the above:\r\n```\r\nfrom cryptography.hazmat.primitives.ciphers.algorithms import AES256\r\nfrom cryptography.hazmat.primitives.ciphers import Cipher, modes\r\nimport os\r\n\r\ndef encrypt_aes256_gcm(key, plaintext):\r\n    alg = AES256(key)\r\n    # 16 byte random nonce\r\n    nonce = os.urandom(16)\r\n    mode = modes.GCM(nonce)\r\n    cipher = Cipher(alg, mode)\r\n    encryptor = cipher.encryptor()\r\n\r\n    ciphertext = encryptor.update(plaintext) + encryptor.finalize()\r\n    return nonce + encryptor.tag + ciphertext\r\n\r\ndef decrypt_aes256_gcm(key, ciphertext):\r\n    # First 16 bytes are the nonce\r\n    nonce = ciphertext[:16]\r\n    # Next 16 bytes are the tag\r\n    tag = ciphertext[16:32]\r\n    # The rest is the ciphertext\r\n    ciphertext = ciphertext[32:]\r\n    alg = AES256(key)\r\n    mode = modes.GCM(nonce, tag)\r\n    cipher = Cipher(alg, mode)\r\n    decryptor = cipher.decryptor()\r\n    return decryptor.update(ciphertext) + decryptor.finalize()\r\n\r\ndef encrypt(pk, plaintext):\r\n    (ss, ct) = kem.encap(pk)\r\n    enc = encrypt_aes256_gcm(ss, plaintext)\r\n    payload = ct + enc\r\n    return payload\r\n\r\ndef decrypt(sk, payload):\r\n    # First 1120 are KEM ct\r\n    ct = payload[:1120]\r\n    enc = payload[1120:]\r\n    ss = kem.decap(sk, ct)\r\n    return decrypt_aes256_gcm(ss, enc)\r\n```\r\n\r\nThis closely resembles ECIES:\r\nhttps://github.com/ecies/py/blob/master/DETAILS.md\r\n\r\n      ",
       "createdAt": "2024-10-29T12:16:07Z",
-      "updatedAt": "2024-11-06T18:45:16Z",
+      "updatedAt": "2024-11-11T14:45:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -420,6 +420,13 @@
           "body": "What I'm looking for is a stateless and *reasonably* secure scheme.",
           "createdAt": "2024-11-06T18:45:14Z",
           "updatedAt": "2024-11-06T18:45:14Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\r\n> How hard would it be to find a nonce if the algorithm was stateless and the nonce was random?\r\n\r\nhttps://datatracker.ietf.org/doc/draft-irtf-cfrg-aead-limits/",
+          "createdAt": "2024-11-11T14:45:34Z",
+          "updatedAt": "2024-11-11T14:45:34Z"
         }
       ]
     }
