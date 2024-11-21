@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-19T00:09:43.910530+00:00",
+  "timestamp": "2024-11-21T00:09:42.233691+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1542,7 +1542,7 @@
       "labels": [],
       "body": "Thanks-to: Russ Housley <housley@vigilsec.com>",
       "createdAt": "2024-11-09T15:51:22Z",
-      "updatedAt": "2024-11-09T15:55:54Z",
+      "updatedAt": "2024-11-20T19:04:21Z",
       "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
       "baseRefName": "main",
       "baseRefOid": "c35e8ec0c015bda2ff7716fbd34234ce94a6c18c",
@@ -1612,6 +1612,66 @@
               "body": "Why is private-key mentioned here?",
               "createdAt": "2024-11-09T15:55:54Z",
               "updatedAt": "2024-11-09T15:55:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6R_-sc",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "russhousley",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-20T19:01:54Z",
+          "updatedAt": "2024-11-20T19:01:54Z",
+          "comments": [
+            {
+              "originalPosition": 3,
+              "body": "We usually allocate the module OIDs for CMS in 1.2.840.113549.1.9.16.0, and we allocate the modules OIDs for PKIX-related things in 1.3.6.1.5.5.7.0.  Either way, you get a unique value.",
+              "createdAt": "2024-11-20T19:01:54Z",
+              "updatedAt": "2024-11-20T19:01:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6R__G_",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "russhousley",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-20T19:02:43Z",
+          "updatedAt": "2024-11-20T19:02:44Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Older ASN.1 compilers do not handle it, and it is the default behaviour.",
+              "createdAt": "2024-11-20T19:02:44Z",
+              "updatedAt": "2024-11-20T19:02:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKq5sns6R__09",
+          "commit": {
+            "abbreviatedOid": "14259ee"
+          },
+          "author": "russhousley",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-20T19:04:21Z",
+          "updatedAt": "2024-11-20T19:04:21Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "It is in a comment to say that we are not defining an ASN.1 type for private keys.  When one is defined, it impacts the way that PKCS#8 and PKCS#12 handle the private key.",
+              "createdAt": "2024-11-20T19:04:21Z",
+              "updatedAt": "2024-11-20T19:04:21Z"
             }
           ]
         }
