@@ -42,6 +42,17 @@ author:
 
 normative:
   RFC2119:
+  X680:
+    target: https://www.itu.int/rec/T-REC-X.680
+    title: >
+      Information Technology -- Abstract Syntax Notation One (ASN.1):
+      Specification of basic notation
+    date: 2021-02
+    author:
+    -  org: ITU-T
+    seriesinfo:
+      ITU-T Recommendation: X.680
+      ISO/IEC: 8824-1:2021
 
 informative:
   I-D.driscoll-pqt-hybrid-terminology:
@@ -670,6 +681,10 @@ in {{Section 6 of TLSIANA}}.
  Comment:
  : PQ/T hybrid of X25519 and ML-KEM-768
 
+Finally, for the ASN.1 module in {asn1}, IANA is requested to assign
+an object identifier (OID) for the module identifier (TBD) with a
+Description of "id-mod-XWing-kem-2024".
+
 --- back
 
 # Implementations
@@ -732,6 +747,16 @@ The following are the encodings of the X-Wing keypair with private key  `0001…
 {::include ./x509/xwing.pub}
 ~~~~
 
+# ASN.1 Module {#asn1}
+
+This appendix includes the ASN.1 module {{X680}} for X-Wing.
+
+~~~
+<CODE BEGINS>
+{::include X509-XWING-2024.asn}
+<CODE ENDS>
+~~~
+
 # Acknowledgments
 
 TODO acknowledge.
@@ -740,6 +765,10 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-06
+
+- Add asn.1 module.
 
 ## Since draft-connolly-cfrg-xwing-kem-05
 

@@ -1,0 +1,58 @@
+XWing-KEM-2024
+   { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+     pkcs-9(9) smime(16) modules(0) id-mod-XWing-kem-2024(TBD) }
+
+DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+-- EXPORTS ALL;
+
+IMPORTS
+
+  KEM-ALGORITHM
+    FROM KEMAlgorithmInformation-2023  -- [I-D.housley-lamps-cms-kemri]
+       { iso(1) identified-organization(3) dod(6) internet(1)
+         security(5) mechanisms(5) pkix(7) id-mod(0)
+         id-mod-kemAlgorithmInformation-2023(109) }
+
+  AlgorithmIdentifier{}, PUBLIC-KEY, SMIME-CAPS
+    FROM AlgorithmInformation-2009  -- [RFC5912]
+      { iso(1) identified-organization(3) dod(6) internet(1)
+        security(5) mechanisms(5) pkix(7) id-mod(0)
+        id-mod-algorithmInformation-02(58) } ;
+
+
+-- XWing KEM Algorithm
+
+id-XWing OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)
+           dod(6) internet(1) private(4) enterprise(1) 62253 25722 }
+
+XWingPublicKey ::= OCTET STRING
+
+kema-XWing KEM-ALGORITHM ::= {
+   IDENTIFIER id-XWing
+   PARAMS ARE absent
+   PUBLIC-KEYS { pk-XWing }
+   UKM ARE optional
+   SMIME-CAPS { IDENTIFIED BY id-XWing } }
+
+pk-XWing PUBLIC-KEY ::= {
+  IDENTIFIER id-XWing
+  -- KEY no ASN.1 wrapping --
+  PARAMS ARE absent
+  -- PRIVATE-KEY no ASN.1 wrapping --
+  CERT-KEY-USAGE {keyEncipherment} }
+
+
+-- Updates for the KEM-ALGORITHM Set from rfc5990bis
+
+KeyEncapsulationMechanism ::=
+   AlgorithmIdentifier { KEM-ALGORITHM, {KEMAlgorithms} }
+
+KEMAlgorithms KEM-ALGORITHM ::= { kema-XWing, ... }
+
+
+-- Updates for the SMIME-CAPS Set from RFC 5911
+
+SMimeCapsSet SMIME-CAPS ::= {kema-XWing.&smimeCaps, ... }
+
+END
