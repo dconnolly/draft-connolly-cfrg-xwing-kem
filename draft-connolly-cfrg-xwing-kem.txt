@@ -107,14 +107,16 @@ Table of Contents
    Appendix C.  Test vectors # TODO: replace with test vectors that
            re-use ML-KEM, X25519 values
    Appendix D.  Example of use in X.509
-   Appendix E.  Acknowledgments
-   Appendix F.  Change log
-     F.1.  Since draft-connolly-cfrg-xwing-kem-05
-     F.2.  Since draft-connolly-cfrg-xwing-kem-04
-     F.3.  Since draft-connolly-cfrg-xwing-kem-03
-     F.4.  Since draft-connolly-cfrg-xwing-kem-02
-     F.5.  Since draft-connolly-cfrg-xwing-kem-01
-     F.6.  Since draft-connolly-cfrg-xwing-kem-00
+   Appendix E.  ASN.1 Module
+   Appendix F.  Acknowledgments
+   Appendix G.  Change log
+     G.1.  Since draft-connolly-cfrg-xwing-kem-06
+     G.2.  Since draft-connolly-cfrg-xwing-kem-05
+     G.3.  Since draft-connolly-cfrg-xwing-kem-04
+     G.4.  Since draft-connolly-cfrg-xwing-kem-03
+     G.5.  Since draft-connolly-cfrg-xwing-kem-02
+     G.6.  Since draft-connolly-cfrg-xwing-kem-01
+     G.7.  Since draft-connolly-cfrg-xwing-kem-00
    Authors' Addresses
 
 1.  Introduction
@@ -663,6 +665,10 @@ def GenerateKeyPair():
 
    Comment:  PQ/T hybrid of X25519 and ML-KEM-768
 
+   Finally, for the ASN.1 module in {asn1}, IANA is requested to assign
+   an object identifier (OID) for the module identifier (TBD) with a
+   Description of "id-mod-XWing-kem-2024".
+
 8.  References
 
 8.1.  Normative References
@@ -679,6 +685,11 @@ def GenerateKeyPair():
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [X680]     ITU-T, "Information Technology -- Abstract Syntax Notation
+              One (ASN.1): Specification of basic notation", ITU-T
+              Recommendation X.680, ISO/IEC 8824-1:2021, February 2021,
+              <https://www.itu.int/rec/T-REC-X.680>.
 
 8.2.  Informative References
 
@@ -737,9 +748,9 @@ def GenerateKeyPair():
 
    [TLSIANA]  Salowey, J. A. and S. Turner, "IANA Registry Updates for
               TLS and DTLS", Work in Progress, Internet-Draft, draft-
-              ietf-tls-rfc8447bis-09, 30 April 2024,
+              ietf-tls-rfc8447bis-10, 3 November 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              rfc8447bis-09>.
+              rfc8447bis-10>.
 
    [XYBERHPKE]
               Westerbaan, B. and C. A. Wood, "X25519Kyber768Draft00
@@ -1503,16 +1514,85 @@ Appendix D.  Example of use in X.509
    +vfx+9B12rNE6dfRRmRygfu6ezxWyv1YM7epMOxCBufDptd2T+gdeg==
    -----END PUBLIC KEY-----
 
-Appendix E.  Acknowledgments
+Appendix E.  ASN.1 Module
+
+   This appendix includes the ASN.1 module [X680] for X-Wing.
+
+   <CODE BEGINS>
+   XWing-KEM-2024
+      { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+        pkcs-9(9) smime(16) modules(0) id-mod-XWing-kem-2024(TBD) }
+
+   DEFINITIONS IMPLICIT TAGS ::= BEGIN
+
+   -- EXPORTS ALL;
+
+   IMPORTS
+
+     KEM-ALGORITHM
+       FROM KEMAlgorithmInformation-2023  -- [I-D.housley-lamps-cms-kemri]
+          { iso(1) identified-organization(3) dod(6) internet(1)
+            security(5) mechanisms(5) pkix(7) id-mod(0)
+            id-mod-kemAlgorithmInformation-2023(109) }
+
+     AlgorithmIdentifier{}, PUBLIC-KEY, SMIME-CAPS
+       FROM AlgorithmInformation-2009  -- [RFC5912]
+         { iso(1) identified-organization(3) dod(6) internet(1)
+           security(5) mechanisms(5) pkix(7) id-mod(0)
+           id-mod-algorithmInformation-02(58) } ;
+
+
+   -- XWing KEM Algorithm
+
+   id-XWing OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)
+              dod(6) internet(1) private(4) enterprise(1) 62253 25722 }
+
+   XWingPublicKey ::= OCTET STRING
+
+   kema-XWing KEM-ALGORITHM ::= {
+      IDENTIFIER id-XWing
+      PARAMS ARE absent
+      PUBLIC-KEYS { pk-XWing }
+      UKM ARE optional
+      SMIME-CAPS { IDENTIFIED BY id-XWing } }
+
+   pk-XWing PUBLIC-KEY ::= {
+     IDENTIFIER id-XWing
+     -- KEY no ASN.1 wrapping --
+     PARAMS ARE absent
+     -- PRIVATE-KEY no ASN.1 wrapping --
+     CERT-KEY-USAGE {keyEncipherment} }
+
+
+   -- Updates for the KEM-ALGORITHM Set from rfc5990bis
+
+   KeyEncapsulationMechanism ::=
+      AlgorithmIdentifier { KEM-ALGORITHM, {KEMAlgorithms} }
+
+   KEMAlgorithms KEM-ALGORITHM ::= { kema-XWing, ... }
+
+
+   -- Updates for the SMIME-CAPS Set from RFC 5911
+
+   SMimeCapsSet SMIME-CAPS ::= {kema-XWing.&smimeCaps, ... }
+
+   END
+   <CODE ENDS>
+
+Appendix F.  Acknowledgments
 
    TODO acknowledge.
 
-Appendix F.  Change log
+Appendix G.  Change log
 
       *RFC Editor's Note:* Please remove this section prior to
       publication of a final version of this document.
 
-F.1.  Since draft-connolly-cfrg-xwing-kem-05
+G.1.  Since draft-connolly-cfrg-xwing-kem-06
+
+   *  Add asn.1 module.
+
+G.2.  Since draft-connolly-cfrg-xwing-kem-05
 
    *  Fix several typos.
 
@@ -1520,7 +1600,7 @@ F.1.  Since draft-connolly-cfrg-xwing-kem-05
 
    *  Add instruction for use in X.509. #21
 
-F.2.  Since draft-connolly-cfrg-xwing-kem-04
+G.3.  Since draft-connolly-cfrg-xwing-kem-04
 
    *  Note that ML-KEM decapsulation key check is not required.
 
@@ -1541,14 +1621,14 @@ F.2.  Since draft-connolly-cfrg-xwing-kem-04
    *  Don't mark TLS entry as recommended before it has been through the
       IETF consensus process.  (Obviously the authors recommend X-Wing.)
 
-F.3.  Since draft-connolly-cfrg-xwing-kem-03
+G.4.  Since draft-connolly-cfrg-xwing-kem-03
 
    *  Mandate ML-KEM encapsulation key check, and stipulate effect on
       TLS and HPKE integration.
 
    *  Add provisional TLS codepoint.  (Not assigned, yet.)
 
-F.4.  Since draft-connolly-cfrg-xwing-kem-02
+G.5.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Use seed as private key.
 
@@ -1556,7 +1636,7 @@ F.4.  Since draft-connolly-cfrg-xwing-kem-02
 
    *  Expand on binding properties.
 
-F.5.  Since draft-connolly-cfrg-xwing-kem-01
+G.6.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Add list of implementations.
 
@@ -1566,7 +1646,7 @@ F.5.  Since draft-connolly-cfrg-xwing-kem-01
 
    *  Correct definition of ML-KEM-768.KeyGenDerand(seed).
 
-F.6.  Since draft-connolly-cfrg-xwing-kem-00
+G.7.  Since draft-connolly-cfrg-xwing-kem-00
 
    *  A copy of the X25519 public key is now included in the X-Wing
       decapsulation (private) key, so that decapsulation does not
