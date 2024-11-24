@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-21T00:09:42.233691+00:00",
+  "timestamp": "2024-11-24T00:11:11.564350+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1535,24 +1535,26 @@
       "id": "PR_kwDOKq5sns6BZ7DY",
       "title": "Add ASN.1 module",
       "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/24",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bwesterb",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Thanks-to: Russ Housley <housley@vigilsec.com>",
       "createdAt": "2024-11-09T15:51:22Z",
-      "updatedAt": "2024-11-20T19:04:21Z",
+      "updatedAt": "2024-11-21T03:44:40Z",
       "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
       "baseRefName": "main",
       "baseRefOid": "c35e8ec0c015bda2ff7716fbd34234ce94a6c18c",
       "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
       "headRefName": "asn1",
       "headRefOid": "14259ee95f324f6d715f096590671e89a028a2ef",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-21T03:44:39Z",
+      "mergedAt": "2024-11-21T03:44:39Z",
+      "mergedBy": "bwesterb",
+      "mergeCommit": {
+        "oid": "02bb108befa91c9c996e152a77b0d8de2d5dff8c"
+      },
       "comments": [],
       "reviews": [
         {
