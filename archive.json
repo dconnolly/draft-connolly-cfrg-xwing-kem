@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-09T00:09:35.429863+00:00",
+  "timestamp": "2025-01-12T00:10:38.880421+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -436,6 +436,22 @@
           "updatedAt": "2024-11-16T13:39:02Z"
         }
       ]
+    },
+    {
+      "number": 25,
+      "id": "I_kwDOKq5sns6ly9qu",
+      "title": "The PEM header for private key is suspicious",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/25",
+      "state": "OPEN",
+      "author": "wangweij",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The current header X-WING PRIVATE KEY seems to imply this is a dedicated type for X-Wing but the content is actually standard PKCS #8. This reminds me of the RSA PRIVATE KEY type for PKCS #1.\n\nWe should simply use PRIVATE KEY.",
+      "createdAt": "2025-01-11T04:25:02Z",
+      "updatedAt": "2025-01-11T04:25:02Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
