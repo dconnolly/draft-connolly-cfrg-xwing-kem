@@ -1480,10 +1480,10 @@ Appendix D.  Example of use in X.509
    The following are the encodings of the X-Wing keypair with private
    key 0001…1f.
 
-   -----BEGIN X-WING PRIVATE KEY-----
+   -----BEGIN PRIVATE KEY-----
    MDQCAQAwDQYLKwYBBAGD5i2ByHoEIAABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZ
    GhscHR4f
-   -----END X-WING PRIVATE KEY-----
+   -----END PRIVATE KEY-----
 
    -----BEGIN PUBLIC KEY-----
    MIIE1DANBgsrBgEEAYPmLYHIegOCBMEAb1QJigoOZBFGYUtpYLpg2GA9YvRH+atJ
