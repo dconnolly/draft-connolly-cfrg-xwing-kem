@@ -81,7 +81,7 @@ func main() {
 	defer f2.Close()
 
 	if err = pem.Encode(f2, &pem.Block{
-		Type:  fmt.Sprintf("X-WING PRIVATE KEY"),
+		Type:  fmt.Sprintf("PRIVATE KEY"),
 		Bytes: pask,
 	}); err != nil {
 		panic(err)
