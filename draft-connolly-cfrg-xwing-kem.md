@@ -695,9 +695,6 @@ Description of "id-mod-XWing-kem-2024".
 
   - [Filippo](https://github.com/FiloSottile/mlkem768)
 
-    Note: implements the older `-04` version of this memo at the time of
-    writing.
-
 - Rust
 
   - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs)
