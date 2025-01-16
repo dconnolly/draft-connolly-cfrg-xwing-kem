@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-12T00:10:38.880421+00:00",
+  "timestamp": "2025-01-16T00:09:22.224078+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -442,16 +442,24 @@
       "id": "I_kwDOKq5sns6ly9qu",
       "title": "The PEM header for private key is suspicious",
       "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/issues/25",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "wangweij",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The current header X-WING PRIVATE KEY seems to imply this is a dedicated type for X-Wing but the content is actually standard PKCS #8. This reminds me of the RSA PRIVATE KEY type for PKCS #1.\n\nWe should simply use PRIVATE KEY.",
       "createdAt": "2025-01-11T04:25:02Z",
-      "updatedAt": "2025-01-11T04:25:02Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-01-14T02:51:26Z",
+      "closedAt": "2025-01-14T02:51:26Z",
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You're right\u2014thanks for flagging.",
+          "createdAt": "2025-01-13T11:42:53Z",
+          "updatedAt": "2025-01-13T11:42:53Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1692,6 +1700,56 @@
               "updatedAt": "2024-11-20T19:04:21Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "id": "PR_kwDOKq5sns6HhMOz",
+      "title": "example: Drop \"X-Wing\" before PRIVATE KEY",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/26",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Thanks-to: Weijun Wang\r\n\r\nCloses #25",
+      "createdAt": "2025-01-13T11:42:37Z",
+      "updatedAt": "2025-01-14T02:51:27Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "02bb108befa91c9c996e152a77b0d8de2d5dff8c",
+      "headRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "bas/25",
+      "headRefOid": "3c74ab41debeee130956b667d950abf18d4eacb2",
+      "closedAt": "2025-01-14T02:51:25Z",
+      "mergedAt": "2025-01-14T02:51:25Z",
+      "mergedBy": "dconnolly",
+      "mergeCommit": {
+        "oid": "1faa98d324e8856f726ea75653d10666c7877120"
+      },
+      "comments": [
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Press the button if you're happy.",
+          "createdAt": "2025-01-13T11:43:14Z",
+          "updatedAt": "2025-01-13T11:43:14Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns6X6LbE",
+          "commit": {
+            "abbreviatedOid": "3c74ab4"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-14T02:49:06Z",
+          "updatedAt": "2025-01-14T02:49:06Z",
+          "comments": []
         }
       ]
     }
