@@ -217,13 +217,12 @@ security, but:
 This document is consistent with all terminology defined in
 {{I-D.driscoll-pqt-hybrid-terminology}}.
 
-The following terms are used throughout this document to describe the
-operations, roles, and behaviors of HPKE:
+The following terms are used throughout this document to describe these operations:
 
 - `concat(x0, ..., xN)`: returns the concatenation of byte
   strings. `concat(0x01, 0x0203, 0x040506) = 0x010203040506`.
-- `random(n)`: return a pseudorandom byte string of length `n` bytes produced by
-  a cryptographically-secure random number generator.
+- `random(n)`: returns a byte string of length `n` bytes produced by
+  a cryptographically-secure pseudorandom number generator.
 
 # Cryptographic Dependencies {#base-crypto}
 
@@ -263,11 +262,11 @@ X-Wing relies on the following primitives:
 
 * X25519 elliptic curve Diffie-Hellman key-exchange defined in {{Section 5 of RFC7748}}:
 
-  - `X25519(k,u)`: takes 32 byte strings k and u representing a
-    Curve25519 scalar and curvepoint respectively, and returns
-    the 32 byte string representing their scalar multiplication.
+  - `X25519(k, u)`: takes 32 byte strings k and u representing a
+    Curve25519 scalar and the u-coordinate of a point respectively, and returns
+    the 32 byte string representing the u-coordinate of their scalar multiplication.
   - `X25519_BASE`: the 32 byte string representing the standard base point
-    of Curve25519. In hex
+    of Curve25519. In hexadecimal,
     it is given by `0900000000000000000000000000000000000000000000000000000000000000`.
 
 Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
@@ -286,7 +285,7 @@ Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 ## Encoding and sizes {#encoding}
 
 X-Wing encapsulation key, decapsulation key, ciphertexts and shared secrets are all
-fixed length byte strings.
+fixed-length byte strings.
 
  Decapsulation key (private):
  : 32 bytes
@@ -307,7 +306,7 @@ follows.
 
 ~~~
 def expandDecapsulationKey(sk):
-  expanded = SHAKE256(sk, 96)
+  expanded = SHAKE256(sk, 768)
   (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
   sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
@@ -323,7 +322,7 @@ def GenerateKeyPair():
 and the 1216 byte encapsulation key `pk`.
 
 Here and in the balance of the document for clarity we use
-the `M` and `X`subscripts for ML-KEM-768 and X25519 components respectively.
+the `M` and `X` subscripts for ML-KEM-768 and X25519 components respectively.
 
 ### Key derivation {#derive-key-pair}
 
@@ -369,7 +368,7 @@ XWingLabel = concat(
 )
 ~~~
 
-In hex XWingLabel is given by `5c2e2f2f5e5c`.
+In hexadecimal, XWingLabel is given by `5c2e2f2f5e5c`.
 
 ## Encapsulation {#encaps}
 
@@ -485,7 +484,7 @@ as X-Wing keys are fixed-length byte strings, see {{encoding}}.
 
 ~~~
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE256(ikm, 32))
+  return GenerateKeyPairDerand(SHAKE256(ikm, 256))
 ~~~
 
 where the HPKE private key and public key are the X-Wing decapsulation
