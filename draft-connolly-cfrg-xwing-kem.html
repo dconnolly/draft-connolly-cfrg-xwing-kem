@@ -1567,7 +1567,8 @@ it is given by <code>09000000000000000000000000000000000000000000000000000000000
 <ul class="normal">
 <li class="normal" id="section-4-4.1.2.1">
               <p id="section-4-4.1.2.1.1"><code>SHAKE256(message, outlen)</code>: The extendable-output function (XOF)
-with that name defined in Section 6.2 of <span>[<a href="#FIPS202" class="cite xref">FIPS202</a>]</span>.<a href="#section-4-4.1.2.1.1" class="pilcrow">¶</a></p>
+with that name defined in Section 6.2 of <span>[<a href="#FIPS202" class="cite xref">FIPS202</a>]</span>. Note that
+outlen counts bits.<a href="#section-4-4.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4-4.1.2.2">
               <p id="section-4-4.1.2.2.1"><code>SHA3-256(message)</code>: The hash with that name
@@ -1624,7 +1625,7 @@ follows.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-2">
 <pre>
 def expandDecapsulationKey(sk):
-  expanded = SHAKE256(sk, 96)
+  expanded = SHAKE256(sk, 96*8) # expand sk to 96 bytes using SHAKE256
   (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
   sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
@@ -1830,7 +1831,9 @@ as X-Wing keys are fixed-length byte strings, see <a href="#encoding" class="aut
 <div class="alignLeft art-text artwork" id="section-5.6-4">
 <pre>
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE256(ikm, 32))
+  # Extract 32-byte seed from variable-length ikm using SHAKE.
+  sk = SHAKE256(ikm, 32*8)
+  return GenerateKeyPairDerand(sk)
 </pre><a href="#section-5.6-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5.6-5">where the HPKE private key and public key are the X-Wing decapsulation
@@ -3098,6 +3101,10 @@ final version of this document.<a href="#appendix-G-1.1.1" class="pilcrow">¶</a
 <ul class="normal">
 <li class="normal" id="appendix-G.1-1.1">
             <p id="appendix-G.1-1.1.1">Add asn.1 module.<a href="#appendix-G.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-G.1-1.2">
+            <p id="appendix-G.1-1.2.1">To match FIPS 202, we request number of bits from SHAKE-256 instead
+of number of bytes. #27<a href="#appendix-G.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
