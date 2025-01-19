@@ -276,7 +276,8 @@ Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
 * Symmetric cryptography.
 
   - `SHAKE256(message, outlen)`: The extendable-output function (XOF)
-    with that name defined in Section 6.2 of {{FIPS202}}.
+    with that name defined in Section 6.2 of {{FIPS202}}. Note that
+    outlen counts bits.
   - `SHA3-256(message)`: The hash with that name
     defined in Section 6.1 of {{FIPS202}}.
 
@@ -307,7 +308,7 @@ follows.
 
 ~~~
 def expandDecapsulationKey(sk):
-  expanded = SHAKE256(sk, 96)
+  expanded = SHAKE256(sk, 96*8) # expand sk to 96 bytes using SHAKE256
   (pk_M, sk_M) = ML-KEM-768.KeyGen_internal(expanded[0:32], expanded[32:64])
   sk_X = expanded[64:96]
   pk_X = X25519(sk_X, X25519_BASE)
@@ -485,7 +486,9 @@ as X-Wing keys are fixed-length byte strings, see {{encoding}}.
 
 ~~~
 def DeriveKeyPair(ikm):
-  return GenerateKeyPairDerand(SHAKE256(ikm, 32))
+  # Extract 32-byte seed from variable-length ikm using SHAKE.
+  sk = SHAKE256(ikm, 32*8)
+  return GenerateKeyPairDerand(sk)
 ~~~
 
 where the HPKE private key and public key are the X-Wing decapsulation
@@ -766,6 +769,9 @@ TODO acknowledge.
 ## Since draft-connolly-cfrg-xwing-kem-06
 
 - Add asn.1 module.
+
+- To match FIPS 202, we request number of bits from SHAKE-256 instead
+  of number of bytes. #27
 
 ## Since draft-connolly-cfrg-xwing-kem-05
 
