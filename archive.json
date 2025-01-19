@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-16T00:09:22.224078+00:00",
+  "timestamp": "2025-01-19T00:10:02.249546+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1752,6 +1752,40 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 27,
+      "id": "PR_kwDOKq5sns6INvPe",
+      "title": "SHAKE256 output is denoted in bits, not in bytes.",
+      "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/27",
+      "state": "OPEN",
+      "author": "armfazh",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Corrects a few typos in the specification.",
+      "createdAt": "2025-01-18T01:35:44Z",
+      "updatedAt": "2025-01-18T15:08:19Z",
+      "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
+      "baseRefName": "main",
+      "baseRefOid": "1bfef33174dd90f9e2aef2b742f94a2a01d05398",
+      "headRepository": "armfazh/draft-connolly-cfrg-xwing-kem",
+      "headRefName": "editJan17",
+      "headRefOid": "59c5d2baf956aa5a463f106492e21c76a4ffa7ae",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "body": "@bwesterb we may want to align our SHAKE256 invocation with FIPS 202 or 'redefine'/wrap our usage in this document to match the byte-wise notations",
+          "createdAt": "2025-01-18T15:08:18Z",
+          "updatedAt": "2025-01-18T15:08:18Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
