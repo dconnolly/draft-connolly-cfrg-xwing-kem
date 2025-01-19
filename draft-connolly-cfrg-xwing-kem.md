@@ -773,6 +773,10 @@ TODO acknowledge.
 - To match FIPS 202, we request number of bits from SHAKE-256 instead
   of number of bytes. #27
 
+- Update implementations section.
+
+- Correct PEM header. #25
+
 ## Since draft-connolly-cfrg-xwing-kem-05
 
 - Fix several typos.
