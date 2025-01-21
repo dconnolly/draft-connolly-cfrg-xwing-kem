@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-19T00:10:02.249546+00:00",
+  "timestamp": "2025-01-21T00:09:04.527658+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1758,24 +1758,26 @@
       "id": "PR_kwDOKq5sns6INvPe",
       "title": "SHAKE256 output is denoted in bits, not in bytes.",
       "url": "https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/pull/27",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "armfazh",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Corrects a few typos in the specification.",
       "createdAt": "2025-01-18T01:35:44Z",
-      "updatedAt": "2025-01-18T15:08:19Z",
+      "updatedAt": "2025-01-20T11:50:18Z",
       "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
       "baseRefName": "main",
-      "baseRefOid": "1bfef33174dd90f9e2aef2b742f94a2a01d05398",
+      "baseRefOid": "81d8a14e6ebd391bc1327a5ecf29f786108889c7",
       "headRepository": "armfazh/draft-connolly-cfrg-xwing-kem",
       "headRefName": "editJan17",
-      "headRefOid": "59c5d2baf956aa5a463f106492e21c76a4ffa7ae",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e9f1a7d357562b332df49d145318f1433d585e4b",
+      "closedAt": "2025-01-20T11:50:18Z",
+      "mergedAt": "2025-01-20T11:50:18Z",
+      "mergedBy": "bwesterb",
+      "mergeCommit": {
+        "oid": "7b2ecce5cda8e09f43d903e98ccbaf74ca226140"
+      },
       "comments": [
         {
           "author": "dconnolly",
@@ -1783,9 +1785,37 @@
           "body": "@bwesterb we may want to align our SHAKE256 invocation with FIPS 202 or 'redefine'/wrap our usage in this document to match the byte-wise notations",
           "createdAt": "2025-01-18T15:08:18Z",
           "updatedAt": "2025-01-18T15:08:18Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Most APIs in practice use bytes instead of bits for the output, so I'd prefer sticking with bytes and elaborating that.",
+          "createdAt": "2025-01-19T14:42:12Z",
+          "updatedAt": "2025-01-19T14:42:12Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Most APIs in practice use bytes instead of bits for the output, so I'd prefer sticking with bytes and elaborating that.\r\n\r\nOn second thought, wrapping would make the definition confusing. I [opted](https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/commit/81d8a14e6ebd391bc1327a5ecf29f786108889c7) for writing `bytes * 8`: what do you think @armfazh @dconnolly ?",
+          "createdAt": "2025-01-19T14:51:04Z",
+          "updatedAt": "2025-01-19T14:51:04Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKq5sns6Ypirr",
+          "commit": {
+            "abbreviatedOid": "59c5d2b"
+          },
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-19T14:50:24Z",
+          "updatedAt": "2025-01-19T14:50:24Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
