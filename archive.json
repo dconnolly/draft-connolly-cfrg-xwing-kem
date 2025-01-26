@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-23T00:09:14.850355+00:00",
+  "timestamp": "2025-01-26T00:09:52.724035+00:00",
   "repo": "dconnolly/draft-connolly-cfrg-xwing-kem",
   "labels": [
     {
@@ -1765,7 +1765,7 @@
       "labels": [],
       "body": "Corrects a few typos in the specification.",
       "createdAt": "2025-01-18T01:35:44Z",
-      "updatedAt": "2025-01-20T11:50:18Z",
+      "updatedAt": "2025-01-23T17:43:40Z",
       "baseRepository": "dconnolly/draft-connolly-cfrg-xwing-kem",
       "baseRefName": "main",
       "baseRefOid": "81d8a14e6ebd391bc1327a5ecf29f786108889c7",
@@ -1799,6 +1799,13 @@
           "body": "> Most APIs in practice use bytes instead of bits for the output, so I'd prefer sticking with bytes and elaborating that.\r\n\r\nOn second thought, wrapping would make the definition confusing. I [opted](https://github.com/dconnolly/draft-connolly-cfrg-xwing-kem/commit/81d8a14e6ebd391bc1327a5ecf29f786108889c7) for writing `bytes * 8`: what do you think @armfazh @dconnolly ?",
           "createdAt": "2025-01-19T14:51:04Z",
           "updatedAt": "2025-01-19T14:51:04Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "`bytes * 8` is both correct and clear. agree with the change ",
+          "createdAt": "2025-01-23T17:43:39Z",
+          "updatedAt": "2025-01-23T17:43:39Z"
         }
       ],
       "reviews": [
@@ -1813,6 +1820,19 @@
           "body": "",
           "createdAt": "2025-01-19T14:50:24Z",
           "updatedAt": "2025-01-19T14:50:24Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKq5sns6ZNweL",
+          "commit": {
+            "abbreviatedOid": "e9f1a7d"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "\ud83d\udc4d",
+          "createdAt": "2025-01-23T17:17:03Z",
+          "updatedAt": "2025-01-23T17:17:03Z",
           "comments": []
         }
       ]
