@@ -704,6 +704,7 @@ Description of "id-mod-XWing-kem-2024".
     Note: implements the older `-00` version of this memo at the time of
     writing.
 
+  - [Orion](https://github.com/orion-rs/orion)
 
 # Machine-readable specification {#S-spec}
 
