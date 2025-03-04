@@ -700,6 +700,7 @@ Description of "id-mod-XWing-kem-2024".
 - Rust
 
   - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs)
+  - [RustCrypto x-wing] (https://github.com/RustCrypto/KEMs/tree/master/x-wing)
 
     Note: implements the older `-00` version of this memo at the time of
     writing.
