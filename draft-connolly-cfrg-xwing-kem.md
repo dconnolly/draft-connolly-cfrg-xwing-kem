@@ -705,6 +705,7 @@ Description of "id-mod-XWing-kem-2024".
     writing.
   - [RustCrypto x-wing](https://github.com/RustCrypto/KEMs/tree/master/x-wing)
 
+  - [Orion](https://github.com/orion-rs/orion)
 
 # Machine-readable specification {#S-spec}
 
