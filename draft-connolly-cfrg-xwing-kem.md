@@ -6,7 +6,7 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2024-08-19
+date: 2025-05-03
 consensus: true
 v: 3
 area: "IRTF"
