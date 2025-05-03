@@ -5,10 +5,10 @@
 Crypto Forum                                                 D. Connolly
 Internet-Draft                                                 SandboxAQ
 Intended status: Informational                                P. Schwabe
-Expires: 20 February 2025                    MPI-SP & Radboud University
+Expires: 4 November 2025                     MPI-SP & Radboud University
                                                         B. E. Westerbaan
                                                               Cloudflare
-                                                          19 August 2024
+                                                              3 May 2025
 
 
             X-Wing: general-purpose hybrid post-quantum KEM
@@ -53,11 +53,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 February 2025.
+   This Internet-Draft will expire on 4 November 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -752,9 +752,9 @@ def GenerateKeyPair():
 
    [TLSIANA]  Salowey, J. A. and S. Turner, "IANA Registry Updates for
               TLS and DTLS", Work in Progress, Internet-Draft, draft-
-              ietf-tls-rfc8447bis-10, 3 November 2024,
+              ietf-tls-rfc8447bis-12, 11 April 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              rfc8447bis-10>.
+              rfc8447bis-12>.
 
    [XYBERHPKE]
               Westerbaan, B. and C. A. Wood, "X25519Kyber768Draft00
