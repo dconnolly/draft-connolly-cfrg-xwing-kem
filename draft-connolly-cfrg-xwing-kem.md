@@ -342,6 +342,8 @@ def GenerateKeyPairDerand(sk):
 `GenerateKeyPairDerand()` returns the 32 byte secret encapsulation key
 `sk` and the 1216 byte decapsulation key `pk`.
 
+Note `GenerateKeyPair()` is the same as `GenerateKeyPairDerand(random(32))`.
+
 ## Combiner {#combiner}
 
 Given 32 byte strings `ss_M`, `ss_X`, `ct_X`, `pk_X`, representing the
@@ -421,6 +423,7 @@ def EncapsulateDerand(pk, eseed):
 `EncapsulateDerand()` returns the 32 byte shared secret `ss` and the 1120 byte
 ciphertext `ct`.
 
+`Encapsulate(pk)` can be implemented as `EncapsulateDerand(pk,random(64))`.
 
 ## Decapsulation {#decaps}
 
@@ -766,6 +769,10 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-07
+
+- Elaborate on relation between randomized and derandomized functions.
 
 ## Since draft-connolly-cfrg-xwing-kem-06
 
