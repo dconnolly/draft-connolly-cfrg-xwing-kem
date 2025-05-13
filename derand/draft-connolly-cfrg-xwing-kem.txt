@@ -426,7 +426,7 @@ def GenerateKeyPair():
    EncapsulateDerand() returns the 32 byte shared secret ss and the 1120
    byte ciphertext ct.
 
-   Encapsulate(pk) may be implemented as
+   Encapsulate(pk) can be implemented as
    EncapsulateDerand(pk,random(64)).
 
 5.5.  Decapsulation
