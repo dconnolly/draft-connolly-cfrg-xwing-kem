@@ -694,9 +694,13 @@ Description of "id-mod-XWing-kem-2024".
 
 # Implementations
 
+- C
+
+  - Google's [BoringSSL](https://github.com/google/boringssl/blob/main/include/openssl/xwing.h)
+
 - Go
 
-  - [CIRCL](https://github.com/cloudflare/circl/pull/471)
+  - Cloudflare's [CIRCL](https://github.com/cloudflare/circl/pull/471)
 
   - [Filippo](https://github.com/FiloSottile/mlkem768)
 
@@ -773,6 +777,8 @@ TODO acknowledge.
 ## Since draft-connolly-cfrg-xwing-kem-07
 
 - Elaborate on relation between randomized and derandomized functions.
+
+- Update implementations section.
 
 ## Since draft-connolly-cfrg-xwing-kem-06
 
