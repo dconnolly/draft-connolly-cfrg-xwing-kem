@@ -759,9 +759,9 @@ def GenerateKeyPair():
 
    [TLSIANA]  Salowey, J. A. and S. Turner, "IANA Registry Updates for
               TLS and DTLS", Work in Progress, Internet-Draft, draft-
-              ietf-tls-rfc8447bis-12, 11 April 2025,
+              ietf-tls-rfc8447bis-13, 29 May 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              rfc8447bis-12>.
+              rfc8447bis-13>.
 
    [XYBERHPKE]
               Westerbaan, B. and C. A. Wood, "X25519Kyber768Draft00
