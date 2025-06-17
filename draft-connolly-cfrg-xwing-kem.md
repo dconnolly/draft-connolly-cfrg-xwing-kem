@@ -616,6 +616,7 @@ KEMs. In particular it is not known to be safe to leave
 out the post-quantum ciphertext from the combiner in the general case.
 
 ## Binding properties
+
 Some protocols rely on further properties of the KEM.
 X-Wing satisfies the binding properties MAL-BIND-K-PK and MAL-BIND-K-CT
 (TODO: reference to proof).
@@ -695,8 +696,8 @@ Description of "id-mod-XWing-kem-2024".
 # Implementations
 
 - Platform
-  
-  - Apple [CryptoKit](https://developer.apple.com/documentation/cryptokit/xwingmlkem768x25519) 
+
+  - Apple [CryptoKit](https://developer.apple.com/documentation/cryptokit/xwingmlkem768x25519)
 
 - C
 
