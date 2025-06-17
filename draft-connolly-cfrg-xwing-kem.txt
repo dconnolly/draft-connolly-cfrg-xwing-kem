@@ -778,6 +778,12 @@ def GenerateKeyPair():
 
 Appendix A.  Implementations
 
+   *  Platform
+
+      -  Apple CryptoKit
+         (https://developer.apple.com/documentation/cryptokit/
+         xwingmlkem768x25519)
+
    *  C
 
       -  Google's BoringSSL
