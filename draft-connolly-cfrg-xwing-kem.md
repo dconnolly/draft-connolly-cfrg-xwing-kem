@@ -694,6 +694,10 @@ Description of "id-mod-XWing-kem-2024".
 
 # Implementations
 
+- Platform
+  
+  - Apple [CryptoKit](https://developer.apple.com/documentation/cryptokit/xwingmlkem768x25519) 
+
 - C
 
   - Google's [BoringSSL](https://github.com/google/boringssl/blob/main/include/openssl/xwing.h)
