@@ -5,10 +5,10 @@
 Crypto Forum                                                 D. Connolly
 Internet-Draft                                                 SandboxAQ
 Intended status: Informational                                P. Schwabe
-Expires: 5 March 2026                        MPI-SP & Radboud University
+Expires: 3 September 2026                    MPI-SP & Radboud University
                                                         B. E. Westerbaan
                                                               Cloudflare
-                                                        1 September 2025
+                                                            2 March 2026
 
 
             X-Wing: general-purpose hybrid post-quantum KEM
@@ -53,11 +53,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 March 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
