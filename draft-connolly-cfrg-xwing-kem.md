@@ -710,9 +710,9 @@ Description of "id-mod-XWing-kem-2024".
   - [Filippo](https://github.com/FiloSottile/mlkem768)
 
 - Kotlin/Java
-  
+
   - Equisign/LetReco [XWing](https://github.com/equisign/xwing)
-    
+
 - Rust
 
   - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs)
