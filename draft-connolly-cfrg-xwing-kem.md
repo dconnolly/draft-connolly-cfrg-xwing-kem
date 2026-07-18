@@ -709,6 +709,8 @@ Description of "id-mod-XWing-kem-2024".
 
   - [Filippo](https://github.com/FiloSottile/mlkem768)
 
+  - [sindook](https://github.com/ruddro-roy/sindook)
+
 - Rust
 
   - [xwing-kem.rs](https://github.com/rugo/xwing-kem.rs)
