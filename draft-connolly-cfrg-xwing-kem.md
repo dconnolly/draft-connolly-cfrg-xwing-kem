@@ -6,7 +6,7 @@ category: info
 docname: draft-connolly-cfrg-xwing-kem-latest
 submissiontype: IRTF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
-date: 2026-03-02
+date: 2026-09-23
 consensus: true
 v: 3
 area: "IRTF"
@@ -26,7 +26,7 @@ venue:
 author:
  -
     fullname: Deirdre Connolly
-    organization: SandboxAQ
+    organization: Selkie Cryptography
     email: durumcrustulum@gmail.com
 
  -
