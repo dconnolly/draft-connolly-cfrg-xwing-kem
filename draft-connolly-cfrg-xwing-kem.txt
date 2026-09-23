@@ -3,12 +3,12 @@
 
 
 Crypto Forum                                                 D. Connolly
-Internet-Draft                                                 SandboxAQ
+Internet-Draft                                       Selkie Cryptography
 Intended status: Informational                                P. Schwabe
-Expires: 3 September 2026                    MPI-SP & Radboud University
+Expires: 27 March 2027                       MPI-SP & Radboud University
                                                         B. E. Westerbaan
                                                               Cloudflare
-                                                            2 March 2026
+                                                       23 September 2026
 
 
             X-Wing: general-purpose hybrid post-quantum KEM
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 September 2026.
+   This Internet-Draft will expire on 27 March 2027.
 
 Copyright Notice
 
@@ -282,8 +282,8 @@ Table of Contents
          their scalar multiplication.
 
       -  X25519_BASE: the 32 byte string representing the standard base
-         point of Curve25519.  In hexadecimal, it is given by 0900000000
-         000000000000000000000000000000000000000000000000000000.
+         point of Curve25519.  In hexadecimal, it is given by
+         0900000000000000000000000000000000000000000000000000000000000000.
 
    Note that 9 is the standard basepoint for X25519, cf Section 6.1 of
    [RFC7748].
@@ -1695,7 +1695,7 @@ G.8.  Since draft-connolly-cfrg-xwing-kem-00
 Authors' Addresses
 
    Deirdre Connolly
-   SandboxAQ
+   Selkie Cryptography
    Email: durumcrustulum@gmail.com
 
 
