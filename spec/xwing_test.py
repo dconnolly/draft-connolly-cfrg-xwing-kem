@@ -74,5 +74,41 @@ def dump_vectors(vecs):
         f.write('\n')
     return f.getvalue()
 
+# Encodings of u-coordinates of small-order points on Curve25519 and its
+# twist: 0, 1, the two points of order 8, p-1, p, and p+1.  X25519 ignores
+# bit 255, so each also appears with that bit set.
+LOW_ORDER = [binascii.unhexlify(u) for u in [
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    "0100000000000000000000000000000000000000000000000000000000000000",
+    "e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800",
+    "5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157",
+    "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+]]
+LOW_ORDER += [u[:31] + bytes([u[31] | 0x80]) for u in LOW_ORDER]
+
+def test_reject_low_order(setVectors):
+    vecs = json.load(open('test-vectors.json'))
+    for vec in vecs:
+        sk = binascii.unhexlify(vec['sk'])
+        pk = binascii.unhexlify(vec['pk'])
+        ct = binascii.unhexlify(vec['ct'])
+        eseed = binascii.unhexlify(vec['eseed'])
+        for u in LOW_ORDER:
+            assert x25519.X(sk, u) == bytes(32)
+            with pytest.raises(ValueError):
+                Decapsulate(ct[:1088] + u, sk)
+            with pytest.raises(ValueError):
+                EncapsulateDerand(pk[:1184] + u, eseed)
+
+    want = ''.join(binascii.hexlify(u).decode() + '\n' for u in LOW_ORDER)
+    if setVectors:
+        with open('low-order-points.txt', 'w') as f:
+            f.write(want)
+    else:
+        with open('low-order-points.txt', 'r') as f:
+            assert f.read() == want
+
 if __name__ == '__main__':
     pytest.main(['xwing_test.py'])

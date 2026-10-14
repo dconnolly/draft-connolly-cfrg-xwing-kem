@@ -31,6 +31,12 @@ def GenerateKeyPairDerand(seed):
     skM, skX, pkM, pkX = expandDecapsulationKey(seed)
     return seed, pkM + pkX
 
+# Reject an all-zero X25519 shared secret, as in rfc9180 §7.1.4.
+# A real implementation must compare in constant time.
+def checkX25519(ssX):
+    if ssX == bytes(32):
+        raise ValueError("all-zero X25519 shared secret")
+
 def Combiner(ssM, ssX, ctX, pkX):
     return hashlib.sha3_256(
         ssM +
@@ -48,6 +54,7 @@ def EncapsulateDerand(pk, eseed):
     ekX = eseed[32:64]
     ctX = x25519.X(ekX, x25519.BASE)
     ssX = x25519.X(ekX, pkX)
+    checkX25519(ssX)
     ctM, ssM = mlkem.Enc(pkM, eseed[0:32], mlkem.params768)
     ss = Combiner(ssM, ssX, ctX, pkX)
     return ss, ctM + ctX
@@ -60,4 +67,5 @@ def Decapsulate(ct, sk):
     skM, skX, pkM, pkX = expandDecapsulationKey(sk)
     ssM = mlkem.Dec(skM, ctM, mlkem.params768)
     ssX = x25519.X(skX, ctX)
+    checkX25519(ssX)
     return Combiner(ssM, ssX, ctX, pkX)
