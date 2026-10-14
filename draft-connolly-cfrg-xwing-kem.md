@@ -223,6 +223,7 @@ The following terms are used throughout this document to describe these operatio
   strings. `concat(0x01, 0x0203, 0x040506) = 0x010203040506`.
 - `random(n)`: returns a byte string of length `n` bytes produced by
   a cryptographically-secure pseudorandom number generator.
+- `zeros(n)`: returns a byte string of `n` zero bytes.
 
 # Cryptographic Dependencies {#base-crypto}
 
@@ -270,6 +271,8 @@ X-Wing relies on the following primitives:
     it is given by `0900000000000000000000000000000000000000000000000000000000000000`.
 
 Note that 9 is the standard basepoint for X25519, cf {{Section 6.1 of RFC7748}}.
+
+X-Wing rejects an all-zero X25519 output, see {{x25519-check}}.
 
 
 * Symmetric cryptography.
@@ -384,6 +387,8 @@ def Encapsulate(pk):
   ek_X = random(32)
   ct_X = X25519(ek_X, X25519_BASE)
   ss_X = X25519(ek_X, pk_X)
+  if ss_X == zeros(32):
+    raise error
   (ss_M, ct_M) = ML-KEM-768.Encaps(pk_M)
   ss = Combiner(ss_M, ss_X, ct_X, pk_X)
   ct = concat(ct_M, ct_X)
@@ -395,8 +400,9 @@ def Encapsulate(pk):
 `Encapsulate()` returns the 32 byte shared secret `ss` and the 1120 byte
 ciphertext `ct`.
 
-Note that `Encapsulate()` may raise an error if the ML-KEM encapsulation
-does not pass the check of {{MLKEM}} §7.2.
+Note that `Encapsulate()` raises an error if the ML-KEM encapsulation
+does not pass the check of {{MLKEM}} §7.2, or if the X25519 shared secret
+is the all-zero value ({{x25519-check}}).
 
 ### Derandomized
 
@@ -411,6 +417,8 @@ def EncapsulateDerand(pk, eseed):
   ek_X = eseed[32:64]
   ct_X = X25519(ek_X, X25519_BASE)
   ss_X = X25519(ek_X, pk_X)
+  if ss_X == zeros(32):
+    raise error
   (ss_M, ct_M) = ML-KEM-768.EncapsDerand(pk_M, eseed[0:32])
   ss = Combiner(ss_M, ss_X, ct_X, pk_X)
   ct = concat(ct_M, ct_X)
@@ -434,13 +442,31 @@ def Decapsulate(ct, sk):
   ct_X = ct[1088:1120]
   ss_M = ML-KEM-768.Decapsulate(ct_M, sk_M)
   ss_X = X25519(sk_X, ct_X)
+  if ss_X == zeros(32):
+    raise error
   return Combiner(ss_M, ss_X, ct_X, pk_X)
 ~~~
 
 `ct` is the 1120 byte ciphertext resulting from `Encapsulate()`
 `sk` is a 32 byte X-Wing decapsulation key resulting from `GenerateKeyPair()`
 
-`Decapsulate()` returns the 32 byte shared secret.
+`Decapsulate()` returns the 32 byte shared secret, or raises an error if
+the X25519 shared secret is the all-zero value ({{x25519-check}}).
+
+## Validation of X25519 outputs {#x25519-check}
+
+The X25519 Diffie-Hellman output MUST be validated as described in
+{{RFC7748}}.  In particular, senders and recipients MUST check whether the
+X25519 shared secret `ss_X` is the all-zero value and abort if so.
+`Encapsulate()`, `EncapsulateDerand()`, and `Decapsulate()` perform this check
+as shown above.  The check MUST NOT leak information about `ss_X` beyond
+whether it is all-zero; for example, compare in constant time
+({{Section 6.1 of RFC7748}}).
+
+X25519 clamps scalars to multiples of the cofactor, so its output is the
+all-zero value exactly when the input u-coordinate encodes a point of small
+order on Curve25519 or its twist.  The check therefore depends only on the
+public values `ct_X` and `pk_X`.  {{S-low-order}} lists these encodings.
 
 ### Keeping expanded decapsulation key around
 
@@ -497,9 +523,11 @@ where the HPKE private key and public key are the X-Wing decapsulation
 key and encapsulation key respectively.
 
 `Encap()` is `Encapsulate()` from {{encaps}}, where an
-ML-KEM encapsulation key check failure causes an HPKE `EncapError`.
+ML-KEM encapsulation key check failure or an all-zero X25519 shared secret
+causes an HPKE `EncapError`.
 
-`Decap()` is `Decapsulate()` from {{decaps}}.
+`Decap()` is `Decapsulate()` from {{decaps}}, where an all-zero X25519 shared
+secret causes an HPKE `DecapError`.
 
 X-Wing is not an authenticated KEM: it does not support `AuthEncap()`
 and `AuthDecap()`, see {{auth}}.
@@ -516,6 +544,10 @@ the X-Wing ciphertext.
 
 On ML-KEM encapsulation key check failure, the server MUST
 abort with an illegal_parameter alert.
+
+If the X25519 shared secret is the all-zero value, the server (in
+`Encapsulate()`) or the client (in `Decapsulate()`) MUST abort with an
+illegal_parameter alert.
 
 ## Use in X.509 Public Key Infrastructure
 
@@ -614,6 +646,18 @@ Fujisaki-Okamoto transformation used in ML-KEM-768: the X-Wing
 combiner cannot be assumed to be secure, when used with different
 KEMs. In particular it is not known to be safe to leave
 out the post-quantum ciphertext from the combiner in the general case.
+
+## Rejection of all-zero X25519 outputs
+
+X-Wing rejects ciphertexts and encapsulation keys whose X25519 component
+yields the all-zero shared secret ({{x25519-check}}).  For those inputs,
+X-Wing is an explicitly rejecting KEM.  The rejection depends only on public
+data, so it reveals nothing about the decapsulation key.  For all other
+ciphertexts, ML-KEM-768's implicit rejection still applies.
+
+Earlier versions of this document did not specify this check.  {{RFC7748}}
+makes it optional, so implementations differed in which ciphertexts they
+accepted.  Following {{RFC9180}}, this version requires it.
 
 ## Binding properties
 
@@ -743,6 +787,21 @@ it should not be deployed as-is, as it leaks the private key by its runtime.
 {::include ./spec/mlkem.py}
 ~~~~
 
+# Low-order X25519 inputs {#S-low-order}
+
+The following 32-byte strings encode u-coordinates of small-order points on
+Curve25519 and its twist: 0, 1, the two points of order 8, p-1, p, and p+1,
+each also with bit 255 set.  X25519 with any scalar maps each of them to the
+all-zero value.
+
+For each test vector in the next appendix, replacing the last 32 bytes of `ct`
+with any of these strings MUST make `Decapsulate()` fail, and replacing the
+last 32 bytes of `pk` with any of them MUST make `EncapsulateDerand()` fail.
+
+~~~~
+{::include ./spec/low-order-points.txt}
+~~~~
+
 # Test vectors # TODO: replace with test vectors that re-use ML-KEM, X25519 values
 
 ~~~~
@@ -778,6 +837,16 @@ TODO acknowledge.
 
 > **RFC Editor's Note:** Please remove this section prior to publication of a
 > final version of this document.
+
+## Since draft-connolly-cfrg-xwing-kem-11
+
+- Require rejecting an all-zero X25519 shared secret in `Encapsulate()` and
+  `Decapsulate()`, following {{RFC9180}}.
+
+- Fix the reference X25519 to ignore bit 255 of u-coordinates and to not
+  reduce scalars modulo p, as in {{RFC7748}}.
+
+- Add low-order X25519 inputs for negative tests.
 
 ## Since draft-connolly-cfrg-xwing-kem-07
 

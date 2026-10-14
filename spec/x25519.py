@@ -6,15 +6,21 @@ a24 = 121665
 
 BASE = b'\x09' + b'\x00'*31
 
-def decode(bs):
-    return sum(bs[i] << 8*i for i in range(32)) % p
+def decodeLittleEndian(bs):
+    return sum(bs[i] << 8*i for i in range(32))
+
+# See rfc7748 §5: mask bit 255, and accept non-canonical values mod p.
+def decodeUCoordinate(u):
+    bs = list(u)
+    bs[31] &= 127
+    return decodeLittleEndian(bs) % p
 
 def decodeScalar(k):
     bs = list(k)
     bs[0] &= 248
     bs[31] &= 127
     bs[31] |= 64
-    return decode(bs)
+    return decodeLittleEndian(bs)
 
 # See rfc7748 §5.
 def X(k, u):
@@ -22,7 +28,7 @@ def X(k, u):
     assert len(u) == 32
 
     k = decodeScalar(k)
-    u = decode(u)
+    u = decodeUCoordinate(u)
     x1, x2, x3, z2, z3, swap = u, 1, u, 0, 1, 0
 
     for t in range(255, -1, -1):
